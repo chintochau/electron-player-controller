@@ -3,12 +3,13 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
+import xml2js from 'xml2js'
 
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1600,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
     focusable: false,
@@ -67,29 +68,182 @@ app.whenReady().then(() => {
 
 // Handle discovery in the main process
 ipcMain.handle('discover-devices', async () => {
-  const bonjourService = bonjour();
-  const discoveredDevices = [];
+  const bonjourService = bonjour()
+  const discoveredDevices = []
 
   // Function to add a service when discovered
   const addService = (service) => {
     // Ignore duplicate service by IP
     if (!discoveredDevices.some((s) => s.referer.address === service.referer.address)) {
-      console.log("pushed", service);
-      discoveredDevices.push(service);
-      console.log("discoveredDevices", discoveredDevices);
+      discoveredDevices.push(service)
     }
-  };
+  }
 
   // Return a Promise that resolves after some time or when discovery is complete
   return new Promise((resolve) => {
     // Find services of type 'musc.tcp'
-    bonjourService.find({ type: 'musc', protocol: 'tcp' }, addService);
+    bonjourService.find({ type: 'musc', protocol: 'tcp' }, addService)
 
     // Stop discovery after a timeout (e.g., 5 seconds)
     setTimeout(() => {
-      resolve(discoveredDevices); // Resolve with the discovered devices
-    }, 1000); // Adjust the timeout as needed
-  });
+      resolve(discoveredDevices) // Resolve with the discovered devices
+    }, 1000) // Adjust the timeout as needed
+  })
+})
+
+ipcMain.handle("check-status", async (event, ip) => {
+  
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Set timeout to 10 seconds
+
+  try {
+    const res = await fetch(`http://${ip}:11000/Status`, {
+      signal: controller.signal,
+    });
+
+    
+    clearTimeout(timeoutId); // Clear the timeout when fetch succeeds
+
+    const xmlText = await res.text();
+    const xml = await xml2js.parseStringPromise(xmlText);
+
+    const { status: statusXml } = xml;
+    let response;
+
+
+    if (statusXml && statusXml.service && statusXml.state && statusXml.volume && statusXml.title1 && statusXml.image) {
+      response = {
+        success: true,
+        service: statusXml.service[0],
+        state: statusXml.state[0],
+        volume: statusXml.volume[0],
+        title1: statusXml.title1[0],
+        image: statusXml.image[0],
+        progress: 100 * statusXml.secs[0] / statusXml.totlen[0],
+      };
+    } else {
+      return { success: false, state: "nothing" };
+    }
+
+    return response;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch request timed out");
+      return { success: false, state: "timeout" };
+    } else {
+      console.log("error", error);
+      return { success: false, state: "Unknown" };
+    }
+  }
+});
+
+ipcMain.handle("check-sync-status", async (event, ip) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Set timeout to 10 seconds
+
+  try {
+    const res = await fetch(`http://${ip}:11000/SyncStatus`, { signal: controller.signal });
+    clearTimeout(timeoutId); // Clear the timeout when fetch succeeds
+
+    const xmlText = await res.text();
+    const xml = await xml2js.parseStringPromise(xmlText);
+    const {
+      SyncStatus,
+      UpgradeStatusStage1,
+      UpgradeStatusStage2,
+      UpgradeStatusStage3,
+    } = xml;
+
+    let response;
+
+    if (SyncStatus) {
+      const { $ } = SyncStatus;
+      response = {
+        success: true,
+        status: "normal",
+        icon: $.icon, 
+        schemaVersion: $.schemaVersion,
+        volume: $.volume,
+      };
+    }
+
+    if (UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3) {
+      const upgrade =
+        UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3;
+
+      response = {
+        success: true,
+        status: "upgrade",
+        version: upgrade.git[0],
+      };
+    }
+
+    return response || { success: false, status: "no_status" }; // Default response if no status is found
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      console.log("Fetch request timed out");
+      return { success: false, status: "timeout" };
+    } else {
+      console.log("Error:", error);
+      return { success: false, status: "unknown" };
+    }
+  }
+});
+
+
+ipcMain.handle("player-control", async (event, { ip, control, param }) => {
+
+  let res;
+
+  switch (control) {
+    case "volume":
+      console.log("volume", param);
+      res = await fetch(`http://${ip}:11000/Volume?level=${param}&tell_slaves=0`);
+      break;
+    case "reboot":
+      console.log("rebooting");
+      res = await fetch(`http://${ip}/reboot`);
+      break;
+    case "factoryreset":
+      console.log("factoryreset");
+      res = await fetch(`http://${ip}/factoryreset`);
+      break;
+    case "play":
+      console.log("play");
+      if (param) {
+        res = await fetch(`http://${ip}:11000/Play?seek=${param}`);
+      } else {
+        res = await fetch(`http://${ip}:11000/Play`);
+      }
+      break;
+    case "pause":
+      console.log("pause");
+      res = await fetch(`http://${ip}:11000/Pause`);
+      break;
+    case "skip":
+      console.log("skip");
+      res = await fetch(`http://${ip}:11000/Skip`);
+      break;
+    case "back":
+      console.log("back");
+      res = await fetch(`http://${ip}:11000/Back`);
+      break;
+      case "upgrade":
+        console.log("upgrade");
+        res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`);
+        break;
+    default:
+      console.log("unknown control");
+      return { success: false };
+  }
+
+  if (!res || !res.ok) {
+    console.log("Error response:", res);
+    return { success: false };
+  }
+
+  console.log("Control command successful:", control);
+  return { success: true }; // Return success response
 });
 
 

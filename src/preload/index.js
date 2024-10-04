@@ -3,7 +3,11 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  discoverDevices: () => ipcRenderer.invoke('discover-devices')
+  discoverDevices: () => ipcRenderer.invoke('discover-devices'),
+  checkStatus: (ip) => ipcRenderer.invoke('check-status', ip),
+  checkSyncStatus: (ip) => ipcRenderer.invoke('check-sync-status', ip),
+  playerControl: (ip, control, param) => ipcRenderer.invoke('player-control', {ip, control, param}),
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

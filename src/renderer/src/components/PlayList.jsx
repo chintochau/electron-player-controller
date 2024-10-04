@@ -81,6 +81,11 @@ const PlayList = () => {
   };
 
 
+  const playerControl = async (ip, control, param) => {
+    const res = await window.api.playerControl(ip, control, param);
+  };
+
+
   return (
     <Table>
       <TableCaption>
@@ -214,7 +219,7 @@ const PlayList = () => {
                 <TableCell>{device.version}</TableCell>
                 <TableCell className="text-center">
                   <Button
-                    onClick={() => upgradePlayerToVersion(device.ip)}
+                    onClick={() => playerControl(device.ip, "upgrade", version)}
                     disabled={!version}
                   >
                     Upgrade

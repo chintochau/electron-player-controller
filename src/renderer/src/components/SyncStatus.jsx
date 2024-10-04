@@ -6,18 +6,10 @@ const SyncStatus = ({ ip }) => {
   const [status, setStatus] = useState(null);
 
   const fetchSyncStatus = async () => {
-    console.log("fetching sync status", ip);
     
-    // const res = await fetch("/api/sync-status", {
-    //   method: "POST",
-    //   body: JSON.stringify({ ip }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-    // const response = await res.json();
-
-    // setDeviceData(response);
+    const res = await window.api.checkSyncStatus(ip)    
+    const response =  res
+    setDeviceData(response);
   };
 
 

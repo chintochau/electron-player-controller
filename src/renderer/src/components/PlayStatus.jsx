@@ -17,34 +17,23 @@ const PlayStatus = ({ ip, refreshTime }) => {
   const [shouldScroll, setShouldScroll] = useState(false);
   const [volume, setVolume] = useState(null);
 
+ 
+
   const fetchStatus = async () => {
-    console.log("fetching status", ip);
-    
-    // const res = await fetch("/api/status", {
-    //   method: "POST",
-    //   body: JSON.stringify({ ip }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-    // const response = await res.json();
-    // setStatus(response);
-    // setVolume((prev) => {
-    //   if (prev === null) {
-    //     return response?.volume || 0;
-    //   }
-    //   return prev;
-    // });
+    const res = await window.api.checkStatus(ip)
+
+    const response = res
+    setStatus(response);
+    setVolume((prev) => {
+      if (prev === null) {
+        return response?.volume || 0;
+      }
+      return prev;
+    });
   };
 
   const transportControl = async (control, param) => {
-    const res = fetch("/api/player-control", {
-      method: "POST",
-      body: JSON.stringify({ ip, control, param }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await window.api.playerControl(ip, control, param);
     fetchStatus();
     if (control === "volume") {
       setVolume(param);
@@ -72,6 +61,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
     if (!imagePath.startsWith("http://") && !imagePath.startsWith("https://")) {
       return "http://" + ip + ":11000" + imagePath;
     }
+    
     return imagePath;
   };
 

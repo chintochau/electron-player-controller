@@ -34,7 +34,8 @@
     "electron-updater": "^6.1.7",
     "lucide-react": "^0.447.0",
     "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",
