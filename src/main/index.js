@@ -259,9 +259,9 @@ ipcMain.handle("player-control", async (event, { ip, control, param }) => {
 
 
 ipcMain.handle('open-overlay', (event, url) => {
-  const overlayWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+  let overlayWindow = new BrowserWindow({
+    width: 866,
+    height: 600,
     frame: true, // No frame to look like an overlay
     transparent: true, // Transparent background
     alwaysOnTop: true, // Always on top to mimic an overlay
