@@ -1,3 +1,5 @@
+import { AudioWaveformIcon, Drill, Wifi } from "lucide-react"
+
 export const commandList = [
   {
     name: '/SyncStatus',
@@ -17,13 +19,25 @@ export const commandList = [
   }
 ]
 
+
+
+
 export const settingsList = [
   {
     name: 'Audio Settings',
-    path: 'settings?page_id=audio'
+    path: 'settings?page_id=audio',
+    icon: AudioWaveformIcon
   },
   {
     name: 'Wifi Settings',
-    path: 'wificfg'
+    path: 'wificfg',
+    icon: Wifi
+
+  },
+  {
+    name: 'Diagnostics',
+    path: 'diagnostics',
+    icon: Drill
+
   }
 ]
