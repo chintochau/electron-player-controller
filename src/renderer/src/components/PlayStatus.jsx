@@ -139,7 +139,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
       )}
       <div className="flex flex-col flex-1 items-center">
         <TransportControlButton status={status} />
-        <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />
+        {status?.progress && <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />}
         <div className="overflow-hidden whitespace-nowrap w-40">
           <div
             className={cn(

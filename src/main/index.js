@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
 
+let masterWindow
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -20,6 +21,8 @@ function createWindow() {
     },
     focusable: true
   })
+
+  masterWindow = mainWindow
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.showInactive()
@@ -112,6 +115,14 @@ ipcMain.handle("check-status", async (event, ip) => {
 
 
     if (statusXml && statusXml.service && statusXml.state && statusXml.volume && statusXml.title1 && statusXml.image) {
+
+      let progress
+
+      if (statusXml.secs && statusXml.totlen) {
+        progress = 100 * statusXml.secs[0] / statusXml.totlen[0];
+      }
+
+
       response = {
         success: true,
         service: statusXml.service[0],
@@ -119,7 +130,7 @@ ipcMain.handle("check-status", async (event, ip) => {
         volume: statusXml.volume[0],
         title1: statusXml.title1[0],
         image: statusXml.image[0],
-        progress: 100 * statusXml.secs[0] / statusXml.totlen[0],
+        progress: progress
       };
     } else {
       return { success: false, state: "nothing" };
@@ -244,6 +255,35 @@ ipcMain.handle("player-control", async (event, { ip, control, param }) => {
 
   console.log("Control command successful:", control);
   return { success: true }; // Return success response
+});
+
+
+ipcMain.handle('open-overlay', (event, url) => {
+  const overlayWindow = new BrowserWindow({
+    width: 600,
+    height: 400,
+    frame: true, // No frame to look like an overlay
+    transparent: true, // Transparent background
+    alwaysOnTop: true, // Always on top to mimic an overlay
+    modal: true, // Makes the window modal
+    parent: masterWindow, // Optional: Make it a child of the main window
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  overlayWindow.loadURL(url);
+
+  // Handle window close on external click
+  overlayWindow.on('blur', () => {
+    overlayWindow.close();
+  });
+
+  overlayWindow.on('closed', () => {
+    overlayWindow = null;
+  });
+
 });
 
 

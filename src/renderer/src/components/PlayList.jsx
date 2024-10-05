@@ -9,11 +9,10 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { ChevronDownIcon, Loader2, RefreshCw, SquareArrowOutUpRightIcon } from 'lucide-react'
-import { Input } from "@/components/ui/input";
+import { ChevronDownIcon, EllipsisVertical, Loader2, RefreshCw, SquareArrowOutUpRightIcon } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
 import {
   Dialog,
   DialogContent,
@@ -34,27 +33,24 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import { commandList } from '../lib/constants';
-import SyncStatus from './SyncStatus';
-import PlayStatus from './PlayStatus';
-import { useToast } from '../../../hooks/use-toast';
-
+import { commandList } from '../lib/constants'
+import SyncStatus from './SyncStatus'
+import PlayStatus from './PlayStatus'
+import { useToast } from '../../../hooks/use-toast'
+import SettingsMenu from './SettingsMenu'
 
 const PlayList = () => {
-  const [devices, setDevices] = useState([]); // {name, ip, mac, model, version}
-  const [version, setVersion] = useState("");
+  const [devices, setDevices] = useState([]) // {name, ip, mac, model, version}
+  const [version, setVersion] = useState('')
   // create an array of empty strings, length 200
-  const [apiList, setApiList] = useState(new Array(200).fill(""));
-  const [refreshTime, setRefreshTime] = useState(3);
-  let devicesList = [];
-  const { toast } = useToast();
+  const [apiList, setApiList] = useState(new Array(200).fill(''))
+  const [refreshTime, setRefreshTime] = useState(5)
+  let devicesList = []
+  const { toast } = useToast()
   async function fetchDevices() {
     const discoveredDevices = await window.api.discoverDevices()
-
     let devicesList = []
-
     for (const device of discoveredDevices) {
-      
       const { name, txt, addresses, referer } = device
       const ip = referer.address
       devicesList.push({
@@ -65,26 +61,32 @@ const PlayList = () => {
         version: txt.version
       })
     }
+    // sort by name
+    devicesList.sort((a, b) => a.name.localeCompare(b.name))
     setDevices(devicesList)
     return devices
   }
 
   useEffect(() => {
     fetchDevices()
-  }, [])
-
-
+    // const interval = setInterval(() => {
+    //   fetchDevices();
+    // }, refreshTime * 1000);
+    // return () => clearInterval(interval);
+  }, [refreshTime])
 
   const refreshPage = () => {
-    setDevices([]);
-    fetchDevices();
-  };
-
+    setDevices([])
+    fetchDevices()
+  }
 
   const playerControl = async (ip, control, param) => {
-    const res = await window.api.playerControl(ip, control, param);
-  };
+    const res = await window.api.playerControl(ip, control, param)
+  }
 
+  const goToIpAddress = (ip) => {
+    window.open(`http://${ip}/`, '_blank')
+  }
 
   return (
     <Table>
@@ -120,7 +122,7 @@ const PlayList = () => {
             />
           </TableHead>
           <TableHead className="p-0 m-0 text-center">reset</TableHead>
-          <TableHead className="p-0 m-0 text-center">reboot</TableHead>
+          <TableHead className="p-0 m-0 text-center">settings</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -154,7 +156,7 @@ const PlayList = () => {
                         setApiList([
                           ...apiList.slice(0, index),
                           e.target.value,
-                          ...apiList.slice(index + 1),
+                          ...apiList.slice(index + 1)
                         ])
                       }
                     />
@@ -167,12 +169,12 @@ const PlayList = () => {
                         {commandList.map((command) => (
                           <div className="flex items-center " key={command.command}>
                             <DropdownMenuItem
-                            key={command}
+                              key={command}
                               onClick={() =>
                                 setApiList([
                                   ...apiList.slice(0, index),
                                   command.command,
-                                  ...apiList.slice(index + 1),
+                                  ...apiList.slice(index + 1)
                                 ])
                               }
                             >
@@ -184,8 +186,8 @@ const PlayList = () => {
                               onClick={() => {
                                 window.open(
                                   `http://${device.ip}:11000/${command.command}`,
-                                  "_blank"
-                                );
+                                  '_blank'
+                                )
                               }}
                             >
                               <SquareArrowOutUpRightIcon className="h-4 w-4" />
@@ -199,10 +201,7 @@ const PlayList = () => {
                       variant="outline"
                       className="h-7"
                       onClick={() => {
-                        window.open(
-                          `http://${device.ip}:11000/${apiList[index]}`,
-                          "_blank"
-                        );
+                        window.open(`http://${device.ip}:11000/${apiList[index]}`, '_blank')
                       }}
                     >
                       Go
@@ -211,7 +210,7 @@ const PlayList = () => {
                 </TableCell>
                 <TableCell>
                   <SyncStatus ip={device.ip} />
-                </TableCell>{" "}
+                </TableCell>{' '}
                 <TableCell>
                   <PlayStatus ip={device.ip} refreshTime={refreshTime} />
                 </TableCell>
@@ -219,7 +218,7 @@ const PlayList = () => {
                 <TableCell>{device.version}</TableCell>
                 <TableCell className="text-center">
                   <Button
-                    onClick={() => playerControl(device.ip, "upgrade", version)}
+                    onClick={() => playerControl(device.ip, 'upgrade', version)}
                     disabled={!version}
                   >
                     Upgrade
@@ -232,9 +231,7 @@ const PlayList = () => {
                     </DialogTrigger>
                     <DialogContent className=" bg-white">
                       <DialogHeader>
-                        <DialogTitle>
-                          Do you want to reset {device.name}?
-                        </DialogTitle>
+                        <DialogTitle>Do you want to reset {device.name}?</DialogTitle>
                         <DialogDescription>
                           This will run a /factoryreset command on the device.
                         </DialogDescription>
@@ -245,9 +242,7 @@ const PlayList = () => {
                         </DialogClose>
                         <Button
                           variant="destructive"
-                          onClick={() =>
-                            controlPlayer(device.ip, "factoryreset")
-                          }
+                          onClick={() => controlPlayer(device.ip, 'factoryreset')}
                         >
                           Reset
                         </Button>
@@ -255,10 +250,8 @@ const PlayList = () => {
                     </DialogContent>
                   </Dialog>
                 </TableCell>
-                <TableCell className="px-1 mx-1">
-                  <Button onClick={() => controlPlayer(device.ip, "reboot")}>
-                    Reboot
-                  </Button>
+                <TableCell >
+                  <SettingsMenu ip={device.ip} />
                 </TableCell>
               </TableRow>
             ))}
@@ -266,7 +259,7 @@ const PlayList = () => {
         )}
       </TableBody>
     </Table>
-  );
-};
+  )
+}
 
 export default PlayList
