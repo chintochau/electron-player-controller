@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "../../../components/ui/button";
 
 const PlayStatus = ({ ip, refreshTime }) => {
   const [status, setStatus] = useState(null);
@@ -69,13 +70,13 @@ const PlayStatus = ({ ip, refreshTime }) => {
     const MainButton = ({ children }) => {
       return (
         <div className={cn("w-full flex justify-center items-center gap-4")}>
-          <button onClick={() => transportControl("back")}>
+          <Button variant="ghost" onClick={() => transportControl("back")}>
             <SkipBackIcon className="w-4 h-4" />
-          </button>
+          </Button >
           {children}
-          <button onClick={() => transportControl("skip")}>
+          <Button variant="ghost" onClick={() => transportControl("skip")}>
             <SkipForwardIcon className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       );
     };
@@ -86,41 +87,41 @@ const PlayStatus = ({ ip, refreshTime }) => {
       case "pause":
         return (
           <MainButton>
-            <button onClick={() => transportControl("play")}>
+            <Button variant="ghost" onClick={() => transportControl("play")}>
               <PlayCircleIcon className="w-8 h-8" />
-            </button>
+            </Button >
           </MainButton>
         );
       case "stop":
         return (
           <MainButton>
-            <button onClick={() => transportControl("play")}>
+            <Button variant="ghost" onClick={() => transportControl("play")}>
               <PlayCircleIcon className="w-8 h-8" />
-            </button>
+            </Button >
           </MainButton>
         );
       case "play":
         return (
           <MainButton>
-            <button onClick={() => transportControl("pause")}>
+            <Button variant="ghost" onClick={() => transportControl("pause")}>
               <PauseCircleIcon className="w-8 h-8" />
-            </button>
+            </Button >
           </MainButton>
         );
       case "stream":
         return (
           <MainButton>
-            <button onClick={() => transportControl("pause")}>
+            <Button variant="ghost" onClick={() => transportControl("pause")}>
               <PauseCircleIcon className="w-8 h-8" />
-            </button>
+            </Button>
           </MainButton>
         );
       case "connecting":
         return (
           <MainButton>
-            <button onClick={() => transportControl("pause")}>
+            <Button variant="ghost" onClick={() => transportControl("pause")}>
               <PauseCircleIcon className="w-8 h-8" />
-            </button>
+            </Button >
           </MainButton>
         );
       default:
