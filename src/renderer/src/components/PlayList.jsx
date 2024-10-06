@@ -156,175 +156,190 @@ const PlayList = () => {
           </TableRow>
         ) : (
           <>
-            {devices.map((device, index) => (
-              <TableRow key={device.ip} className="hover:bg-transparent">
-                <TableCell className="font-medium ">
-                  <p>{device.name}</p>
-                  <a
-                    className="text-blue-500 hover:underline cursor-pointer"
-                    onClick={() => goToIpAddress(device.ip)}
-                  >
-                    {device.ip}
-                  </a>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1 items-center">
-                    <p>/</p>
-                    <Input
-                      placeholder="API"
-                      className="h-7 w-40"
-                      value={apiList[index]}
-                      onChange={(e) =>
-                        setApiList([
-                          ...apiList.slice(0, index),
-                          e.target.value,
-                          ...apiList.slice(index + 1)
-                        ])
-                      }
-                    />
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
-                        <ChevronDownIcon className="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        {commandList.map((command) => (
-                          <div className="flex items-center " key={command.command}>
-                            <DropdownMenuItem
-                              key={command}
-                              onClick={() =>
-                                setApiList([
-                                  ...apiList.slice(0, index),
-                                  command.command,
-                                  ...apiList.slice(index + 1)
-                                ])
-                              }
-                            >
-                              <p>{command.name}</p>
-                            </DropdownMenuItem>
-                            <Button
-                              variant="ghost"
-                              className="px-2 ml-1"
-                              onClick={() => {
-                                window.open(
-                                  `http://${device.ip}:11000/${command.command}`,
-                                  '_blank'
-                                )
-                              }}
-                            >
-                              <SquareArrowOutUpRightIcon className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <Button
-                      variant="outline"
-                      className="h-7"
-                      onClick={() => {
-                        window.open(`http://${device.ip}:11000/${apiList[index]}`, '_blank')
-                      }}
-                    >
-                      Go
-                    </Button>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1 items-center">
-                    <p>{device.room}</p>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
-                        <ChevronDownIcon className="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        {roomList.map((room) => (
-                          <DropdownMenuItem
-                            key={room}
-                            onClick={() => {
-                              setDevices(
-                                (prevDevices) =>
-                                  prevDevices.map((prevDevice) => {
-                                    if (prevDevice.ip === device.ip) {
-                                      return {
-                                        ...prevDevice,
-                                        room
-                                      }
-                                    }
-                                    return prevDevice
-                                  }).sort((a, b) => {
-                                    // sort by room, and then by name
-                                    if (a.room < b.room) return -1
-                                    if (a.room > b.room) return 1
-                                    if (a.name < b.name) return -1
-                                    if (a.name > b.name) return 1
-                                    return 0
-                                  })
-                              )
-                              saveRoomForMac(device.mac, room)
-                            }}
-                          >
-                            {room}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <SyncStatus ip={device.ip} />
-                </TableCell>
-                <TableCell>
-                  <PlayStatus ip={device.ip} refreshTime={refreshTime} />
-                </TableCell>
-                <TableCell className="text-center">
-                  <p>{device.model}</p>
-                  <p> {device.version}</p>
-                </TableCell>
-                <TableCell className="text-center">
-                  <Button
-                    onClick={() => playerControl(device.ip, 'upgrade', version)}
-                    disabled={!version}
-                  >
-                    Upgrade
-                  </Button>
-                </TableCell>
-                <TableCell className="px-1 mx-1">
-                  <Dialog>
-                    <DialogTrigger className="text-red-300 duration-300 transition hover:text-red-600">
-                      Reset
-                    </DialogTrigger>
-                    <DialogContent className=" bg-white">
-                      <DialogHeader>
-                        <DialogTitle>Do you want to reset {device.name}?</DialogTitle>
-                        <DialogDescription>
-                          This will run a /factoryreset command on the device.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button
-                          variant="destructive"
-                          onClick={() => controlPlayer(device.ip, 'factoryreset')}
-                        >
-                          Reset
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-                <TableCell >
-                  <SettingsMenu ip={device.ip} />
-                </TableCell>
-              </TableRow>
-            ))}
+          {roomList.sort(
+            (a, b) => roomList.indexOf(a) - roomList.indexOf(b)
+          ).map((room) => renderDevicesByRoom(room))}
           </>
         )}
       </TableBody>
     </Table>
   )
+
+  function renderDevicesByRoom(room) {
+    return <>
+      <TableRow className="hover:bg-transparent">
+        <TableCell colSpan={7} className="text-center">
+          <div className="flex gap-1 items-center">
+            <p className="text-lg mr-2">Room: {room}</p>
+            <Button variant="outline">
+              Play All
+            </Button>
+            <Button variant="outline">
+              Stop All
+            </Button>
+          </div>
+        </TableCell>
+      </TableRow>
+      {devices.filter(device => device.room === room).map((device, index) => (
+        <TableRow key={device.ip} className="hover:bg-transparent">
+          <TableCell className="font-medium ">
+            <p>{device.name}</p>
+            <a
+              className="text-blue-500 hover:underline cursor-pointer"
+              onClick={() => goToIpAddress(device.ip)}
+            >
+              {device.ip}
+            </a>
+          </TableCell>
+          <TableCell>
+            <div className="flex gap-1 items-center">
+              <p>/</p>
+              <Input
+                placeholder="API"
+                className="h-7 w-40"
+                value={apiList[index]}
+                onChange={(e) => setApiList([
+                  ...apiList.slice(0, index),
+                  e.target.value,
+                  ...apiList.slice(index + 1)
+                ])} />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
+                  <ChevronDownIcon className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {commandList.map((command) => (
+                    <div className="flex items-center " key={command.command}>
+                      <DropdownMenuItem
+                        key={command}
+                        onClick={() => setApiList([
+                          ...apiList.slice(0, index),
+                          command.command,
+                          ...apiList.slice(index + 1)
+                        ])}
+                      >
+                        <p>{command.name}</p>
+                      </DropdownMenuItem>
+                      <Button
+                        variant="ghost"
+                        className="px-2 ml-1"
+                        onClick={() => {
+                          window.open(
+                            `http://${device.ip}:11000/${command.command}`,
+                            '_blank'
+                          )
+                        } }
+                      >
+                        <SquareArrowOutUpRightIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant="outline"
+                className="h-7"
+                onClick={() => {
+                  window.open(`http://${device.ip}:11000/${apiList[index]}`, '_blank')
+                } }
+              >
+                Go
+              </Button>
+            </div>
+          </TableCell>
+          <TableCell>
+            <div className="flex gap-1 items-center">
+              <p>{device.room}</p>
+              <DropdownMenu>
+                <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
+                  <ChevronDownIcon className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {roomList.map((room) => (
+                    <DropdownMenuItem
+                      key={room}
+                      onClick={() => {
+                        setDevices(
+                          (prevDevices) => prevDevices.map((prevDevice) => {
+                            if (prevDevice.ip === device.ip) {
+                              return {
+                                ...prevDevice,
+                                room
+                              }
+                            }
+                            return prevDevice
+                          }).sort((a, b) => {
+                            // sort by room, and then by name
+                            if (a.room < b.room) return -1
+                            if (a.room > b.room) return 1
+                            if (a.name < b.name) return -1
+                            if (a.name > b.name) return 1
+                            return 0
+                          })
+                        )
+                        saveRoomForMac(device.mac, room)
+                      } }
+                    >
+                      {room}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </TableCell>
+          <TableCell>
+            <SyncStatus ip={device.ip} />
+          </TableCell>
+          <TableCell>
+            <PlayStatus ip={device.ip} refreshTime={refreshTime} />
+          </TableCell>
+          <TableCell className="text-center">
+            <p>{device.model}</p>
+            <p> {device.version}</p>
+          </TableCell>
+          <TableCell className="text-center">
+            <Button
+              onClick={() => playerControl(device.ip, 'upgrade', version)}
+              disabled={!version}
+            >
+              Upgrade
+            </Button>
+          </TableCell>
+          <TableCell className="px-1 mx-1">
+            <Dialog>
+              <DialogTrigger className="text-red-300 duration-300 transition hover:text-red-600">
+                Reset
+              </DialogTrigger>
+              <DialogContent className=" bg-white">
+                <DialogHeader>
+                  <DialogTitle>Do you want to reset {device.name}?</DialogTitle>
+                  <DialogDescription>
+                    This will run a /factoryreset command on the device.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    variant="destructive"
+                    onClick={() => controlPlayer(device.ip, 'factoryreset')}
+                  >
+                    Reset
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </TableCell>
+          <TableCell>
+            <SettingsMenu ip={device.ip} />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
+  }
 }
 
 export default PlayList

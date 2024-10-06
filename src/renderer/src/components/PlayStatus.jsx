@@ -13,6 +13,18 @@ import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "../../../components/ui/button";
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * PlayStatus is a component that displays the current play status of the player.
+ * It fetches the current status every 1-2 second randomly and displays the title1, image and progress of the current track.
+ * It also provides buttons to control the player, such as play, pause, skip, and volume control.
+ * If the title1 of the track is too long, it will scroll horizontally.
+ * The component also provides a setting menu to control the player.
+ * @param {string} ip - the ip address of the player
+ * @param {number} refreshTime - the time in seconds to refresh the status
+ * @returns {JSX.Element} - a JSX element that displays the play status of the player
+ */
+/******  4f789752-d6dd-4865-834d-6e4a747dff79  *******/
 const PlayStatus = ({ ip, refreshTime }) => {
   const [status, setStatus] = useState(null);
   const [shouldScroll, setShouldScroll] = useState(false);
@@ -58,7 +70,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
   }, [status?.title1]);
 
   const getImageurl = (imagePath) => {
-    // check if image path starts with http:// or https://, if not, src={"http://" + ip + ":11000" + status?.image}
+    // check if image path starts wh http:// or https://, if not, src={"http://" + ip + ":11000" + status?.image}
     if (!imagePath.startsWith("http://") && !imagePath.startsWith("https://")) {
       return "http://" + ip + ":11000" + imagePath;
     }
@@ -142,7 +154,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
       </div>
       <div className="flex flex-col flex-1 items-center">
         <TransportControlButton status={status} />
-        {status?.progress && <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />}
+        {status?.progress !== null && <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />}
         <div className="overflow-hidden whitespace-nowrap w-40">
           <div
             className={cn(
