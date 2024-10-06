@@ -156,8 +156,8 @@ const PlayList = () => {
           </TableRow>
         ) : (
           <>
-          {roomList.sort(
-            (a, b) => roomList.indexOf(a) - roomList.indexOf(b)
+          {roomList.sort(// sort by room
+            (a, b) => a.localeCompare(b)
           ).map((room) => renderDevicesByRoom(room))}
           </>
         )}
@@ -171,11 +171,41 @@ const PlayList = () => {
         <TableCell colSpan={7} className="text-center">
           <div className="flex gap-1 items-center">
             <p className="text-lg mr-2">Room: {room}</p>
-            <Button variant="outline">
+            <Button 
+            onClick={
+              () => {
+                // loop through all devices, and call playerControl(play)
+                for (const device of devices) {
+                  if (device.room === room) {
+                    playerControl(device.ip, "play", null)
+                  }
+                }
+                toast({
+                  title: 'All Devices',
+                  description: 'Playing All Devices in Room: ' + room,
+                })
+              }
+            }
+            variant="outline">
               Play All
             </Button>
-            <Button variant="outline">
-              Stop All
+            <Button variant="outline"
+            onClick={
+              () => {
+                // loop through all devices, and call playerControl(stop)
+                for (const device of devices) {
+                  if (device.room === room) {
+                    playerControl(device.ip, "pause", null)
+                  }
+                }
+                toast({
+                  title: 'All Devices',
+                  description: 'Pausing All Devices in Room: ' + room,
+                })
+              }
+            }
+            >
+              Pause All
             </Button>
           </div>
         </TableCell>
