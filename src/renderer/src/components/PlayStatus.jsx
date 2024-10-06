@@ -58,7 +58,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
     // fetch status every 1-2 second randomly
     const interval = setInterval(() => {
       fetchStatus();
-    }, refreshTime * 1000 + Math.random() * 2000);
+    }, refreshTime * 1000 + 500 + Math.random() * 2000);
     return () => clearInterval(interval);
   }, [ip, refreshTime]);
 
