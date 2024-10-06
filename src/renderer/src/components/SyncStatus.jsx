@@ -6,9 +6,9 @@ const SyncStatus = ({ ip }) => {
   const [status, setStatus] = useState(null);
 
   const fetchSyncStatus = async () => {
-    
-    const res = await window.api.checkSyncStatus(ip)    
-    const response =  res
+
+    const res = await window.api.checkSyncStatus(ip)
+    const response = res
     setDeviceData(response);
   };
 
@@ -30,18 +30,16 @@ const SyncStatus = ({ ip }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mx-4">
-      <div className="flex items-center space-x-1">
-        {deviceData.icon && (
-          <img
-            src={`http://${ip}:11000${deviceData.icon}`}
-            alt={deviceData.name}
-            className="h-8 w-8 bg-zinc-800 p-1 rounded-sm mx-1"
-          />
-        )}
-        <p>{deviceData.status}</p>
-        <p>{deviceData.status === "upgrade" && `: ${deviceData.version}`}</p>
-      </div>
+    <div className="flex items-center space-x-1">
+      {deviceData.icon && (
+        <img
+          src={`http://${ip}:11000${deviceData.icon}`}
+          alt={deviceData.name}
+          className="h-8 w-8 bg-zinc-800 p-1 rounded-sm mx-1"
+        />
+      )}
+      <p>{deviceData.status}</p>
+      <p>{deviceData.status === "upgrade" && `: ${deviceData.version}`}</p>
     </div>
   );
 };

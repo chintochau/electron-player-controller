@@ -38,33 +38,55 @@ import SyncStatus from './SyncStatus'
 import PlayStatus from './PlayStatus'
 import { useToast } from '../../../hooks/use-toast'
 import SettingsMenu from './SettingsMenu'
+import { useStorage } from '../context/localStorageContext'
 
 const PlayList = () => {
+  const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
   const [devices, setDevices] = useState([]) // {name, ip, mac, model, version}
   const [version, setVersion] = useState('')
   // create an array of empty strings, length 200
   const [apiList, setApiList] = useState(new Array(200).fill(''))
-  const [refreshTime, setRefreshTime] = useState(5)
-  let devicesList = []
+  const [refreshTime, setRefreshTime] = useState(2)
   const { toast } = useToast()
+
+
+
+  const sortAndSaveDevicesList = (devices) => {
+    // sort by room, and then by name
+    devices.sort((a, b) => {
+      if (a.room < b.room) return -1
+      if (a.room > b.room) return 1
+      if (a.name < b.name) return -1
+      if (a.name > b.name) return 1
+      return 0
+    })
+    setDevices(devices)
+    return devices
+  }
+
+
   async function fetchDevices() {
     const discoveredDevices = await window.api.discoverDevices()
     let devicesList = []
     for (const device of discoveredDevices) {
       const { name, txt, addresses, referer } = device
       const ip = referer.address
+
+      const room = checkRoomForMac(txt.mac)
+
+
       devicesList.push({
         name,
         ip,
         mac: txt.mac,
         model: txt.model,
-        version: txt.version
+        version: txt.version,
+        room
       })
     }
-    // sort by name
-    devicesList.sort((a, b) => a.name.localeCompare(b.name))
-    setDevices(devicesList)
-    return devices
+
+    devicesList = sortAndSaveDevicesList(devicesList)
+    return devicesList
   }
 
   useEffect(() => {
@@ -109,10 +131,10 @@ const PlayList = () => {
         <TableRow>
           <TableHead className="text-center">Name</TableHead>
           <TableHead className="text-center">API</TableHead>
+          <TableHead className="text-center">room</TableHead>
           <TableHead className="text-center">Status </TableHead>
           <TableHead className="text-center">Now Playing </TableHead>
-          <TableHead className="text-center">Model </TableHead>
-          <TableHead className="text-center">Version </TableHead>
+          <TableHead className="text-center">Model:Version </TableHead>
           <TableHead className="p-0 m-0 text-center flex flex-col items-center  h-14">
             Upgrade:
             <Input
@@ -150,7 +172,7 @@ const PlayList = () => {
                     <p>/</p>
                     <Input
                       placeholder="API"
-                      className="h-7 w-60"
+                      className="h-7 w-40"
                       value={apiList[index]}
                       onChange={(e) =>
                         setApiList([
@@ -209,13 +231,56 @@ const PlayList = () => {
                   </div>
                 </TableCell>
                 <TableCell>
+                  <div className="flex gap-1 items-center">
+                    <p>{device.room}</p>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
+                        <ChevronDownIcon className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {roomList.map((room) => (
+                          <DropdownMenuItem
+                            key={room}
+                            onClick={() => {
+                              setDevices(
+                                (prevDevices) =>
+                                  prevDevices.map((prevDevice) => {
+                                    if (prevDevice.ip === device.ip) {
+                                      return {
+                                        ...prevDevice,
+                                        room
+                                      }
+                                    }
+                                    return prevDevice
+                                  }).sort((a, b) => {
+                                    // sort by room, and then by name
+                                    if (a.room < b.room) return -1
+                                    if (a.room > b.room) return 1
+                                    if (a.name < b.name) return -1
+                                    if (a.name > b.name) return 1
+                                    return 0
+                                  })
+                              )
+                              saveRoomForMac(device.mac, room)
+                            }}
+                          >
+                            {room}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </TableCell>
+                <TableCell>
                   <SyncStatus ip={device.ip} />
-                </TableCell>{' '}
+                </TableCell>
                 <TableCell>
                   <PlayStatus ip={device.ip} refreshTime={refreshTime} />
                 </TableCell>
-                <TableCell>{device.model}</TableCell>
-                <TableCell>{device.version}</TableCell>
+                <TableCell className="text-center">
+                  <p>{device.model}</p>
+                  <p> {device.version}</p>
+                </TableCell>
                 <TableCell className="text-center">
                   <Button
                     onClick={() => playerControl(device.ip, 'upgrade', version)}

@@ -18,7 +18,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
   const [shouldScroll, setShouldScroll] = useState(false);
   const [volume, setVolume] = useState(null);
 
- 
+
 
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
@@ -62,7 +62,7 @@ const PlayStatus = ({ ip, refreshTime }) => {
     if (!imagePath.startsWith("http://") && !imagePath.startsWith("https://")) {
       return "http://" + ip + ":11000" + imagePath;
     }
-    
+
     return imagePath;
   };
 
@@ -130,14 +130,16 @@ const PlayStatus = ({ ip, refreshTime }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 justify-end">
-      {status?.image && (
-        <img
-          className="w-14 h-14"
-          src={getImageurl(status?.image)}
-          alt="image"
-        />
-      )}
+    <div className="flex items-center gap-2 justify-end px-2">
+      <div className="w-14 h-14" >
+        {status?.image && (
+          <img
+            className="w-14 h-14"
+            src={getImageurl(status?.image)}
+            alt="image"
+          />
+        )}
+      </div>
       <div className="flex flex-col flex-1 items-center">
         <TransportControlButton status={status} />
         {status?.progress && <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />}

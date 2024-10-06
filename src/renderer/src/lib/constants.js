@@ -12,10 +12,6 @@ export const commandList = [
   {
     name: '/ui/Home',
     command: 'ui/Home?playnum=1'
-  },
-  {
-    name: '/ui/Favourite',
-    command: 'ui/Favourite?playnum=1'
   }
 ]
 
