@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: electron-player-controller
+productName: BluOS-player-controller
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-player-controller
+  executableName: BluOS-player-controller
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

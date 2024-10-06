@@ -1,4 +1,4 @@
-# electron-player-controller
+# BluOS-player-controller
 
 An Electron application with React
 
