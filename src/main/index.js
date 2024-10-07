@@ -94,34 +94,43 @@ ipcMain.handle('discover-devices', async () => {
   })
 })
 
-ipcMain.handle("check-status", async (event, ip) => {
-  
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // Set timeout to 10 seconds
+ipcMain.handle('check-status', async (event, ip) => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 10000) // Set timeout to 10 seconds
 
   try {
     const res = await fetch(`http://${ip}:11000/Status`, {
-      signal: controller.signal,
-    });
+      signal: controller.signal
+    })
 
-    
-    clearTimeout(timeoutId); // Clear the timeout when fetch succeeds
+    clearTimeout(timeoutId) // Clear the timeout when fetch succeeds
 
-    const xmlText = await res.text();
-    const xml = await xml2js.parseStringPromise(xmlText);
+    const xmlText = await res.text()
+    const xml = await xml2js.parseStringPromise(xmlText)
 
-    const { status: statusXml } = xml;
-    let response;
+    // check if the xml and xml.status is valid and if it has status, if not, return unknown
 
+    const statusXml = xml?.status ?? 'unknown'
 
-    if (statusXml && statusXml.service && statusXml.state && statusXml.volume && statusXml.title1 && statusXml.image) {
+    if (statusXml === 'unknown') {
+      return { success: false, state: 'unknown' }
+    }
 
+    let response
+
+    if (
+      statusXml &&
+      statusXml.service &&
+      statusXml.state &&
+      statusXml.volume &&
+      statusXml.title1 &&
+      statusXml.image
+    ) {
       let progress
 
       if (statusXml.secs && statusXml.totlen) {
-        progress = 100 * statusXml.secs[0] / statusXml.totlen[0];
+        progress = (100 * statusXml.secs[0]) / statusXml.totlen[0]
       }
-
 
       response = {
         success: true,
@@ -131,132 +140,123 @@ ipcMain.handle("check-status", async (event, ip) => {
         title1: statusXml.title1[0],
         image: statusXml.image[0],
         progress: progress
-      };
+      }
     } else {
-      return { success: false, state: "nothing" };
+      return { success: false, state: 'nothing' }
     }
 
-    return response;
+    return response
   } catch (error) {
-    if (error.name === "AbortError") {
-      console.log("Fetch request timed out");
-      return { success: false, state: "timeout" };
+    if (error.name === 'AbortError') {
+      console.log('Fetch request timed out')
+      return { success: false, state: 'timeout' }
     } else {
-      console.log("error", error);
-      return { success: false, state: "Unknown" };
+      console.log('error', error)
+      return { success: false, state: 'Unknown' }
     }
   }
-});
+})
 
-ipcMain.handle("check-sync-status", async (event, ip) => {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // Set timeout to 10 seconds
+ipcMain.handle('check-sync-status', async (event, ip) => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 10000) // Set timeout to 10 seconds
 
   try {
-    const res = await fetch(`http://${ip}:11000/SyncStatus`, { signal: controller.signal });
-    clearTimeout(timeoutId); // Clear the timeout when fetch succeeds
+    const res = await fetch(`http://${ip}:11000/SyncStatus`, { signal: controller.signal })
+    clearTimeout(timeoutId) // Clear the timeout when fetch succeeds
 
-    const xmlText = await res.text();
-    const xml = await xml2js.parseStringPromise(xmlText);
-    const {
-      SyncStatus,
-      UpgradeStatusStage1,
-      UpgradeStatusStage2,
-      UpgradeStatusStage3,
-    } = xml;
+    const xmlText = await res.text()
+    const xml = await xml2js.parseStringPromise(xmlText)
+    const { SyncStatus, UpgradeStatusStage1, UpgradeStatusStage2, UpgradeStatusStage3 } = xml
 
-    let response;
+    let response
 
     if (SyncStatus) {
-      const { $ } = SyncStatus;
+      const { $ } = SyncStatus
       response = {
         success: true,
-        status: "normal",
-        icon: $.icon, 
+        status: $.initialized === 'true' ? 'normal' : 'Need Setup',
+        icon: $.icon,
         schemaVersion: $.schemaVersion,
-        volume: $.volume,
-      };
+        volume: $.volume
+      }
     }
 
     if (UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3) {
-      const upgrade =
-        UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3;
+      const upgrade = UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3
 
       response = {
         success: true,
-        status: "upgrade",
-        version: upgrade.git[0],
-      };
+        status: 'upgrade',
+        version: upgrade.git[0]
+      }
     }
 
-    return response || { success: false, status: "no_status" }; // Default response if no status is found
+    return response || { success: false, status: 'no_status' } // Default response if no status is found
   } catch (error) {
     if (error.name === 'AbortError') {
-      console.log("Fetch request timed out");
-      return { success: false, status: "timeout" };
+      console.log('Fetch request timed out')
+      return { success: false, status: 'timeout' }
     } else {
-      console.log("Error:", error);
-      return { success: false, status: "unknown" };
+      console.log('Error:', error)
+      return { success: false, status: 'unknown' }
     }
   }
-});
+})
 
-
-ipcMain.handle("player-control", async (event, { ip, control, param }) => {
-
-  let res;
+ipcMain.handle('player-control', async (event, { ip, control, param }) => {
+  let res
 
   switch (control) {
-    case "volume":
-      console.log("volume", param);
-      res = await fetch(`http://${ip}:11000/Volume?level=${param}&tell_slaves=0`);
-      break;
-    case "reboot":
-      console.log("rebooting");
-      res = await fetch(`http://${ip}/reboot`);
-      break;
-    case "factoryreset":
-      console.log("factoryreset");
-      res = await fetch(`http://${ip}/factoryreset`);
-      break;
-    case "play":
-      console.log("play");
+    case 'volume':
+      console.log('volume', param)
+      res = await fetch(`http://${ip}:11000/Volume?level=${param}&tell_slaves=0`)
+      break
+    case 'reboot':
+      console.log('rebooting')
+      res = await fetch(`http://${ip}/reboot`)
+      break
+    case 'factoryreset':
+      console.log('factoryreset')
+      res = await fetch(`http://${ip}/factoryreset`)
+      break
+    case 'play':
+      console.log('play')
       if (param) {
-        res = await fetch(`http://${ip}:11000/Play?seek=${param}`);
+        res = await fetch(`http://${ip}:11000/Play?seek=${param}`)
       } else {
-        res = await fetch(`http://${ip}:11000/Play`);
+        res = await fetch(`http://${ip}:11000/Play`)
       }
-      break;
-    case "pause":
-      console.log("pause");
-      res = await fetch(`http://${ip}:11000/Pause`);
-      break;
-    case "skip":
-      console.log("skip");
-      res = await fetch(`http://${ip}:11000/Skip`);
-      break;
-    case "back":
-      console.log("back");
-      res = await fetch(`http://${ip}:11000/Back`);
-      break;
-      case "upgrade":
-        console.log("upgrade");
-        res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`);
-        break;
+      break
+    case 'pause':
+      console.log('pause')
+      res = await fetch(`http://${ip}:11000/Pause`)
+      break
+    case 'skip':
+      console.log('skip')
+      res = await fetch(`http://${ip}:11000/Skip`)
+      break
+    case 'back':
+      console.log('back')
+      res = await fetch(`http://${ip}:11000/Back`)
+      break
+    case 'upgrade':
+      console.log('upgrade')
+      res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`)
+      break
     default:
-      console.log("unknown control");
-      return { success: false };
+      console.log('unknown control')
+      return { success: false }
   }
 
   if (!res || !res.ok) {
-    console.log("Error response:", res);
-    return { success: false };
+    console.log('Error response:', res)
+    return { success: false }
   }
 
-  console.log("Control command successful:", control);
-  return { success: true }; // Return success response
-});
-
+  console.log('Control command successful:', control)
+  return { success: true } // Return success response
+})
 
 ipcMain.handle('open-overlay', (event, url) => {
   let overlayWindow = new BrowserWindow({
@@ -269,23 +269,21 @@ ipcMain.handle('open-overlay', (event, url) => {
     parent: masterWindow, // Optional: Make it a child of the main window
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
+      contextIsolation: false
+    }
+  })
 
-  overlayWindow.loadURL(url);
+  overlayWindow.loadURL(url)
 
   // Handle window close on external click
   overlayWindow.on('blur', () => {
-    overlayWindow.close();
-  });
+    overlayWindow.close()
+  })
 
   overlayWindow.on('closed', () => {
-    overlayWindow = null;
-  });
-
-});
-
+    overlayWindow = null
+  })
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
