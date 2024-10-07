@@ -12,6 +12,10 @@ export const commandList = [
   {
     name: '/ui/Home',
     command: 'ui/Home?playnum=1'
+  },
+  {
+    name:"/Initialize=true",
+    path:"SetInitialized?init=1"
   }
 ]
 
