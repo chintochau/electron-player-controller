@@ -46,6 +46,7 @@ import { useToast } from '../../../hooks/use-toast'
 import SettingsMenu from './SettingsMenu'
 import { useStorage } from '../context/localStorageContext'
 import { useRefresh } from '../context/refreshContext'
+import CheckUpgrade from './CheckUpgrade'
 
 const PlayList = () => {
   const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
@@ -347,6 +348,7 @@ const PlayList = () => {
                 >
                   Upgrade
                 </Button>
+                <CheckUpgrade ip={device.ip} />
               </TableCell>
               <TableCell className="px-1 mx-1">
                 <Dialog>

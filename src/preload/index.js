@@ -7,7 +7,8 @@ const api = {
   checkStatus: (ip) => ipcRenderer.invoke('check-status', ip),
   checkSyncStatus: (ip) => ipcRenderer.invoke('check-sync-status', ip),
   playerControl: (ip, control, param) => ipcRenderer.invoke('player-control', {ip, control, param}),
-  openOverlay: (url) => ipcRenderer.invoke('open-overlay', url)
+  openOverlay: (url) => ipcRenderer.invoke('open-overlay', url),
+  checkUpgrade:(ip) => ipcRenderer.invoke('check-upgrade', ip)
 
 }
 

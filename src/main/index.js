@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
+import { checkUpgrade } from './functions'
 
 let masterWindow
 function createWindow() {
@@ -285,6 +286,11 @@ ipcMain.handle('open-overlay', (event, url) => {
   })
 })
 
+ipcMain.handle('check-upgrade', async (event, ip) => {
+  console.log("Checkiing Upgrade...",await checkUpgrade(ip));
+  
+  return await checkUpgrade(ip)
+})
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
