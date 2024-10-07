@@ -23,12 +23,6 @@ export const checkUpgrade = async (ip) => {
 
         // Step 3: Access the JSON data
         const upgradeData = result.upgrade.$
-        console.log({
-          inProgress: upgradeData.inProgress,
-          version: upgradeData.version,
-          available: upgradeData.available
-        })
-
         response = {
           inProgress: upgradeData.inProgress,
           version: upgradeData.version,
