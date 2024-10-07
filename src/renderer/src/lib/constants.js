@@ -15,7 +15,7 @@ export const commandList = [
   },
   {
     name:"/Initialize=true",
-    path:"SetInitialized?init=1"
+    command:"SetInitialized?init=1"
   }
 ]
 
