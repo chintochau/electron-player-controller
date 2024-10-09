@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Dialog,
@@ -9,9 +9,32 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { useRefresh } from '../context/refreshContext'
+import { cn } from '@/lib/utils'
 
 const AddPlayerButton = () => {
   const { shouldRefresh, setShouldRefresh } = useRefresh()
+  const [currentWifi, setCurrentWifi] = useState('')
+  const [correctWifiFormat, setCorrectWifiFormat] = useState(false)
+
+  const getWifi = async () => {
+    const wifi = await window.api.getCurrentWifi()
+    setCurrentWifi(wifi)
+    checkWifiFormat(wifi)
+  }
+
+  useEffect(() => {
+    getWifi()
+  }, [])
+
+  const checkWifiFormat = (ssid) => {
+    // * - XXXX
+    if (ssid.split(' - ').length > 1 && ssid.split(' - ')[1].length === 4) {
+      setCorrectWifiFormat(true)
+    } else {
+      setCorrectWifiFormat(false)
+    }
+  }
+
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -27,11 +50,11 @@ const AddPlayerButton = () => {
         <DialogHeader>
           <DialogTitle>Connect to your player</DialogTitle>
           <DialogDescription>
-            <ul className="list-disc list-inside">
-              <li>Opoen Wifi Settings </li>
-              <li>Look for the WiFi network matching the new Player's Hotspot</li>
-              <li>Connect to the new Player through </li>
-              <li>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Put your player in hotspot mode</li>
+              <li>Connect to the new Player through Wifi, a SSID that looks like <p className=" italic  bg-gray-200 w-fit rounded-sm px-1">PRODUCT NAME - XXXX</p></li>
+              <li>Currently Connected Wifi: <p className={cn("inline  w-fit rounded-sm px-1.5 py-1", correctWifiFormat ? 'text-green-500 bg-green-200' : 'text-red-500 bg-red-200')}>{currentWifi}</p><p className="inline"></p></li>
+              {correctWifiFormat ? <li>
                 Click{' '}
                 <button
                   className="underline text-blue-500"
@@ -45,9 +68,10 @@ const AddPlayerButton = () => {
                   here
                 </button>{' '}
                 to setup the WiFi.
-              </li>
+              </li> :
+                <li className="underline text-red-400">It does not seem like the player is connected. In order to setup the player, please connect to the hotspot.</li>
+              }
             </ul>
-            <p>(It may take a while to load up the page)</p>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

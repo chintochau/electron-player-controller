@@ -1,4 +1,5 @@
 import xml2js from 'xml2js'
+import wifi from 'node-wifi'
 
 export const checkUpgrade = async (ip) => {
   try {
@@ -32,5 +33,24 @@ export const checkUpgrade = async (ip) => {
     }
 
     return response
-  } catch (error) {}
+  } catch (error) { }
+}
+
+export const getCurrentWifi = async () => {
+  try {
+    wifi.init({
+      iface: null // network interface, choose a specific interface or leave it null for automatic selection
+    });
+
+    const connectedWifi = await wifi.getCurrentConnections()
+    if (connectedWifi && connectedWifi.length > 0) {
+      console.log("Connected to", connectedWifi[0].ssid);
+      return connectedWifi[0].ssid
+    } else {
+      return null
+    }
+    
+  } catch (error) {
+    console.log(error)
+  }
 }

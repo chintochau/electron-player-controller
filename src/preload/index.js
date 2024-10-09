@@ -8,7 +8,8 @@ const api = {
   checkSyncStatus: (ip) => ipcRenderer.invoke('check-sync-status', ip),
   playerControl: (ip, control, param) => ipcRenderer.invoke('player-control', {ip, control, param}),
   openOverlay: (url) => ipcRenderer.invoke('open-overlay', url),
-  checkUpgrade:(ip) => ipcRenderer.invoke('check-upgrade', ip)
+  checkUpgrade:(ip) => ipcRenderer.invoke('check-upgrade', ip),
+  getCurrentWifi: () => ipcRenderer.invoke('get-current-wifi'),
 
 }
 

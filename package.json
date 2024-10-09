@@ -33,6 +33,7 @@
     "clsx": "^2.1.1",
     "electron-updater": "^6.1.7",
     "lucide-react": "^0.447.0",
+    "node-wifi": "^2.0.16",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
     "xml2js": "^0.6.2"
