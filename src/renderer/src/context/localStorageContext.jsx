@@ -6,7 +6,7 @@ export const useStorage = () => useContext(StorageContext);
 
 export const StorageProvider = ({ children }) => {
   const [savedPlayers, setSavedPlayers] = useState(localStorage.getItem('savedPlayers') ? JSON.parse(localStorage.getItem('savedPlayers')) : {}); // {mac:room, mac:room...} 
-  const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : ["Unassigned", "Lobby"]);
+  const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : ["Unassigned", "A", "B"]);
 
 
   const saveRoomList = (room) => {

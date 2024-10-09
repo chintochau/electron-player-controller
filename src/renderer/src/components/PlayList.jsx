@@ -100,12 +100,12 @@ const PlayList = () => {
 
   useEffect(() => {
     // log when devcies change
-    console.log("Devices",devices)
+    console.log("Devices", devices)
   }, [devices])
 
   const setDeviceGroupingStatus = (ip, status) => {
     const { isMaster, isSlave, master, slave } = status;
-  
+
     setDevices((prevDevices) => {
       // Create a new array by mapping over the previous state
       return prevDevices.map((device) => {
@@ -123,7 +123,7 @@ const PlayList = () => {
       });
     });
   };
-  
+
   useEffect(() => {
     fetchDevices()
     // const interval = setInterval(() => {
@@ -204,10 +204,12 @@ const PlayList = () => {
     return (
       <>
         <TableRow className="hover:bg-transparent">
-          <TableCell colSpan={7} className="text-center">
+          <TableCell colSpan={7} className="text-center py-1">
             <div className="flex gap-1 items-center">
               <p className="text-lg mr-2">Room: {room}</p>
               <Button
+                className="h-6"
+
                 onClick={() => {
                   // loop through all devices, and call playerControl(play)
                   for (const device of devices) {
@@ -225,6 +227,7 @@ const PlayList = () => {
                 Play All
               </Button>
               <Button
+                className="h-6"
                 variant="outline"
                 onClick={() => {
                   // loop through all devices, and call playerControl(stop)
@@ -247,7 +250,7 @@ const PlayList = () => {
         {devices
           .filter((device) => device.room === room && !device.isSlave)
           .map((device, index) => (
-            <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices}/>
+            <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices} />
           ))}
       </>
     )

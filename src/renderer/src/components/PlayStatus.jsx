@@ -139,7 +139,7 @@ const PlayStatus = ({ ip }) => {
     <div className="flex items-center gap-2 justify-end px-2">
       <div className="w-14 h-14">
         {status?.image && (
-          <img className="w-14 h-14" src={getImageurl(status?.image)} alt="image" />
+          <img className="w-14 h-14 rounded-sm" src={getImageurl(status?.image)} alt="image" />
         )}
       </div>
       <div className="flex flex-col flex-1 items-center">

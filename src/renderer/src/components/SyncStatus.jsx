@@ -32,7 +32,7 @@ const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
   }
 
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex items-center space-x-1 justify-center">
       {deviceData.icon && (
         <img
           src={`http://${ip}:11000${deviceData.icon}`}
@@ -40,7 +40,7 @@ const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
           className="h-8 w-8 bg-zinc-800 p-1 rounded-sm mx-1"
         />
       )}
-      <p>{deviceData.status}</p>
+      <p>{deviceData.status === "normal" ? "" : deviceData.status}</p>
       <p>{deviceData.status === 'upgrade' && `: ${deviceData.version}`}</p>
     </div>
   )

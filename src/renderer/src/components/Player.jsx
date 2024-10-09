@@ -69,7 +69,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices })
         <>
             <TableRow className={cn("hover:bg-transparent")} >
                 <TableCell className="font-medium ">
-                    <div className="flex gap-1 items-center">
+                    <div className="flex flex-col gap-1 pl-4">
                         {device.isMaster && <ChevronUp className={cn("h-12 w-12 duration-300 cursor-pointer hover:bg-primary/5 rounded-md m-2", isSlaveListOpen && "rotate-180")} onClick={() => setIsSlaveListOpen(!isSlaveListOpen)} />}
                         <p>{device.name}</p>
                         <a
@@ -193,13 +193,15 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices })
                     <p> {device.version}</p>
                 </TableCell>
                 <TableCell className="text-center">
-                    <Button
-                        onClick={() => playerControl(device.ip, 'upgrade', version)}
-                        disabled={!version}
-                    >
-                        Upgrade
-                    </Button>
-                    <CheckUpgrade ip={device.ip} />
+                    <div className="flex flex-col gap-1 items-center">
+                        <Button
+                            onClick={() => playerControl(device.ip, 'upgrade', version)}
+                            disabled={!version}
+                        >
+                            Upgrade
+                        </Button>
+                        <CheckUpgrade ip={device.ip} />
+                    </div>
                 </TableCell>
                 <TableCell className="px-1 mx-1">
                     <Dialog>
