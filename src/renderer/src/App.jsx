@@ -1,9 +1,10 @@
 import { Button } from '../../components/ui/button'
 import { Toaster } from '../../components/ui/toaster'
-import AddPlayerButton from './components/AddPlayerButton'
+import Header from './components/Header'
 import PlayList from './components/PlayList'
 import { StorageProvider } from './context/localStorageContext'
 import { RefreshProvider } from './context/refreshContext'
+import { ThemeProvider } from './context/themeContext'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -12,11 +13,10 @@ function App() {
     <>
       <RefreshProvider>
         <StorageProvider>
-          <div className="flex">
-            <h1 className="text-3xl font-bold  text-center py-2 flex-1">BluOS Player Controller</h1>
-            <AddPlayerButton />
-          </div>
-          <PlayList />
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <Header />
+            <PlayList />
+          </ThemeProvider>
         </StorageProvider>
       </RefreshProvider>
       <Toaster />
