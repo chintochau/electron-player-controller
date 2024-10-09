@@ -2,15 +2,14 @@ import { Loader2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useRefresh } from '../context/refreshContext'
 
-const SyncStatus = ({ ip }) => {
+const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
   const [deviceData, setDeviceData] = useState(null)
-  const [status, setStatus] = useState(null)
-
   const { shouldRefresh } = useRefresh()
 
   const fetchSyncStatus = async () => {
     const res = await window.api.checkSyncStatus(ip)
     const response = res
+    setDeviceGroupingStatus(ip, response)
     setDeviceData(response)
   }
 

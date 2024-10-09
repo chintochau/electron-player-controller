@@ -168,20 +168,31 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
 
     const xmlText = await res.text()
     const xml = await xml2js.parseStringPromise(xmlText)
+
     const { SyncStatus, UpgradeStatusStage1, UpgradeStatusStage2, UpgradeStatusStage3 } = xml
 
     let response
 
     if (SyncStatus) {
-      const { $ } = SyncStatus
+      const { $, master, slave } = SyncStatus
+      let masterIp, slaveList
+      if (master) {
+        masterIp = master[0]._
+      }
       response = {
         success: true,
         status: $.initialized === 'true' ? 'normal' : 'Need Setup',
         icon: $.icon,
         schemaVersion: $.schemaVersion,
-        volume: $.volume
+        volume: $.volume,
+        isMaster: slave ? true : false,
+        master:masterIp,
+        isSlave: master ? true : false,
+        slave
       }
     }
+
+
 
     if (UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3) {
       const upgrade = UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3

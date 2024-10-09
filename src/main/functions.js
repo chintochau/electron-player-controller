@@ -44,7 +44,6 @@ export const getCurrentWifi = async () => {
 
     const connectedWifi = await wifi.getCurrentConnections()
     if (connectedWifi && connectedWifi.length > 0) {
-      console.log("Connected to", connectedWifi[0].ssid);
       return connectedWifi[0].ssid
     } else {
       return null
