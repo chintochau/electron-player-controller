@@ -50,14 +50,13 @@ import { useStorage } from '../context/localStorageContext'
 import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
-import { goToIpAddress } from './PlayList'
+import { goToIpAddress, playerControl } from './PlayList'
 
 
 
-const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices }) => {
+const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,version }) => {
 
     const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
-    const [version, setVersion] = useState('')
     // create an array of empty strings, length 200
     const [apiList, setApiList] = useState(new Array(200).fill(''))
     const { refreshTime, setRefreshTime } = useRefresh()
@@ -221,7 +220,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices })
                                 </DialogClose>
                                 <Button
                                     variant="destructive"
-                                    onClick={() => controlPlayer(device.ip, 'factoryreset')}
+                                    onClick={() => playerControl(device.ip, 'factoryreset')}
                                 >
                                     Reset
                                 </Button>

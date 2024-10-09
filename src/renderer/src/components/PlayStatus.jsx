@@ -145,7 +145,7 @@ const PlayStatus = ({ ip }) => {
       <div className="flex flex-col flex-1 items-center">
         <TransportControlButton status={status} />
         {status?.progress !== null && (
-          <Progress className="h-1 bg-gray-100 w-full my-1" value={status?.progress} />
+          <Progress className="h-1  w-full my-1" value={status?.progress} />
         )}
         <div className="overflow-hidden whitespace-nowrap w-40">
           <div className={cn('flex space-x-12 ', shouldScroll ? 'animate-marquee' : '')}>

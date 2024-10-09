@@ -53,6 +53,11 @@ import Player from './Player'
 export const goToIpAddress = (ip) => {
   window.open(`http://${ip}/`, '_blank')
 }
+
+export const playerControl = async (ip, control, param) => {
+  const res = await window.api.playerControl(ip, control, param)
+}
+
 const PlayList = () => {
   const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
   const [devices, setDevices] = useState([]) // {name, ip, mac, model, version}
@@ -135,10 +140,6 @@ const PlayList = () => {
   const refreshPage = () => {
     setDevices([])
     fetchDevices()
-  }
-
-  const playerControl = async (ip, control, param) => {
-    const res = await window.api.playerControl(ip, control, param)
   }
 
 
@@ -250,7 +251,7 @@ const PlayList = () => {
         {devices
           .filter((device) => device.room === room && !device.isSlave)
           .map((device, index) => (
-            <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices} />
+            <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices} version={version} />
           ))}
       </>
     )
