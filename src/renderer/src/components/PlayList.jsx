@@ -48,6 +48,7 @@ import { useStorage } from '../context/localStorageContext'
 import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import Player from './Player'
+import { useDevices } from '../context/devicesContext'
 
 
 export const goToIpAddress = (ip) => {
@@ -60,7 +61,7 @@ export const playerControl = async (ip, control, param) => {
 
 const PlayList = () => {
   const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
-  const [devices, setDevices] = useState([]) // {name, ip, mac, model, version}
+  const {devices, setDevices} = useDevices()
   const [version, setVersion] = useState('')
   // create an array of empty strings, length 200
   const [apiList, setApiList] = useState(new Array(200).fill(''))

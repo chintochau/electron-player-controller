@@ -258,9 +258,11 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       break
     case "removeSlave":
       console.log('removeSlave')
-      console.log("ip", ip,"  param", param);
-      
       res = await fetch(`http://${ip}:11000/RemoveSlave?slave=${param}&port=11000`)
+      break
+    case "addSlave":
+      console.log('addSlave')
+      res = await fetch(`http://${ip}:11000/AddSlave?slaves=${param}&ports=11000`)
       break
     default:
       console.log('unknown control')

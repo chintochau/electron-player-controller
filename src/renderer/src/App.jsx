@@ -2,6 +2,7 @@ import { Button } from '../../components/ui/button'
 import { Toaster } from '../../components/ui/toaster'
 import Header from './components/Header'
 import PlayList from './components/PlayList'
+import { DevicesProvider } from './context/devicesContext'
 import { StorageProvider } from './context/localStorageContext'
 import { RefreshProvider } from './context/refreshContext'
 import { ThemeProvider } from './context/themeContext'
@@ -13,10 +14,12 @@ function App() {
     <>
       <RefreshProvider>
         <StorageProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <Header />
-            <PlayList />
-          </ThemeProvider>
+          <DevicesProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+              <Header />
+              <PlayList />
+            </ThemeProvider>
+          </DevicesProvider>
         </StorageProvider>
       </RefreshProvider>
       <Toaster />

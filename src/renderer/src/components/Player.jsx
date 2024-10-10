@@ -52,6 +52,7 @@ import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
 import { goToIpAddress, playerControl } from './PlayList'
 import { Progress } from '@/components/ui/progress'
+import AddPlayerToGroup from './AddPlayerToGroup'
 
 
 
@@ -97,7 +98,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, v
                             {device.isMaster && <ChevronUp className={cn("h-6 w-6 duration-300 cursor-pointer hover:bg-primary/5 rounded-md m-2", isSlaveListOpen && "rotate-180")} onClick={() => setIsSlaveListOpen(!isSlaveListOpen)} />}
                         </p>
                         <p>{device.name}</p>
-
+                        <AddPlayerToGroup ip={device.ip} />
                     </div>
                 </TableCell>
                 <TableCell>
