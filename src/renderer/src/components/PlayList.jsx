@@ -177,6 +177,7 @@ const PlayList = () => {
               placeholder="Version"
             />
           </TableHead>
+          <TableHead className="p-0 m-0 text-center">reboot</TableHead>
           <TableHead className="p-0 m-0 text-center">reset</TableHead>
           <TableHead className="p-0 m-0 text-center">settings</TableHead>
         </TableRow>

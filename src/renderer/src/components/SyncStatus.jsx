@@ -1,16 +1,24 @@
 import { Loader2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useRefresh } from '../context/refreshContext'
+import { useDevices } from '../context/devicesContext'
 
-const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
-  const [deviceData, setDeviceData] = useState(null)
+const SyncStatus = ({ ip, setDeviceGroupingStatus }) => {
+  const [deviceSyncStatus, setDeviceSyncStatus] = useState(null)
   const { shouldRefresh } = useRefresh()
+  const { devices, setDevices,updateDeviceStatus } = useDevices()
+  const [tempStatus, setTempStatus] = useState(null)
 
   const fetchSyncStatus = async () => {
     const res = await window.api.checkSyncStatus(ip)
     const response = res
     setDeviceGroupingStatus(ip, response)
-    setDeviceData(response)
+    setDeviceSyncStatus(response)
+    // when status is not null, find device with the matching ip and set the status to null
+    if (response.status !== null) {
+      updateDeviceStatus(ip, null)
+    }
+
   }
 
   useEffect(() => {
@@ -23,7 +31,14 @@ const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
     return () => clearInterval(interval)
   }, [ip, shouldRefresh])
 
-  if (!deviceData) {
+  useEffect(() => {
+    if (devices) {
+      const matchingDevice = devices.find((device) => device.ip === ip)
+      setTempStatus(matchingDevice?.status)
+    }
+  }, [devices])
+
+  if (!deviceSyncStatus) {
     return (
       <div className="flex items-center justify-center">
         <Loader2 className="animate-spin" />
@@ -33,15 +48,14 @@ const SyncStatus = ({ ip,setDeviceGroupingStatus }) => {
 
   return (
     <div className="flex items-center space-x-1 justify-center">
-      {deviceData.icon && (
+      {deviceSyncStatus.icon && (
         <img
-          src={`http://${ip}:11000${deviceData.icon}`}
-          alt={deviceData.name}
+          src={`http://${ip}:11000${deviceSyncStatus.icon}`}
+          alt={deviceSyncStatus.name}
           className="h-8 w-8 bg-zinc-800 p-1 rounded-sm mx-1"
         />
       )}
-      <p>{deviceData.status === "normal" ? "" : deviceData.status}</p>
-      <p>{deviceData.status === 'upgrade' && `: ${deviceData.version}`}</p>
+      <p>{deviceSyncStatus.status === "normal" ? tempStatus : deviceSyncStatus.status || tempStatus}</p>
     </div>
   )
 }

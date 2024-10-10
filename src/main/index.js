@@ -199,8 +199,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
 
       response = {
         success: true,
-        status: 'upgrade',
-        version: upgrade.git[0]
+        status: `Upgrading: ${upgrade.git[0]}`
       }
     }
 
@@ -208,10 +207,10 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
   } catch (error) {
     if (error.name === 'AbortError') {
       console.log('Fetch request timed out')
-      return { success: false, status: 'timeout' }
+      return { success: false, status: null }
     } else {
       console.log('Error:', error)
-      return { success: false, status: 'unknown' }
+      return { success: false, status: null }
     }
   }
 })
@@ -226,7 +225,7 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       break
     case 'reboot':
       console.log('rebooting')
-      res = await fetch(`http://${ip}/reboot`)
+      res = await fetch(`http://${ip}/reboot?yes=1`, { method: 'POST' })
       break
     case 'factoryreset':
       console.log('factoryreset')

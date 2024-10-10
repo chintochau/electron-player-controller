@@ -15,6 +15,7 @@ import {
     CornerDownRight,
     EllipsisVertical,
     Loader2,
+    PlusIcon,
     RefreshCw,
     SquareArrowOutUpRightIcon
 } from 'lucide-react'
@@ -53,21 +54,23 @@ import { cn } from '@/lib/utils'
 import { goToIpAddress, playerControl } from './PlayList'
 import { Progress } from '@/components/ui/progress'
 import AddPlayerToGroup from './AddPlayerToGroup'
+import ApiListDropDown from './ApiListDropDown'
+import { useDevices } from '../context/devicesContext'
 
 
 
-const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, version }) => {
-
+const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
+    const { updateDeviceStatus, devices, setDevices } = useDevices()
     const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
-    // create an array of empty strings, length 200
-    const [apiList, setApiList] = useState(new Array(200).fill(''))
+    const [api, setApi] = useState('')
     const { refreshTime, setRefreshTime } = useRefresh()
     const { toast } = useToast()
     const [isSlaveListOpen, setIsSlaveListOpen] = useState(false)
 
 
     const upgradePlayer = () => {
-        // playerControl(device.ip, 'upgrade', version)
+        playerControl(device.ip, 'upgrade', version)
+        updateDeviceStatus(device.ip, 'upgrading')
         toast({
             title: 'Player Upgrade',
             description: 'Upgrading Player: ' + device.name + " : " + device.ip
@@ -84,82 +87,70 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, v
             description: 'Ungrouping Device: ' + slaveDevice.name + " : " + slaveDevice.ip
         })
         console.log(slaveDevice);
-        
+
         ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
         playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
+    }
+
+    const rebootPlayer = () => {
+        toast({
+            title: 'Rebooting Player',
+            description: 'Rebooting Player: ' + device.name + " : " + device.ip
+        })
+        // find the device with ip, and set status to rebooting
+        setDevices((prevDevices) => {
+            // Create a new array by mapping over the previous state
+            return prevDevices.map((prevDevice) => {
+                if (prevDevice.ip === device.ip) {
+                    // Return a new object with updated values
+                    return {
+                        ...prevDevice,
+                        status: 'rebooting'
+                    }
+                }
+                return prevDevice // No changes, return the device as is
+            })
+        })
+        playerControl(device.ip, 'reboot', null)
     }
 
     return (
         <>
             <TableRow className={cn("hover:bg-transparent")} >
-                <TableCell className="font-medium ">
-                    <div className="flex gap-1 pl-4 items-center">
+                <TableCell className="font-medium">
+                    <div className="flex items-center">
                         <p>
                             {device.isMaster && <ChevronUp className={cn("h-6 w-6 duration-300 cursor-pointer hover:bg-primary/5 rounded-md m-2", isSlaveListOpen && "rotate-180")} onClick={() => setIsSlaveListOpen(!isSlaveListOpen)} />}
                         </p>
                         <p>{device.name}</p>
                         <AddPlayerToGroup ip={device.ip} />
                     </div>
+                    <a
+                        className="text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => goToIpAddress(device.ip)}
+                    >
+                        {device.ip}
+                    </a>
                 </TableCell>
                 <TableCell>
                     <div className="flex gap-1 items-center">
-                        <a
-                            className="text-blue-500 hover:underline cursor-pointer"
-                            onClick={() => goToIpAddress(device.ip)}
-                        >
-                            {device.ip}
-                        </a>
+
                         <Input
                             placeholder="API"
                             className="h-7 w-40"
-                            value={apiList[index]}
+                            value={api}
                             onChange={(e) =>
-                                setApiList([
-                                    ...apiList.slice(0, index),
-                                    e.target.value,
-                                    ...apiList.slice(index + 1)
-                                ])
+                                setApi(e.target.value)
                             }
                         />
 
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
-                                <ChevronDownIcon className="h-4 w-4" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                {commandList.map((command) => (
-                                    <div className="flex items-center " key={command.command}>
-                                        <DropdownMenuItem
-                                            key={command}
-                                            onClick={() =>
-                                                setApiList([
-                                                    ...apiList.slice(0, index),
-                                                    command.command,
-                                                    ...apiList.slice(index + 1)
-                                                ])
-                                            }
-                                        >
-                                            <p>{command.name}</p>
-                                        </DropdownMenuItem>
-                                        <Button
-                                            variant="ghost"
-                                            className="px-2 ml-1"
-                                            onClick={() => {
-                                                openApiCall(device.ip, command.command)
-                                            }}
-                                        >
-                                            <SquareArrowOutUpRightIcon className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <ApiListDropDown ip={device.ip} openApiCall={openApiCall} setApi={setApi} />
 
                         <Button
                             variant="outline"
                             className="h-7"
                             onClick={() => {
-                                openApiCall(device.ip, apiList[index])
+                                openApiCall(device.ip, api)
                             }}
                         >
                             Go
@@ -209,7 +200,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, v
                     </div>
                 </TableCell>
                 <TableCell>
-                    <SyncStatus ip={device.ip} setDeviceGroupingStatus={setDeviceGroupingStatus} />
+                    <SyncStatus ip={device.ip} setDeviceGroupingStatus={setDeviceGroupingStatus} index={index} />
                 </TableCell>
                 <TableCell>
                     <PlayStatus ip={device.ip} />
@@ -228,6 +219,9 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, v
                         </Button>
                         <CheckUpgrade ip={device.ip} />
                     </div>
+                </TableCell>
+                <TableCell>
+                    <Button onClick={rebootPlayer} variant="outline">Reboot</Button>
                 </TableCell>
                 <TableCell className="px-1 mx-1">
                     <Dialog>
@@ -268,10 +262,10 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, v
                                 <div className="flex gap-4 items-center">
                                     <CornerDownRight className="h-6 w-6" />
                                     <Button
-                                    onClick={() => {
-                                        removeFromGroup(slave)
-                                    }}
-                                     variant="outline" 
+                                        onClick={() => {
+                                            removeFromGroup(slave)
+                                        }}
+                                        variant="outline"
                                     >Upgroup</Button>
                                 </div>
                             </TableCell>
