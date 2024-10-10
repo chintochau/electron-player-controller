@@ -170,10 +170,10 @@ const PlayStatus = ({ ip }) => {
               className="w-40"
             />
             <button onClick={() => transportControl('volume', Number(volume) + 5)}>
-              <PlusIcon className="h-4 w-4 bg-gray-200 rounded-full cursor-pointer" />
+              <PlusIcon className="h-4 w-4 bg-accent  rounded-full cursor-pointer" />
             </button>
             <button onClick={() => transportControl('volume', Number(volume) - 5)}>
-              <MinusIcon className="h-4 w-4 bg-gray-200 rounded-full cursor-pointer" />
+              <MinusIcon className="h-4 w-4 bg-accent rounded-full cursor-pointer" />
             </button>
           </div>
         )}

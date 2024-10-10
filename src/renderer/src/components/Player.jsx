@@ -51,10 +51,11 @@ import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
 import { goToIpAddress, playerControl } from './PlayList'
+import { Progress } from '@/components/ui/progress'
 
 
 
-const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,version }) => {
+const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices, version }) => {
 
     const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
     // create an array of empty strings, length 200
@@ -64,24 +65,49 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
     const [isSlaveListOpen, setIsSlaveListOpen] = useState(false)
 
 
+    const upgradePlayer = () => {
+        // playerControl(device.ip, 'upgrade', version)
+        toast({
+            title: 'Player Upgrade',
+            description: 'Upgrading Player: ' + device.name + " : " + device.ip
+        })
+    }
+
+    const openApiCall = (ip, command) => {
+        window.open(`http://${ip}${command}`, '_blank')
+    }
+
+    const removeFromGroup = (slaveDevice) => {
+        toast({
+            title: 'Ungrouping Device',
+            description: 'Ungrouping Device: ' + slaveDevice.name + " : " + slaveDevice.ip
+        })
+        console.log(slaveDevice);
+        
+        ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
+        playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
+    }
+
     return (
         <>
             <TableRow className={cn("hover:bg-transparent")} >
                 <TableCell className="font-medium ">
-                    <div className="flex flex-col gap-1 pl-4">
-                        {device.isMaster && <ChevronUp className={cn("h-12 w-12 duration-300 cursor-pointer hover:bg-primary/5 rounded-md m-2", isSlaveListOpen && "rotate-180")} onClick={() => setIsSlaveListOpen(!isSlaveListOpen)} />}
+                    <div className="flex gap-1 pl-4 items-center">
+                        <p>
+                            {device.isMaster && <ChevronUp className={cn("h-6 w-6 duration-300 cursor-pointer hover:bg-primary/5 rounded-md m-2", isSlaveListOpen && "rotate-180")} onClick={() => setIsSlaveListOpen(!isSlaveListOpen)} />}
+                        </p>
                         <p>{device.name}</p>
+
+                    </div>
+                </TableCell>
+                <TableCell>
+                    <div className="flex gap-1 items-center">
                         <a
                             className="text-blue-500 hover:underline cursor-pointer"
                             onClick={() => goToIpAddress(device.ip)}
                         >
                             {device.ip}
                         </a>
-                    </div>
-                </TableCell>
-                <TableCell>
-                    <div className="flex gap-1 items-center">
-                        <p>/</p>
                         <Input
                             placeholder="API"
                             className="h-7 w-40"
@@ -118,7 +144,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                                             variant="ghost"
                                             className="px-2 ml-1"
                                             onClick={() => {
-                                                window.open(`http://${device.ip}:11000/${command.command}`, '_blank')
+                                                openApiCall(device.ip, command.command)
                                             }}
                                         >
                                             <SquareArrowOutUpRightIcon className="h-4 w-4" />
@@ -132,7 +158,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                             variant="outline"
                             className="h-7"
                             onClick={() => {
-                                window.open(`http://${device.ip}:11000/${apiList[index]}`, '_blank')
+                                openApiCall(device.ip, apiList[index])
                             }}
                         >
                             Go
@@ -143,7 +169,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                     <div className="flex gap-1 items-center">
                         <p>{device.room}</p>
                         <DropdownMenu>
-                            <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
+                            <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm ">
                                 <ChevronDownIcon className="h-4 w-4" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
@@ -194,7 +220,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                 <TableCell className="text-center">
                     <div className="flex flex-col gap-1 items-center">
                         <Button
-                            onClick={() => playerControl(device.ip, 'upgrade', version)}
+                            onClick={upgradePlayer}
                             disabled={!version}
                         >
                             Upgrade
@@ -207,7 +233,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                         <DialogTrigger className="text-red-300 duration-300 transition hover:text-red-600">
                             Reset
                         </DialogTrigger>
-                        <DialogContent className=" bg-white">
+                        <DialogContent className="">
                             <DialogHeader>
                                 <DialogTitle>Do you want to reset {device.name}?</DialogTitle>
                                 <DialogDescription>
@@ -237,10 +263,15 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                 devices.map((slave) => {
                     if (slave.master === device.ip) {
                         return (<TableRow className="hover:bg-transparent">
-                            <TableCell className="pl-8" key={slave.ip}>
+                            <TableCell className="pl-12" key={slave.ip}>
                                 <div className="flex gap-4 items-center">
                                     <CornerDownRight className="h-6 w-6" />
-                                    <Button variant="outline" >Upgroup</Button>
+                                    <Button
+                                    onClick={() => {
+                                        removeFromGroup(slave)
+                                    }}
+                                     variant="outline" 
+                                    >Upgroup</Button>
                                 </div>
                             </TableCell>
                             <TableCell><div className="flex gap-1 items-center">
@@ -252,7 +283,14 @@ const Player = ({ device, index, setDeviceGroupingStatus, devices, setDevices,ve
                                     {slave.ip}
                                 </a>
                             </div>
-
+                            </TableCell>
+                            <TableCell>
+                            </TableCell>
+                            <TableCell>
+                                <SyncStatus ip={slave.ip} setDeviceGroupingStatus={setDeviceGroupingStatus} />
+                            </TableCell>
+                            <TableCell>
+                                <PlayStatus ip={slave.ip} />
                             </TableCell>
                         </TableRow>)
                     }

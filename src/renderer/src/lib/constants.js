@@ -3,19 +3,31 @@ import { AudioWaveformIcon, Drill, Headset, Wifi } from 'lucide-react'
 export const commandList = [
   {
     name: '/SyncStatus',
-    command: 'SyncStatus'
+    command: ':11000/SyncStatus'
   },
   {
     name: '/Status',
-    command: 'Status'
+    command: ':11000/Status'
   },
   {
     name: '/ui/Home',
-    command: 'ui/Home?playnum=1'
+    command: ':11000/ui/Home?playnum=1'
+  },
+  // {
+  //   name:"/Initialize=true",
+  //   command:"SetInitialized?init=1"
+  // },
+  {
+    name:"Disable Upgrade Popup",
+    command:"/enable?no_upgrade=yes"
   },
   {
-    name:"/Initialize=true",
-    command:"SetInitialized?init=1"
+    name:"Enable Upgrade Popup",
+    command:"/enable?no_upgrade=no"
+  },
+  {
+    name:"Reboot",
+    command:"/reboot"
   }
 ]
 

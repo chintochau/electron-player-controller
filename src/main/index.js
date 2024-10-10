@@ -186,7 +186,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
         schemaVersion: $.schemaVersion,
         volume: $.volume,
         isMaster: slave ? true : false,
-        master:masterIp,
+        master: masterIp,
         isSlave: master ? true : false,
         slave
       }
@@ -255,6 +255,12 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
     case 'upgrade':
       console.log('upgrade')
       res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`)
+      break
+    case "removeSlave":
+      console.log('removeSlave')
+      console.log("ip", ip,"  param", param);
+      
+      res = await fetch(`http://${ip}:11000/RemoveSlave?slave=${param}&port=11000`)
       break
     default:
       console.log('unknown control')
