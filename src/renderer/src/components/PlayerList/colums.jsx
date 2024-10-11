@@ -95,20 +95,6 @@ export const columns = [
         header: ({ table }) => (<div className="flex items-center justify-center gap-1"><p>Room</p><ArrowDownNarrowWide className="h-5 w-5" /></div>
         ),
         cell: ({ row }) => {
-            const device = row.original
-            return (
-                <div className="">
-                    <p>{device.name}</p>
-                    <a
-                        className="text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => goToIpAddress(device.ip)}
-                    >
-                        {device.ip}
-                    </a>
-                </div>
-            )
-        },
-        cell: ({ row }) => {
             const { roomList, saveRoomForMac } = useStorage()
             const { setDevices } = useDevices()
             const device = row.original
