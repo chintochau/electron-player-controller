@@ -49,6 +49,8 @@ import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import Player from './Player'
 import { useDevices } from '../context/devicesContext'
+import { columns } from './PlayerList/colums'
+import { DataTable } from './PlayerList/data-table'
 
 
 export const goToIpAddress = (ip) => {
@@ -61,7 +63,7 @@ export const playerControl = async (ip, control, param) => {
 
 const PlayList = () => {
   const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
-  const {devices, setDevices} = useDevices()
+  const { devices, setDevices } = useDevices()
   const [version, setVersion] = useState('')
   // create an array of empty strings, length 200
   const [apiList, setApiList] = useState(new Array(200).fill(''))
@@ -140,62 +142,70 @@ const PlayList = () => {
 
 
   return (
-    <Table>
-      <TableCaption>
-        <div className="flex w-fit items-center m-1">
-          <p className="text-lg mr-2">BluOS Devices</p>
-          <p className=" text-sm"> Refresh Time: (Seconds) </p>
-          <Input
-            className="ml-2 w-20 h-7"
-            value={refreshTime}
-            onChange={(e) => setRefreshTime(e.target.value)}
-            placeholder="seconds"
-          />
-          <Button variant="ghost" onClick={refreshPage}>
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </div>
-      </TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-center w-60">Name</TableHead>
-          <TableHead className="text-center w-40">API</TableHead>
-          <TableHead className="text-center w-20">room</TableHead>
-          <TableHead className="text-center">Status </TableHead>
-          <TableHead className="text-center w-96">Now Playing </TableHead>
-          <TableHead className="text-center">Model:Version </TableHead>
-          <TableHead className="p-0 m-0 text-center flex flex-col items-center  h-14">
-            Upgrade:
+    <>
+      <div className='mx-10'>
+        <DataTable
+          columns={columns}
+          data={devices}
+        />
+      </div>
+      <Table>
+        <TableCaption>
+          <div className="flex w-fit items-center m-1">
+            <p className="text-lg mr-2">BluOS Devices</p>
+            <p className=" text-sm"> Refresh Time: (Seconds) </p>
             <Input
               className="ml-2 w-20 h-7"
-              onChange={(e) => setVersion(e.target.value)}
-              placeholder="Version"
+              value={refreshTime}
+              onChange={(e) => setRefreshTime(e.target.value)}
+              placeholder="seconds"
             />
-          </TableHead>
-          <TableHead className="p-0 m-0 text-center">reboot</TableHead>
-          <TableHead className="p-0 m-0 text-center">reset</TableHead>
-          <TableHead className="p-0 m-0 text-center">settings</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {devices.length === 0 ? (
+            <Button variant="ghost" onClick={refreshPage}>
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </div>
+        </TableCaption>
+        <TableHeader>
           <TableRow>
-            <TableCell colSpan={7} className="text-center">
-              <Loader2 className="mx-auto h-4 w-4 animate-spin" />
-            </TableCell>
+            <TableHead className="text-center w-60">Name</TableHead>
+            <TableHead className="text-center w-40">API</TableHead>
+            <TableHead className="text-center w-20">room</TableHead>
+            <TableHead className="text-center">Status </TableHead>
+            <TableHead className="text-center w-96">Now Playing </TableHead>
+            <TableHead className="text-center">Model:Version </TableHead>
+            <TableHead className="p-0 m-0 text-center flex flex-col items-center  h-14">
+              Upgrade:
+              <Input
+                className="ml-2 w-20 h-7"
+                onChange={(e) => setVersion(e.target.value)}
+                placeholder="Version"
+              />
+            </TableHead>
+            <TableHead className="p-0 m-0 text-center">reboot</TableHead>
+            <TableHead className="p-0 m-0 text-center">reset</TableHead>
+            <TableHead className="p-0 m-0 text-center">settings</TableHead>
           </TableRow>
-        ) : (
-          <>
-            {roomList
-              .sort(
-                // sort by room
-                (a, b) => a.localeCompare(b)
-              )
-              .map((room) => renderDevicesByRoom(room))}
-          </>
-        )}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {devices.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center">
+                <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+              </TableCell>
+            </TableRow>
+          ) : (
+            <>
+              {roomList
+                .sort(
+                  // sort by room
+                  (a, b) => a.localeCompare(b)
+                )
+                .map((room) => renderDevicesByRoom(room))}
+            </>
+          )}
+        </TableBody>
+      </Table>
+    </>
   )
 
   function renderDevicesByRoom(room) {

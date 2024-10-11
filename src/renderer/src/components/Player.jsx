@@ -208,7 +208,7 @@ const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
                     </div>
                 </TableCell>
                 <TableCell>
-                    <SyncStatus ip={device.ip} setDeviceGroupingStatus={setDeviceGroupingStatus} index={index} />
+                    <SyncStatus ip={device.ip} setDeviceGroupingStatus={setDeviceGroupingStatus} />
                 </TableCell>
                 <TableCell>
                     <PlayStatus ip={device.ip} />

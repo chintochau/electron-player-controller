@@ -17,7 +17,7 @@ const SettingsMenu = ({ ip }) => {
       <DropdownMenuTrigger className="hover:bg-accent p-2 rounded-md">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end">
         <DropdownMenuLabel>Settings</DropdownMenuLabel>
         {settingsList.map((item, index) => {
           const IconComponent = item.icon

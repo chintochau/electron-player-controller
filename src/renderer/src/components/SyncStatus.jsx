@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { useRefresh } from '../context/refreshContext'
 import { useDevices } from '../context/devicesContext'
 
-const SyncStatus = ({ ip, setDeviceGroupingStatus }) => {
+const SyncStatus = ({ ip }) => {
   const [deviceSyncStatus, setDeviceSyncStatus] = useState(null)
   const { shouldRefresh } = useRefresh()
-  const { devices, setDevices,updateDeviceStatus } = useDevices()
+  const { devices, setDevices,updateDeviceStatus,setDeviceGroupingStatus } = useDevices()
   const [tempStatus, setTempStatus] = useState(null)
 
   const fetchSyncStatus = async () => {
