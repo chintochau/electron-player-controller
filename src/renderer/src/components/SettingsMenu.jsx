@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../../../components/ui/button'
 import { EllipsisVertical } from 'lucide-react'
 import {
@@ -11,7 +11,25 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { helpList, settingsList } from '../lib/constants'
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { playerControl } from '../lib/utils'
+import { useDevices } from '../context/devicesContext'
+
 const SettingsMenu = ({ ip }) => {
+  const {searchDeviceByIp} = useDevices()
+  const [deviceName, setDeviceName] = useState()
+  useEffect(() => {
+    setDeviceName(searchDeviceByIp(ip)?.name)
+  }, [ip, searchDeviceByIp])
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-accent p-2 rounded-md">
@@ -50,6 +68,30 @@ const SettingsMenu = ({ ip }) => {
             </DropdownMenuItem>
           )
         })}
+        <Dialog>
+          <DialogTrigger className="text-red-300 duration-300 transition hover:text-red-600 px-2 text-sm py-2">
+            Reset
+          </DialogTrigger>
+          <DialogContent className="">
+            <DialogHeader>
+              <DialogTitle>Do you want to reset {deviceName}?</DialogTitle>
+              <DialogDescription>
+                This will run a /factoryreset command on the device.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+              <Button
+                variant="destructive"
+                onClick={() => playerControl(ip, 'factoryreset')}
+              >
+                Reset
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DropdownMenuContent>
     </DropdownMenu>
   )

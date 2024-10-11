@@ -142,14 +142,14 @@ const PlayList = () => {
 
 
   return (
-    <>
+    <div className='pb-40'>
       <div className='mx-10'>
         <DataTable
           columns={columns}
           data={devices}
         />
       </div>
-      <Table>
+      {/* <Table>
         <TableCaption>
           <div className="flex w-fit items-center m-1">
             <p className="text-lg mr-2">BluOS Devices</p>
@@ -204,8 +204,8 @@ const PlayList = () => {
             </>
           )}
         </TableBody>
-      </Table>
-    </>
+      </Table> */}
+    </div>
   )
 
   function renderDevicesByRoom(room) {

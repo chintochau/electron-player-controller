@@ -12,6 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { Loader2 } from "lucide-react"
 
 export function DataTable({
     columns,
@@ -61,7 +62,7 @@ export function DataTable({
                     ) : (
                         <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
+                                <Loader2 className="mx-auto h-6 w-6 animate-spin" />
                             </TableCell>
                         </TableRow>
                     )}

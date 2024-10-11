@@ -6,6 +6,7 @@ export const useDevices = () => useContext(DevicesContext);
 
 export const DevicesProvider = ({ children }) => {
     const [devices, setDevices] = useState([])
+    const [selectedDevices, setSelectedDevices] = useState([]) // ips of selected devices
 
     const updateDeviceStatus = (ip, status) => {
         setDevices((prevDevices) => {
@@ -43,11 +44,42 @@ export const DevicesProvider = ({ children }) => {
         });
     };
 
+    const searchDeviceByIp = (ip) => {
+        return devices.find((device) => device.ip === ip);
+    };
+
+    const selectAllDevices = () => {
+        setSelectedDevices(devices.map((device) => device.ip));
+    };
+
+    const removeSelectedDeviceByIp = (ip) => {
+        setSelectedDevices(selectedDevices.filter((selectedIp) => selectedIp !== ip));
+    };
+
+    const removeAllSelectedDevices = () => {
+        setSelectedDevices([]);
+    };
+
+    const selectDeviceByIp = (ip) => {
+        if (selectedDevices.includes(ip)) {
+            setSelectedDevices(selectedDevices.filter((selectedIp) => selectedIp !== ip));
+        } else {
+            setSelectedDevices([...selectedDevices, ip]);
+        }
+    }
+
     const value = {
         devices,
         setDevices,
         updateDeviceStatus,
-        setDeviceGroupingStatus
+        setDeviceGroupingStatus,
+        searchDeviceByIp,
+        selectedDevices,
+        setSelectedDevices,
+        selectAllDevices,
+        selectDeviceByIp,
+        removeSelectedDeviceByIp,
+        removeAllSelectedDevices
     };
 
     return (

@@ -9,7 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { ChevronDownIcon, MoreHorizontal } from "lucide-react"
+import { ArrowDownNarrowWide, ChevronDownIcon, MoreHorizontal } from "lucide-react"
 import SettingsMenu from "../SettingsMenu"
 import PlayStatus from "../PlayStatus"
 import SyncStatus from "../SyncStatus"
@@ -23,11 +23,57 @@ import CheckUpgrade from "../CheckUpgrade"
 import { playerControl } from "../../lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { goToIpAddress } from "../PlayList"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export const columns = [
     {
+        id: "select",
+        header: ({ table }) => {
+            const { selectAllDevices, removeAllSelectedDevices } = useDevices()
+            return (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => { 
+                        table.toggleAllPageRowsSelected(!!value) 
+                        if (value) {
+                            selectAllDevices()
+                        } else {
+                            removeAllSelectedDevices()
+                        }
+                    }}
+                    aria-label="Select all"
+                />
+            )
+        },
+        cell: ({ row }) => {
+            const {
+                selectDeviceByIp,
+                removeSelectedDeviceByIp, } = useDevices()
+            const device = row.original
+            return (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => {
+                        row.toggleSelected(!!value)
+                        if (value) {
+                            selectDeviceByIp(device.ip)
+                        } else {
+                            removeSelectedDeviceByIp(device.ip)
+                        }
+                    }}
+                    aria-label="Select row"
+                />
+            )
+        },
+
+    },
+    {
         id: "name",
-        header: "Name",
+        header: ({ table }) => (<div className="text-left">Name</div>
+        ),
         cell: ({ row }) => {
             const device = row.original
             return (
@@ -46,7 +92,22 @@ export const columns = [
 
     {
         id: "room",
-        header: "Room",
+        header: ({ table }) => (<div className="flex items-center justify-center gap-1"><p>Room</p><ArrowDownNarrowWide className="h-5 w-5" /></div>
+        ),
+        cell: ({ row }) => {
+            const device = row.original
+            return (
+                <div className="">
+                    <p>{device.name}</p>
+                    <a
+                        className="text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => goToIpAddress(device.ip)}
+                    >
+                        {device.ip}
+                    </a>
+                </div>
+            )
+        },
         cell: ({ row }) => {
             const { roomList, saveRoomForMac } = useStorage()
             const { setDevices } = useDevices()
