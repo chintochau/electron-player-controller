@@ -11,7 +11,9 @@ import {
     ChevronDownIcon,
     SquareArrowOutUpRightIcon,
     PlusIcon,
-    MinusIcon
+    MinusIcon,
+    InfoIcon,
+    ArrowUp
 } from 'lucide-react'
 import { commandList } from '../lib/constants'
 import { Button } from '@/components/ui/button'
@@ -28,62 +30,139 @@ import { Label } from "@/components/ui/label"
 import { Input } from '@/components/ui/input'
 
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import { Separator } from "@/components/ui/separator"
+import { useStorage } from '../context/localStorageContext'
+
+
 const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
 
     const [isEditMode, setIsEditMode] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const { customApiList, addToCustomApiList, removeFromCustomApiList } = useStorage()
+    const [newCommandName, setNewCommandName] = useState("")
+    const [newCommand, setNewCommand] = useState("")
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
                 <ChevronDownIcon className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel className="flex items-center justify-between"><p>Commands</p>
+            <DropdownMenuContent className="max-h-[600px] overflow-auto">
+                <DropdownMenuLabel className="flex items-center justify-between">
+                    <p> Custom Commands</p>
                     <div className='space-x-1'>
                         <button className={cn('p-1 hover:bg-accent rounded-sm', isEditMode ? "bg-accent" : "bg-transparent")}
                             onClick={() => setIsEditMode(!isEditMode)}
-                        ><MinusIcon className="h-4 w-4" /></button>
-                        <Popover>
-                            <PopoverTrigger><PlusIcon className="h-4 w-4" /></PopoverTrigger>
-                            <PopoverContent>
+                        >
+                            <MinusIcon className="h-4 w-4" />
+                        </button>
+                        <Popover open={isOpen} onOpenChange={setIsOpen}>
+                            <PopoverTrigger className={cn('p-1 hover:bg-accent rounded-sm', isOpen ? "bg-accent" : "bg-transparent")}>
+                                <PlusIcon className="h-4 w-4" />
+                            </PopoverTrigger>
+                            <PopoverContent align="start" >
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-lg font-medium">Add Command</h3>
+                                    <Popover>
+                                        <PopoverTrigger><InfoIcon className="h-5 w-5" /></PopoverTrigger>
+                                        <PopoverContent className="w-80">
+                                            <h4 className="text-lg font-medium">Example 1</h4>
+                                            <p className="my-1">Name: <span className="italic bg-accent px-1 py-0.5 rounded-md">Enable Upgrade Popup</span></p>
+                                            <p>Command: <span className="italic bg-accent px-1 py-0.5 rounded-md">/enable?no_upgrade=yes</span></p>
 
-                                <h3>Add Command</h3>
-                                <Label className="text-sm font-medium">Name</Label>
-                                <Input className="" />
+                                            <h4 className="text-lg font-medium pt-4">Example 2</h4>
+                                            <p className="my-1">Name: <span className="italic bg-accent px-1 py-0.5 rounded-md">Status</span></p>
+                                            <p>Command: <span className="italic bg-accent px-1 py-0.5 rounded-md">:11000/Status</span></p>
 
-                                <Label className="text-sm font-medium">Command</Label>
-                                <Input className="" placeholder="ex: /reboot or :11000/Status" />
-
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="space-y-2">
+                                    <Label className="text-base font-medium">Name </Label>
+                                    <Input value={newCommandName} onChange={(e) => setNewCommandName(e.target.value)} placeholder="Enable Upgrade Popup" className="text-primary placeholder:text-primary/30" />
+                                    <Label className="text-base font-medium flex items-center space-x-2"><p >Command</p>
+                                    </Label>
+                                    <Input value={newCommand} onChange={(e) => setNewCommand(e.target.value)} placeholder="/enable?no_upgrade=yes" className="text-primary placeholder:text-primary/30" />
+                                    <div className="flex justify-between">
+                                        <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button><Button variant="outline" onClick={() => addToCustomApiList({ name: newCommandName, command: newCommand })}>Add</Button></div>
+                                </div>
                             </PopoverContent>
                         </Popover>
                     </div>
+
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {commandList.map((command) => (
-                    <div className="flex items-center " key={command.command}>
-                        {isEditMode &&
-                            <MinusIcon className="h-4 w-4 dark:bg-red-800 bg-red-500 hover:bg-red-700 dark:hover:bg-red-700 rounded-full  text-white mx-1 cursor-pointer" />
-                        }
-                        <DropdownMenuItem
-                            key={command}
-                            onClick={() =>
-                                setApi(command.command)
-                            }
-                        >
+                {customApiList.length === 0 ? <DropdownMenuItem className="hover:bg-transparent flex items-center justify-between">
+                    <p className=" text-center flex-1">Click "+" to add</p>
+                    <ArrowUp className="h-4 w-4 mr-1" />
+                </DropdownMenuItem> :
+                    <>
+                        {
+                            customApiList.map((command, index) => (
+                                <div className="flex items-center " key={command.command}>
 
-                            <p>{command.name}</p>
-                        </DropdownMenuItem>
-                        <Button
-                            variant="ghost"
-                            className="px-2 ml-1"
-                            onClick={() => {
-                                openApiCall(ip, command.command)
-                            }}
-                        >
-                            <SquareArrowOutUpRightIcon className="h-4 w-4" />
-                        </Button>
-                    </div>
-                ))}
+                                    {isEditMode &&
+                                        <MinusIcon
+                                            onClick={() => {
+                                                removeFromCustomApiList(index)
+                                            }} className="h-4 w-4 dark:bg-red-800 bg-red-500 hover:bg-red-700 dark:hover:bg-red-700 rounded-full  text-white mx-1 cursor-pointer" />
+                                    }
+                                    <DropdownMenuItem
+                                        key={command.command}
+                                        onClick={() =>
+                                            setApi(command.command)
+                                        }
+                                    >
+                                        <p>{command.name}</p>
+                                    </DropdownMenuItem>
+                                    <Button
+                                        variant="ghost"
+                                        className="px-2 ml-1"
+                                        onClick={() => {
+                                            openApiCall(ip, command.command)
+                                        }}
+                                    >
+                                        <SquareArrowOutUpRightIcon className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))
+                        }
+                    </>}
+                <>
+                    <DropdownMenuLabel className="flex items-center justify-between mt-2" onClick={() => setIsOpen(true)}>
+                        Default Commands
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {commandList.map((command) => (
+                        <div className="flex items-center " key={command.command}>
+                            <DropdownMenuItem
+                                key={command}
+                                onClick={() =>
+                                    setApi(command.command)
+                                }
+                            >
+                                <p>{command.name}</p>
+                            </DropdownMenuItem>
+                            <Button
+                                variant="ghost"
+                                className="px-2 ml-1"
+                                onClick={() => {
+                                    openApiCall(ip, command.command)
+                                }}
+                            >
+                                <SquareArrowOutUpRightIcon className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    ))}
+                </>
             </DropdownMenuContent>
         </DropdownMenu >
     )

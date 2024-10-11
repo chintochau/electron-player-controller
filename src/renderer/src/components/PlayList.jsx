@@ -104,11 +104,6 @@ const PlayList = () => {
     return devicesList
   }
 
-  useEffect(() => {
-    // log when devcies change
-    console.log("Devices", devices)
-  }, [devices])
-
   const setDeviceGroupingStatus = (ip, status) => {
     const { isMaster, isSlave, master, slave } = status;
 
@@ -167,7 +162,7 @@ const PlayList = () => {
           <TableHead className="text-center w-40">API</TableHead>
           <TableHead className="text-center w-20">room</TableHead>
           <TableHead className="text-center">Status </TableHead>
-          <TableHead className="text-center">Now Playing </TableHead>
+          <TableHead className="text-center w-96">Now Playing </TableHead>
           <TableHead className="text-center">Model:Version </TableHead>
           <TableHead className="p-0 m-0 text-center flex flex-col items-center  h-14">
             Upgrade:

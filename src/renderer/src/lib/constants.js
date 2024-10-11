@@ -10,10 +10,6 @@ export const commandList = [
     command: "/enable?no_upgrade=no"
   },
   {
-    name: "Reboot",
-    command: "/reboot"
-  },
-  {
     name: '/SyncStatus',
     command: ':11000/SyncStatus'
   },
@@ -29,7 +25,6 @@ export const commandList = [
   //   name:"/Initialize=true",
   //   command:"SetInitialized?init=1"
   // },
-
 ]
 
 export const settingsList = [

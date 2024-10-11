@@ -78,7 +78,15 @@ const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
     }
 
     const openApiCall = (ip, command) => {
-        window.open(`http://${ip}${command}`, '_blank')
+        try {
+
+            window.open(`http://${ip}${command}`, '_blank')
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Invalid Command:' + command,
+            })
+        }
     }
 
     const removeFromGroup = (slaveDevice) => {
