@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTable } from '../context/tableContext'
 import { useDevices } from '../context/devicesContext'
 import { playerControl, runCommandForDevice } from '../lib/utils'
@@ -26,14 +26,14 @@ const Footer = () => {
 
     const { toast } = useToast()
 
-    const runCommandForDevices = (IPs, command) => {
-        for (const IP of IPs) {
-            runCommandForDevice(IP, command, type)
-            updateDeviceStatus(IP, `running ${command}`)
+    const runCommandForDevices = () => {
+        for (const IP of selectedDevices) {
+            runCommandForDevice(IP, apiCommand, requestType)
+            updateDeviceStatus(IP, `running ${apiCommand}`)
         }
         toast({
             title: 'Run Command For Devices',
-            description: `Running Command ${command} on ${IPs.length} Devices`,
+            description: `Running Command ${apiCommand} on ${selectedDevices.length} Devices`,
             status: 'success',
         })
     }
@@ -59,6 +59,18 @@ const Footer = () => {
         toast({
             title: 'Upgrade All Players',
             description: `Upgrading All ${devices.length} Players to ${version}`,
+            status: 'success',
+        })
+    }
+
+    const upgradeSelectedPlayers = () => {
+        for (const device of selectedDevices) {
+            playerControl(device, 'upgrade', version)
+            updateDeviceStatus(device, 'upgrading')
+        }
+        toast({
+            title: 'Upgrade Selected Players',
+            description: `Upgrading ${selectedDevices.length} Selected Players`,
             status: 'success',
         })
     }
@@ -148,7 +160,7 @@ const Footer = () => {
                                 <div className='flex items-start space-x-2'>
                                     <Input onChange={(e) => setVersion(e.target.value)} value={version} className="h-8" placeholder="version" />
                                     <div className='flex flex-col gap-y-1'>
-                                        <Button className="h-8" disabled={selectedDevices.length === 0 || version.length === 0} onClick={() => runCommandForDevices(selectedDevices, 'update', version)}>
+                                        <Button className="h-8" disabled={selectedDevices.length === 0 || version.length === 0} onClick={upgradeSelectedPlayers}>
                                             Updated Selected
                                         </Button>
                                         <Button className="h-8" disabled={devices.length === 0 || version.length === 0} onClick={upgradeAllPlayers}>Update All</Button>

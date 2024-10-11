@@ -252,7 +252,7 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       res = await fetch(`http://${ip}:11000/Back`)
       break
     case 'upgrade':
-      console.log('upgrade')
+      console.log('upgrade',ip, param)
       res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`)
       break
     case "removeSlave":
