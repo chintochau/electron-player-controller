@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useRefresh } from "./refreshContext";
+import { useStorage } from "./localStorageContext";
 
 const DevicesContext = createContext();
 
@@ -7,6 +9,8 @@ export const useDevices = () => useContext(DevicesContext);
 export const DevicesProvider = ({ children }) => {
     const [devices, setDevices] = useState([])
     const [selectedDevices, setSelectedDevices] = useState([]) // ips of selected devices
+    const {refreshTime} = useRefresh();
+    const {checkRoomForMac} = useStorage();
 
     const updateDeviceStatus = (ip, status) => {
         setDevices((prevDevices) => {
@@ -68,6 +72,55 @@ export const DevicesProvider = ({ children }) => {
         }
     }
 
+    const sortAndSaveDevicesList = (devices) => {
+        // sort by room, and then by name
+        devices.sort((a, b) => {
+            if (a.room < b.room) return -1
+            if (a.room > b.room) return 1
+            if (a.name < b.name) return -1
+            if (a.name > b.name) return 1
+            return 0
+        })
+        setDevices(devices)
+        return devices
+    }
+
+    async function fetchDevices() {
+        const discoveredDevices = await window.api.discoverDevices()
+        let devicesList = []
+        for (const device of discoveredDevices) {
+            const { name, txt, addresses, referer } = device
+            const ip = referer.address
+
+            const room = checkRoomForMac(txt.mac)
+
+            devicesList.push({
+                name,
+                ip,
+                mac: txt.mac,
+                model: txt.model,
+                version: txt.version,
+                room,
+            })
+        }
+
+        devicesList = sortAndSaveDevicesList(devicesList)
+        return devicesList
+    }
+
+    const refreshDevices = () => {
+        setDevices([])
+        fetchDevices()
+    }
+
+    useEffect(() => {
+        fetchDevices()
+        // const interval = setInterval(() => {
+        //   fetchDevices();
+        // }, refreshTime * 1000);
+        // return () => clearInterval(interval);
+      }, [refreshTime])
+
     const value = {
         devices,
         setDevices,
@@ -79,7 +132,8 @@ export const DevicesProvider = ({ children }) => {
         selectAllDevices,
         selectDeviceByIp,
         removeSelectedDeviceByIp,
-        removeAllSelectedDevices
+        removeAllSelectedDevices,
+        refreshDevices,
     };
 
     return (

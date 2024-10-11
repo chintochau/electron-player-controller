@@ -277,6 +277,21 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
   return { success: true } // Return success response
 })
 
+
+ipcMain.handle('run-command-for-device', async (event, { ip, command,type="GET" }) => {
+  // send fetch request to device
+  console.log('run-command-for-device', ip, command, type);
+  
+  const res = await fetch(`http://${ip}${command}`, { method: type })
+  if (!res || !res.ok) {
+    console.log('Error response:', res)
+    return { success: false }
+  }
+  console.log('Control command successful:', command)
+  return { success: true }
+})
+
+
 ipcMain.handle('open-overlay', (event, url) => {
   let overlayWindow = new BrowserWindow({
     width: 866,

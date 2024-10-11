@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useTable } from '../context/tableContext'
 import { useDevices } from '../context/devicesContext'
-import { playerControl } from '../lib/utils'
+import { playerControl, runCommandForDevice } from '../lib/utils'
 import { Button } from '@/components/ui/button'
 import ApiListDropDown from './ApiListDropDown'
 import { Input } from '@/components/ui/input'
@@ -9,40 +9,82 @@ import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { RefreshCcw } from 'lucide-react'
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+
 const Footer = () => {
     const { version, setVersion } = useTable()
     const [apiCommand, setApiCommand] = useState('')
-    const { devices, selectedDevices } = useDevices()
+    const { devices, selectedDevices, refreshDevices,updateDeviceStatus } = useDevices()
+    const [requestType, setRequestType] = useState("GET")
 
-    const {toast} = useToast()
+    const { toast } = useToast()
 
-    const runCommandForDevices = (IPs, command, param) => {
+    const runCommandForDevices = (IPs, command) => {
         for (const IP of IPs) {
-            playerControl(IP, command, param)
+            runCommandForDevice(IP, command, type)
+            updateDeviceStatus(IP, `running ${command}`)
         }
+        toast({
+            title: 'Run Command For Devices',
+            description: `Running Command ${command} on ${IPs.length} Devices`,
+            status: 'success',
+        })
     }
 
+    const runCommandOnAllDevices = () => {
+        for (const device of devices) {
+            runCommandForDevice(device.ip, apiCommand, requestType)
+            updateDeviceStatus(device.ip, `running ${apiCommand}`)
+        }
+        toast({
+            title: 'Run Command On All Devices',
+            description: `Running Command ${apiCommand} on ${devices.length} Devices`,
+            status: 'success',
+        })
+    }
 
     const upgradeAllPlayers = () => {
         for (const device of devices) {
-            // playerControl(device.ip, 'upgrade', version)
-            toast({
-                title: 'Upgrade All Players',
-                description: `Upgrading All ${devices.length} Players to ${version}`,
-                status: 'success',
-            })
+            playerControl(device.ip, 'upgrade', version)
+            updateDeviceStatus(device.ip, 'upgrading')
         }
+
+        toast({
+            title: 'Upgrade All Players',
+            description: `Upgrading All ${devices.length} Players to ${version}`,
+            status: 'success',
+        })
+    }
+
+    const rebootSelectedPlayers = () => {
+        for (const device of selectedDevices) {
+            playerControl(device, 'reboot', null)
+            updateDeviceStatus(device, 'rebooting')
+        }
+        toast({
+            title: 'Reboot Selected Players',
+            description: `Rebooting ${selectedDevices.length} Selected Players`,
+            status: 'success',
+        })
     }
 
     const rebootAllPlayers = () => {
         for (const device of devices) {
             playerControl(device.ip, 'reboot', null)
-            toast({
-                title: 'Reboot All Players',
-                description: `Rebooting All ${devices.length} Players`,
-                status: 'success',
-            })
+            updateDeviceStatus(device.ip, 'rebooting')
         }
+        toast({
+            title: 'Reboot All Players',
+            description: `Rebooting All ${devices.length} Players`,
+            status: 'success',
+        })
     }
 
     return (
@@ -55,7 +97,7 @@ const Footer = () => {
                         <p className='text-foreground text-lg'>
                             {selectedDevices.length} of {devices.length} Device(s) selected
                         </p>
-                        <RefreshCcw className='h-4 w-4 cursor-pointer' onClick={() => window.location.reload()} />
+                        <RefreshCcw className='h-4 w-4 cursor-pointer duration-300 hover:animate-spin' onClick={refreshDevices} />
                     </div >
                     <div className='flex justify-end gap-x-4'>
 
@@ -63,27 +105,42 @@ const Footer = () => {
                             <div className='flex flex-col gap-y-1 border-r mx-2 px-2'>
                                 <Label htmlFor="apiCommand">API Command</Label>
                                 <div className='flex items-start space-x-2'>
-                                    <div className='flex  items-center'>
-                                        <Input onChange={(e) => setApiCommand(e.target.value)} value={apiCommand} className="h-8" placeholder="/api" />
-                                        <ApiListDropDown setApi={setApiCommand} />
+                                    <div className='flex flex-col'>
+                                        <div className='flex  items-start'>
+                                            <div className='flex flex-col'><Input onChange={(e) => setApiCommand(e.target.value)} value={apiCommand} className="h-8" placeholder="/api" />
+                                                <Select onValueChange={(value) => setRequestType(value)} value={requestType}>
+                                                    <SelectTrigger className="h-8 my-1">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="GET">GET</SelectItem>
+                                                        <SelectItem value="POST">POST</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className='pt-2 px-1'><ApiListDropDown setApi={setApiCommand} /></div>
+                                        </div>
+
                                     </div>
                                     <div className='flex flex-col gap-y-1'>
                                         <Button variant="outline" onClick={() => runCommandForDevices(selectedDevices, apiCommand, apiCommand)} className="h-8" disabled={selectedDevices.length === 0}>
                                             Run Command for Selected
                                         </Button>
-                                        <Button variant="outline" onClick={() => runCommandForDevices(devices, apiCommand, apiCommand)} className="h-8" disabled={devices.length === 0}>
+                                        <Button variant="outline" onClick={runCommandOnAllDevices} className="h-8" disabled={devices.length === 0}>
                                             Run Command for All
                                         </Button>
                                     </div>
+
                                 </div>
                             </div>
 
                             <div className='flex flex-col gap-y-1 mx-2 px-2'>
                                 <Label htmlFor="version">Reboot</Label>
-                                <Button disabled={selectedDevices.length === 0} onClick={() => runCommandForDevices(selectedDevices, 'reboot')} className="h-8">
+                                <Button disabled={selectedDevices.length === 0} onClick={rebootSelectedPlayers} className="h-8">
                                     Reboot Selected
                                 </Button>
-                                <Button className="h-8" disabled={devices.length === 0} onClick={() => rebootAllPlayers()}>Reboot All</Button>
+                                <Button className="h-8" disabled={devices.length === 0} onClick={rebootAllPlayers}>Reboot All</Button>
+
                             </div>
 
                             <div className='flex flex-col gap-y-1 mx-2 px-2 border-l'>

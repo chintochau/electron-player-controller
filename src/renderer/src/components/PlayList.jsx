@@ -70,75 +70,75 @@ const PlayList = () => {
   const { refreshTime, setRefreshTime } = useRefresh()
   const { toast } = useToast()
 
-  const sortAndSaveDevicesList = (devices) => {
-    // sort by room, and then by name
-    devices.sort((a, b) => {
-      if (a.room < b.room) return -1
-      if (a.room > b.room) return 1
-      if (a.name < b.name) return -1
-      if (a.name > b.name) return 1
-      return 0
-    })
-    setDevices(devices)
-    return devices
-  }
+  // const sortAndSaveDevicesList = (devices) => {
+  //   // sort by room, and then by name
+  //   devices.sort((a, b) => {
+  //     if (a.room < b.room) return -1
+  //     if (a.room > b.room) return 1
+  //     if (a.name < b.name) return -1
+  //     if (a.name > b.name) return 1
+  //     return 0
+  //   })
+  //   setDevices(devices)
+  //   return devices
+  // }
 
-  async function fetchDevices() {
-    const discoveredDevices = await window.api.discoverDevices()
-    let devicesList = []
-    for (const device of discoveredDevices) {
-      const { name, txt, addresses, referer } = device
-      const ip = referer.address
+  // async function fetchDevices() {
+  //   const discoveredDevices = await window.api.discoverDevices()
+  //   let devicesList = []
+  //   for (const device of discoveredDevices) {
+  //     const { name, txt, addresses, referer } = device
+  //     const ip = referer.address
 
-      const room = checkRoomForMac(txt.mac)
+  //     const room = checkRoomForMac(txt.mac)
 
-      devicesList.push({
-        name,
-        ip,
-        mac: txt.mac,
-        model: txt.model,
-        version: txt.version,
-        room,
-      })
-    }
+  //     devicesList.push({
+  //       name,
+  //       ip,
+  //       mac: txt.mac,
+  //       model: txt.model,
+  //       version: txt.version,
+  //       room,
+  //     })
+  //   }
 
-    devicesList = sortAndSaveDevicesList(devicesList)
-    return devicesList
-  }
+  //   devicesList = sortAndSaveDevicesList(devicesList)
+  //   return devicesList
+  // }
 
-  const setDeviceGroupingStatus = (ip, status) => {
-    const { isMaster, isSlave, master, slave } = status;
+  // const setDeviceGroupingStatus = (ip, status) => {
+  //   const { isMaster, isSlave, master, slave } = status;
 
-    setDevices((prevDevices) => {
-      // Create a new array by mapping over the previous state
-      return prevDevices.map((device) => {
-        if (device.ip === ip) {
-          // Return a new object with updated values
-          return {
-            ...device,
-            isMaster,
-            isSlave,
-            master,
-            slave
-          };
-        }
-        return device; // No changes, return the device as is
-      });
-    });
-  };
+  //   setDevices((prevDevices) => {
+  //     // Create a new array by mapping over the previous state
+  //     return prevDevices.map((device) => {
+  //       if (device.ip === ip) {
+  //         // Return a new object with updated values
+  //         return {
+  //           ...device,
+  //           isMaster,
+  //           isSlave,
+  //           master,
+  //           slave
+  //         };
+  //       }
+  //       return device; // No changes, return the device as is
+  //     });
+  //   });
+  // };
 
-  useEffect(() => {
-    fetchDevices()
-    // const interval = setInterval(() => {
-    //   fetchDevices();
-    // }, refreshTime * 1000);
-    // return () => clearInterval(interval);
-  }, [refreshTime])
+  // useEffect(() => {
+  //   fetchDevices()
+  //   // const interval = setInterval(() => {
+  //   //   fetchDevices();
+  //   // }, refreshTime * 1000);
+  //   // return () => clearInterval(interval);
+  // }, [refreshTime])
 
-  const refreshPage = () => {
-    setDevices([])
-    fetchDevices()
-  }
+  // const refreshPage = () => {
+  //   setDevices([])
+  //   fetchDevices()
+  // }
 
 
   return (
@@ -208,61 +208,61 @@ const PlayList = () => {
     </div>
   )
 
-  function renderDevicesByRoom(room) {
-    return (
-      <>
-        <TableRow className="hover:bg-transparent">
-          <TableCell colSpan={7} className="text-center py-1">
-            <div className="flex gap-1 items-center">
-              <p className="text-lg mr-2">Room: {room}</p>
-              <Button
-                className="h-6"
+  // function renderDevicesByRoom(room) {
+  //   return (
+  //     <>
+  //       <TableRow className="hover:bg-transparent">
+  //         <TableCell colSpan={7} className="text-center py-1">
+  //           <div className="flex gap-1 items-center">
+  //             <p className="text-lg mr-2">Room: {room}</p>
+  //             <Button
+  //               className="h-6"
 
-                onClick={() => {
-                  // loop through all devices, and call playerControl(play)
-                  for (const device of devices) {
-                    if (device.room === room && !device.isSlave) {
-                      playerControl(device.ip, 'play', null)
-                    }
-                  }
-                  toast({
-                    title: 'All Devices',
-                    description: 'Playing All Devices in Room: ' + room
-                  })
-                }}
-                variant="outline"
-              >
-                Play All
-              </Button>
-              <Button
-                className="h-6"
-                variant="outline"
-                onClick={() => {
-                  // loop through all devices, and call playerControl(stop)
-                  for (const device of devices) {
-                    if (device.room === room) {
-                      playerControl(device.ip, 'pause', null)
-                    }
-                  }
-                  toast({
-                    title: 'All Devices',
-                    description: 'Pausing All Devices in Room: ' + room
-                  })
-                }}
-              >
-                Pause All
-              </Button>
-            </div>
-          </TableCell>
-        </TableRow>
-        {devices
-          .filter((device) => device.room === room && !device.isSlave)
-          .map((device, index) => (
-            <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices} version={version} />
-          ))}
-      </>
-    )
-  }
+  //               onClick={() => {
+  //                 // loop through all devices, and call playerControl(play)
+  //                 for (const device of devices) {
+  //                   if (device.room === room && !device.isSlave) {
+  //                     playerControl(device.ip, 'play', null)
+  //                   }
+  //                 }
+  //                 toast({
+  //                   title: 'All Devices',
+  //                   description: 'Playing All Devices in Room: ' + room
+  //                 })
+  //               }}
+  //               variant="outline"
+  //             >
+  //               Play All
+  //             </Button>
+  //             <Button
+  //               className="h-6"
+  //               variant="outline"
+  //               onClick={() => {
+  //                 // loop through all devices, and call playerControl(stop)
+  //                 for (const device of devices) {
+  //                   if (device.room === room) {
+  //                     playerControl(device.ip, 'pause', null)
+  //                   }
+  //                 }
+  //                 toast({
+  //                   title: 'All Devices',
+  //                   description: 'Pausing All Devices in Room: ' + room
+  //                 })
+  //               }}
+  //             >
+  //               Pause All
+  //             </Button>
+  //           </div>
+  //         </TableCell>
+  //       </TableRow>
+  //       {devices
+  //         .filter((device) => device.room === room && !device.isSlave)
+  //         .map((device, index) => (
+  //           <Player key={index} device={device} index={index} setDeviceGroupingStatus={setDeviceGroupingStatus} devices={devices} setDevices={setDevices} version={version} />
+  //         ))}
+  //     </>
+  //   )
+  // }
 }
 
 export default PlayList
