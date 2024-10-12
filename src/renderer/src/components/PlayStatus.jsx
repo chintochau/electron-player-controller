@@ -139,13 +139,20 @@ const PlayStatus = ({ ip }) => {
     <div className="flex items-center gap-2 justify-end px-2">
       <div className="flex items-center justify-center w-16 h-16">
         {status?.image && (
-          <img className="w-full rounded-sm aspect-auto" src={getImageurl(status?.image)} alt="image" />
+          <img
+            className="w-full rounded-sm aspect-auto"
+            src={getImageurl(status?.image)}
+            alt="image"
+          />
         )}
       </div>
       <div className="flex flex-col flex-1 items-center">
         <TransportControlButton status={status} />
         {status?.progress !== null && (
-          <Progress className="h-1  w-full my-1" value={status?.progress} />
+          <Progress
+            className='h-1  w-full my-1'
+            value={status?.progress}
+          />
         )}
         <div className="overflow-hidden whitespace-nowrap w-52 ">
           <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>

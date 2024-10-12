@@ -7,6 +7,13 @@ import {
 } from '@tanstack/react-table'
 
 import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -17,11 +24,16 @@ import {
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Input } from '../../../../components/ui/input'
+import { Button } from '../../../../components/ui/button'
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState([])
-  const [searchString, setSearchString] = useState("")
+  const [searchString, setSearchString] = useState('')
+  const [columnVisibility, setColumnVisibility] = useState({
+    ip:false,
+    version:false,
+  })
   const table = useReactTable({
     data,
     columns,
@@ -29,10 +41,12 @@ export function DataTable({ columns, data }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn: 'includesString',
     state: {
       sorting,
-      globalFilter
+      globalFilter,
+      columnVisibility
     },
     onGlobalFilterChange: setGlobalFilter
   })
@@ -48,6 +62,31 @@ export function DataTable({ columns, data }) {
           placeholder="Search device..."
           className="max-w-sm"
         />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -80,7 +119,7 @@ export function DataTable({ columns, data }) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  <p>Searching devices {searchString ? `matching '${searchString}'` : ""}</p>
+                  <p>Searching devices {searchString ? `matching '${searchString}'` : ''}</p>
                   <Loader2 className="mx-auto h-6 w-6 animate-spin" />
                 </TableCell>
               </TableRow>
