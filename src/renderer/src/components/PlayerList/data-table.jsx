@@ -21,6 +21,7 @@ import { Input } from '../../../../components/ui/input'
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState([])
+  const [searchString, setSearchString] = useState("")
   const table = useReactTable({
     data,
     columns,
@@ -28,7 +29,7 @@ export function DataTable({ columns, data }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: "includesString",
+    globalFilterFn: 'includesString',
     state: {
       sorting,
       globalFilter
@@ -40,7 +41,10 @@ export function DataTable({ columns, data }) {
     <div>
       <div className="flex items-center py-4">
         <Input
-          onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+          onChange={(e) => {
+            setSearchString(e.target.value)
+            table.setGlobalFilter(String(e.target.value))
+          }}
           placeholder="Search device..."
           className="max-w-sm"
         />
@@ -76,6 +80,7 @@ export function DataTable({ columns, data }) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <p>Searching devices {searchString ? `matching '${searchString}'` : ""}</p>
                   <Loader2 className="mx-auto h-6 w-6 animate-spin" />
                 </TableCell>
               </TableRow>
