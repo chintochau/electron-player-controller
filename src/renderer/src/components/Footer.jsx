@@ -101,7 +101,7 @@ const Footer = () => {
 
     return (
         <div
-            className='fixed bottom-0 flex h-36 w-full items-center justify-center text-sm text-foreground px-10 bg-background'
+            className='flex h-36 w-full items-center justify-center text-sm text-foreground px-10'
         ><div className='w-full border-foreground h-full px-2 bg-background'>
 
                 <div className='flex h-full items-center justify-between'>

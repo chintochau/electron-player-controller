@@ -15,7 +15,7 @@ export const playerControl = async (ip, control, param) => {
 const PlayList = () => {
   const { devices } = useDevices()
   return (
-    <div className='pb-40 mx-10'>
+    <div className='pb-40 mx-10 h-[calc(100vh-192px)]'>
         <DataTable
           columns={columns}
           data={devices}

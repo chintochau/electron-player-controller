@@ -27,6 +27,7 @@ const AddPlayerButton = () => {
   }, [])
 
   const checkWifiFormat = (ssid) => {
+    if (!ssid) return
     // * - XXXX
     if (ssid.split(' - ').length > 1 && ssid.split(' - ')[1].length === 4) {
       setCorrectWifiFormat(true)

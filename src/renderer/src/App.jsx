@@ -21,8 +21,10 @@ function App() {
             <TableProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
               <Header />
-              <PlayList />
-              <Footer />
+              <div className="mx-10">
+                <PlayList />
+                <Footer />
+              </div>
             </ThemeProvider>
             </TableProvider>
           </DevicesProvider>

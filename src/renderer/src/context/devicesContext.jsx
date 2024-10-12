@@ -143,6 +143,9 @@ export const DevicesProvider = ({ children }) => {
             // 3. update the device version
             // 4. update lastUpdated timestamp
 
+            if (prevDevices.length === 0) {
+                return devicesList
+            }
             // compare updated list and existing list, remove device in existing list that are not in updated list and disconnected for 30 seconds
             const newDevices = prevDevices.map((prevDevice) => {
                 const device = devicesList.find((device) => device.mac === prevDevice.mac)
