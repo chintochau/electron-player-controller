@@ -53,6 +53,7 @@ export const columns = [
                 selectDeviceByIp,
                 removeSelectedDeviceByIp, } = useDevices()
             const device = row.original
+            if (!device) return null
             return (
                 <Checkbox
                     checked={row.getIsSelected()}
@@ -74,17 +75,20 @@ export const columns = [
         accessorKey: "name",
         header: ({ column }) => {
             return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
+                <div className="text-left">
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
             )
         },
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             return (
                 <div className="">
                     <p>{device.name}</p>
@@ -116,6 +120,7 @@ export const columns = [
             const { roomList, saveRoomForMac } = useStorage()
             const { setDevices } = useDevices()
             const device = row.original
+            if (!device) return null
             const [newRoomName, setNewRoomName] = useState("")
             return (
                 <div className="flex gap-1 items-center">
@@ -168,6 +173,7 @@ export const columns = [
         cell: ({ row }) => {
             const [api, setApi] = useState('')
             const device = row.original
+            if (!device) return null
             const openApiCall = (ip, command) => {
                 try {
 
@@ -210,6 +216,7 @@ export const columns = [
         header: "Status",
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             return (
                 <div className="text-center">
                     <SyncStatus ip={device.ip} />
@@ -222,6 +229,7 @@ export const columns = [
         header: "Play Status",
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             return (
                 <div className=" flex justify-center mx-auto">
                     <PlayStatus ip={device.ip} />
@@ -235,6 +243,7 @@ export const columns = [
         header: "Model: Version",
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             const { devices } = useDevices()
 
 
@@ -249,6 +258,7 @@ export const columns = [
         id: "upgrade", header: "Upgrade",
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             const { version } = useTable()
             const { updateDeviceStatus } = useDevices()
             const { toast } = useToast()
@@ -278,6 +288,7 @@ export const columns = [
 
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
             const { toast } = useToast()
             const { setDevices } = useDevices()
             const rebootPlayer = () => {
@@ -312,6 +323,7 @@ export const columns = [
         id: "actions",
         cell: ({ row }) => {
             const device = row.original
+            if (!device) return null
 
             return (
                 <div className="text-center">

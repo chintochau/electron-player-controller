@@ -10,11 +10,13 @@ import {
 } from '@/components/ui/dialog'
 import { Loader2 } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
+import { useDevices } from '../context/devicesContext'
 
 const CheckUpgrade = ({ ip }) => {
   const [upgradeResponse, setUpgradeResponse] = useState({})
   const [checking, setChecking] = useState(false)
   const [open, setOpen] = useState(false)
+  const {updateDeviceStatus } = useDevices()
   const checkUpgrade = async (ip) => {
     setChecking(true)
     const res = await window.api.checkUpgrade(ip)
@@ -50,6 +52,7 @@ const CheckUpgrade = ({ ip }) => {
                   onClick={() => {
                     window.api.playerControl(ip, 'upgrade', upgradeResponse?.version)
                     setOpen(false)
+                    updateDeviceStatus(ip, 'upgrading')
                   }}
                 >
                   Update Now
