@@ -22,17 +22,17 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Input } from '../../../../components/ui/input'
 import { Button } from '../../../../components/ui/button'
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, isCollapsed }) {
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState([])
   const [searchString, setSearchString] = useState('')
   const [columnVisibility, setColumnVisibility] = useState({
-    ip:false,
-    version:false,
+    ip: false,
+    version: false
   })
   const table = useReactTable({
     data,
@@ -50,6 +50,22 @@ export function DataTable({ columns, data }) {
     },
     onGlobalFilterChange: setGlobalFilter
   })
+
+  useEffect(() => {
+    console.log(isCollapsed)
+    console.log(
+      table.getAllColumns().map((column) => {
+        if (column.id === 'select') {
+          return
+        }
+        if (column.id === 'compact') {
+          column.toggleVisibility(isCollapsed)
+        } else {
+          column.toggleVisibility(!isCollapsed)
+        }
+      })
+    )
+  }, [isCollapsed])
 
   return (
     <div>

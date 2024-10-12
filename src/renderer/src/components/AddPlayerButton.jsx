@@ -46,7 +46,7 @@ const AddPlayerButton = () => {
         }
       }}
     >
-      <DialogTrigger className="absolute top-4 right-4">Add Player</DialogTrigger>
+      <DialogTrigger className="">Add</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Connect to your player</DialogTitle>

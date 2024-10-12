@@ -1,17 +1,19 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react'
 
-const TableContext = createContext();
+const TableContext = createContext()
 
-export const useTable = () => useContext(TableContext);
+export const useTable = () => useContext(TableContext)
 
 export const TableProvider = ({ children }) => {
-    const [version, setVersion] = useState('')
-    const value = {
-        version,
-        setVersion
-    };
+  const [version, setVersion] = useState('')
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
-    return (
-        <TableContext.Provider value={value}>{children}</TableContext.Provider>
-    );
-};
+  const value = {
+    version,
+    setVersion,
+    isCollapsed,
+    setIsCollapsed
+  }
+
+  return <TableContext.Provider value={value}>{children}</TableContext.Provider>
+}

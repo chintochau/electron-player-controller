@@ -1,17 +1,15 @@
-import { Button } from '../../components/ui/button'
 import { Toaster } from '../../components/ui/toaster'
-import Footer from './components/Footer'
-import Header from './components/Header'
-import { DataTable } from './components/PlayerList/data-table'
-import PlayList from './components/PlayList'
+
 import { DevicesProvider } from './context/devicesContext'
 import { StorageProvider } from './context/localStorageContext'
 import { RefreshProvider } from './context/refreshContext'
 import { TableProvider } from './context/tableContext'
 import { ThemeProvider } from './context/themeContext'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+
 
   return (
     <>
@@ -19,13 +17,9 @@ function App() {
         <StorageProvider>
           <DevicesProvider>
             <TableProvider>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <Header />
-              <div className="mx-10">
-                <PlayList />
-                <Footer />
-              </div>
-            </ThemeProvider>
+              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <Dashboard />
+              </ThemeProvider>
             </TableProvider>
           </DevicesProvider>
         </StorageProvider>
