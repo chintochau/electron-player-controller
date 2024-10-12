@@ -9,14 +9,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { ArrowDownNarrowWide, ChevronDownIcon, MoreHorizontal } from "lucide-react"
+import { ArrowDownNarrowWide, ArrowUpDown, ChevronDownIcon, MoreHorizontal } from "lucide-react"
 import SettingsMenu from "../SettingsMenu"
 import PlayStatus from "../PlayStatus"
 import SyncStatus from "../SyncStatus"
 import { useStorage } from "../../context/localStorageContext"
 import { useDevices } from "../../context/devicesContext"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ApiListDropDown from "../ApiListDropDown"
 import { useTable } from "../../context/tableContext"
 import CheckUpgrade from "../CheckUpgrade"
@@ -36,8 +36,8 @@ export const columns = [
                         table.getIsAllPageRowsSelected() ||
                         (table.getIsSomePageRowsSelected() && "indeterminate")
                     }
-                    onCheckedChange={(value) => { 
-                        table.toggleAllPageRowsSelected(!!value) 
+                    onCheckedChange={(value) => {
+                        table.toggleAllPageRowsSelected(!!value)
                         if (value) {
                             selectAllDevices()
                         } else {
@@ -71,9 +71,18 @@ export const columns = [
 
     },
     {
-        id: "name",
-        header: ({ table }) => (<div className="text-left">Name</div>
-        ),
+        accessorKey: "name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             const device = row.original
             return (
@@ -91,13 +100,23 @@ export const columns = [
     },
 
     {
-        id: "room",
-        header: ({ table }) => (<div className="flex items-center justify-center gap-1"><p>Room</p><ArrowDownNarrowWide className="h-5 w-5" /></div>
-        ),
+        accessorKey: "room",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Room
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             const { roomList, saveRoomForMac } = useStorage()
             const { setDevices } = useDevices()
             const device = row.original
+            const [newRoomName, setNewRoomName] = useState("")
             return (
                 <div className="flex gap-1 items-center">
                     <p>{device.room}</p>
@@ -106,6 +125,8 @@ export const columns = [
                             <ChevronDownIcon className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
+                            <DropdownMenuLabel>Room</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
                             {roomList.map((room) => (
                                 <DropdownMenuItem
                                     key={room}
@@ -121,14 +142,6 @@ export const columns = [
                                                     }
                                                     return prevDevice
                                                 })
-                                                .sort((a, b) => {
-                                                    // sort by room, and then by name
-                                                    if (a.room < b.room) return -1
-                                                    if (a.room > b.room) return 1
-                                                    if (a.name < b.name) return -1
-                                                    if (a.name > b.name) return 1
-                                                    return 0
-                                                })
                                         )
                                         saveRoomForMac(device.mac, room)
                                     }}
@@ -136,6 +149,14 @@ export const columns = [
                                     {room}
                                 </DropdownMenuItem>
                             ))}
+                            <form className="flex gap-1">
+                                <Input placeholder="New Room" className="h-7 w-40" value={newRoomName} onChange={(e) => setNewRoomName(e.target.value)} />
+                                <Button
+                                    variant="ghost"
+                                    className="h-7" type="submit" onClick={(e) => {
+                                        e.preventDefault(); console.log(newRoomName);
+                                    }}>Add</Button>
+                            </form>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -214,10 +235,13 @@ export const columns = [
         header: "Model: Version",
         cell: ({ row }) => {
             const device = row.original
+            const { devices } = useDevices()
+
+
             return (
                 <div className="text-center">
                     <p>{device.model}</p>
-                    <p>{device.version}</p>
+                    <p>{devices.find((d) => d.ip === device.ip)?.version}</p>
                 </div>
             )
         },
@@ -226,6 +250,9 @@ export const columns = [
         cell: ({ row }) => {
             const device = row.original
             const { version } = useTable()
+            const { updateDeviceStatus } = useDevices()
+            const { toast } = useToast()
+
             const upgradePlayer = () => {
                 playerControl(device.ip, 'upgrade', version)
                 updateDeviceStatus(device.ip, 'upgrading')

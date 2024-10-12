@@ -2,6 +2,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    getSortedRowModel,
 } from "@tanstack/react-table"
 
 import {
@@ -13,15 +14,22 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Loader2 } from "lucide-react"
+import { useState } from "react"
 
 export function DataTable({
     columns,
     data,
 }) {
+    const [sorting, setSorting] = useState([])
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        state: {
+            sorting,
+        },
     })
 
     return (
