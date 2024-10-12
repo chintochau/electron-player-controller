@@ -239,7 +239,7 @@ export const columns = [
 
     },
     {
-        id: "version",
+        accessorKey: "model",
         header: "Model: Version",
         cell: ({ row }) => {
             const device = row.original
@@ -285,7 +285,6 @@ export const columns = [
         }
     }, {
         id: "reboot", header: "Reboot",
-
         cell: ({ row }) => {
             const device = row.original
             if (!device) return null
@@ -331,5 +330,13 @@ export const columns = [
                 </div>
             )
         },
-    },
+    }, {
+        accessorKey: "version",
+        header:null,
+        cell:null,
+    }, {
+        accessorKey: "ip",
+        header:null,
+        cell:null,
+    }
 ]
