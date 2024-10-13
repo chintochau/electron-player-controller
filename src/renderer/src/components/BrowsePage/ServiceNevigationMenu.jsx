@@ -25,7 +25,13 @@ const ServiceNevigationMenu = ({ service }) => {
 
   return (
     <NavigationMenuItem key={service.name}>
-      <NavigationMenuTrigger onPointerOver={handleTriggerHover} className="px-1 h-6 xl:px-2 xl:h-10">
+      <NavigationMenuTrigger
+        onPointerOver={handleTriggerHover}
+        onClick={() => {
+          handleLinkClick(`/ui/browseMenuGroup?service=${service.id}&playnum=1`)
+        }}
+        className="px-1 h-6 xl:px-2 xl:h-10"
+      >
         <div className="flex items-center">
           <img src={service.iconSrc} className="w-4 h-4 mr-2" />
           {service.name}
@@ -56,7 +62,7 @@ const ServiceNevigationMenu = ({ service }) => {
                     key={`item-${item.$.title}-${itemIndex}`} // Combines title and index for uniqueness
                     variant="outline"
                     size="sm"
-                    className="text-sm cursor-pointer"
+                    className="text-sm cursor-pointer text-nowrap"
                     onClick={() => {
                       handleLinkClick(item.action[0].$.URI + '&playnum=1')
                     }}

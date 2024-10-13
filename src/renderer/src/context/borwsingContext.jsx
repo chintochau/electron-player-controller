@@ -76,8 +76,6 @@ export const BrowsingProvider = ({ children }) => {
     }
     if (response && response.screen) {
       setScreen(response.screen)
-      console.log(res)
-
       setXmlScreen(res.xmlText)
     }
   }

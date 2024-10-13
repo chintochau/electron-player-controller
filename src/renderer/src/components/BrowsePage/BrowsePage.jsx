@@ -23,11 +23,8 @@ const BrowsePage = () => {
   const {
     url,
     setUrl,
-    serviceSubMenus,
     serviceList,
-    loadSDUI,
     loadServiceList,
-    loadSubmenuForService,
     selectedPlayer,
     setSelectedPlayer,
     screen,
@@ -35,8 +32,7 @@ const BrowsePage = () => {
     xmlScreen
   } = useBrowsing()
 
-  const [selectedService, setSelectedService] = useState('Tidal')
-  const [displayMode, setDisplayMode] = useState('json') // json or xml or gui
+  const [displayMode, setDisplayMode] = useState('xml') // json or xml or gui
 
   useEffect(() => {
     if (serviceList.length === 0) {
@@ -45,11 +41,6 @@ const BrowsePage = () => {
     }
   }, [selectedPlayer])
 
-  useEffect(() => {
-    loadSubmenuForService(selectedService)
-  }, [selectedService])
-
-  const submenu = serviceSubMenus[selectedService]
   return (
     <ScrollArea className="w-full h-full p-4 overflow-x-hidden">
       <div id="urlBar" className="flex items-center justify-between sticky top-0 z-50">
