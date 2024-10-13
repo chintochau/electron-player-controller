@@ -150,7 +150,7 @@ const PlayStatus = ({ ip }) => {
         <TransportControlButton status={status} />
         {status?.progress !== null && (
           <Progress
-            className='h-1  w-full my-1'
+            className='h-1  w-44 my-1'
             value={status?.progress}
           />
         )}

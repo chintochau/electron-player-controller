@@ -52,19 +52,23 @@ export function DataTable({ columns, data, isCollapsed }) {
   })
 
   useEffect(() => {
-    console.log(isCollapsed)
-    console.log(
-      table.getAllColumns().map((column) => {
-        if (column.id === 'select') {
-          return
-        }
-        if (column.id === 'compact') {
+    table.getAllColumns().map((column) => {
+      switch (column.id) {
+        case 'ip':
+        case 'version':
+          column.toggleVisibility(false)
+          break
+        case 'select':
+          column.toggleVisibility(true)
+          break
+        case 'compact':
           column.toggleVisibility(isCollapsed)
-        } else {
+          break
+        default:
           column.toggleVisibility(!isCollapsed)
-        }
-      })
-    )
+          break
+      }
+    })
   }, [isCollapsed])
 
   return (
