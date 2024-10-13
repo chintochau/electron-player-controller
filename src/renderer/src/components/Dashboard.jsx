@@ -10,12 +10,11 @@ import SettingBar from './SettingBar'
 const Dashboard = () => {
   const { isCollapsed } = useTable()
   return (
-    <>
       <div className="flex">
         <div
           className={cn(
             'duration-300 ease-in overflow-hidden',
-            isCollapsed ? ' min-w-96 w-96 px-2' : 'pl-10 w-full'
+            isCollapsed ? ' min-w-fit w-96 px-2' : 'pl-10 w-full'
           )}
         >
           <Header isCollapsed={isCollapsed} />
@@ -27,7 +26,6 @@ const Dashboard = () => {
         </div>
         <SettingBar />
       </div>
-    </>
   )
 }
 

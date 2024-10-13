@@ -72,7 +72,7 @@ export function DataTable({ columns, data, isCollapsed }) {
   }, [isCollapsed])
 
   return (
-    <div>
+    <>
       <div className="flex items-center py-4">
         <Input
           onChange={(e) => {
@@ -83,7 +83,7 @@ export function DataTable({ columns, data, isCollapsed }) {
           className="max-w-sm"
         />
 
-        <DropdownMenu>
+        {!isCollapsed && <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Columns
@@ -106,7 +106,7 @@ export function DataTable({ columns, data, isCollapsed }) {
                 )
               })}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu>}
       </div>
       <div className="rounded-md border">
         <Table>
@@ -147,6 +147,6 @@ export function DataTable({ columns, data, isCollapsed }) {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </>
   )
 }
