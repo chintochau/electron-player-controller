@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/dialog'
 import { useRefresh } from '../context/refreshContext'
 import { cn } from '@/lib/utils'
+import { CirclePlusIcon } from 'lucide-react'
+import { Button } from '../../../components/ui/button'
 
 const AddPlayerButton = () => {
   const { shouldRefresh, setShouldRefresh } = useRefresh()
@@ -46,7 +48,7 @@ const AddPlayerButton = () => {
         }
       }}
     >
-      <DialogTrigger className="">Add</DialogTrigger>
+      <DialogTrigger ><Button variant="ghost" size="icon"><CirclePlusIcon className="h-6 w-6" /></Button></DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Connect to your player</DialogTitle>

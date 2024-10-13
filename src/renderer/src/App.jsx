@@ -6,10 +6,10 @@ import { RefreshProvider } from './context/refreshContext'
 import { TableProvider } from './context/tableContext'
 import { ThemeProvider } from './context/themeContext'
 import Dashboard from './components/Dashboard'
+import { BrowsingProvider } from './context/borwsingContext'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
-
 
   return (
     <>
@@ -17,9 +17,11 @@ function App() {
         <StorageProvider>
           <DevicesProvider>
             <TableProvider>
-              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <Dashboard />
-              </ThemeProvider>
+              <BrowsingProvider>
+                <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                  <Dashboard />
+                </ThemeProvider>
+              </BrowsingProvider>
             </TableProvider>
           </DevicesProvider>
         </StorageProvider>

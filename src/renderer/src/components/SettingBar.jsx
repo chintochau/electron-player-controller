@@ -1,9 +1,10 @@
-import { MusicIcon, SettingsIcon } from 'lucide-react'
+import { EarthIcon, MusicIcon, SettingsIcon } from 'lucide-react'
 import React from 'react'
 import { Button } from '../../../components/ui/button'
 import ThemeControlButton from './ThemeControlButton'
 import { useTable } from '../context/tableContext'
 import { cn } from '../lib/utils'
+import AddPlayerButton from './AddPlayerButton'
 
 const SettingBar = () => {
   const { isCollapsed, setIsCollapsed } = useTable()
@@ -12,14 +13,17 @@ const SettingBar = () => {
       <Button
         onClick={() => setIsCollapsed(!isCollapsed)}
         variant="ghost"
+        size="icon"
         className={cn('p-1 hover:bg-accent rounded-md', isCollapsed ? 'bg-accent' : '')}
       >
-        <MusicIcon className="w-6 h-6" />
+        <EarthIcon className="w-6 h-6" />
       </Button>
-      <Button variant="ghost" className="p-1 hover:bg-accent rounded-md">
+      {/* <Button variant="ghost" className="p-1 hover:bg-accent rounded-md">
         <SettingsIcon className="w-6 h-6" />
-      </Button>
+      </Button> */}
       <ThemeControlButton />
+      <AddPlayerButton />
+
     </div>
   )
 }

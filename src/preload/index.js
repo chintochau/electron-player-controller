@@ -11,6 +11,7 @@ const api = {
   checkUpgrade:(ip) => ipcRenderer.invoke('check-upgrade', ip),
   getCurrentWifi: () => ipcRenderer.invoke('get-current-wifi'),
   runCommandForDevice: (ip, command, type) => ipcRenderer.invoke('run-command-for-device', {ip, command, type}),
+  loadSDUIPage: (url,debug) => ipcRenderer.invoke('load-sd-ui-page', {url, debug}),
 
 }
 

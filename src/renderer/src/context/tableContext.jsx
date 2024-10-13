@@ -6,7 +6,7 @@ export const useTable = () => useContext(TableContext)
 
 export const TableProvider = ({ children }) => {
   const [version, setVersion] = useState('')
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const value = {
     version,

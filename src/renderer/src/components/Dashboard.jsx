@@ -21,7 +21,7 @@ const Dashboard = () => {
           <PlayList isCollapsed={isCollapsed} />
           <Footer isCollapsed={isCollapsed} />
         </div>
-        <div className={cn('duration-300 ease-in', isCollapsed ? 'mx-0 w-full' : 'w-0')}>
+        <div className={cn('duration-300 ease-in', isCollapsed ? 'mx-0 w-[calc(100vw-450px)] overflow-x-hidden' : 'w-0')}>
           <BrowsePanel isCollapsed={isCollapsed}/>
         </div>
         <SettingBar />

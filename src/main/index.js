@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
-import { checkUpgrade, getCurrentWifi } from './functions'
+import { checkUpgrade, getCurrentWifi, loadSDUIPage } from './functions'
 
 let masterWindow
 function createWindow() {
@@ -326,6 +326,11 @@ ipcMain.handle('check-upgrade', async (event, ip) => {
 ipcMain.handle("get-current-wifi", async () => {
   return await getCurrentWifi();
 });
+
+ipcMain.handle("load-sd-ui-page", async (event, {url,debug}) => {
+  return await loadSDUIPage(url,debug);
+});
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

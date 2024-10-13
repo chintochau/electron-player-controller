@@ -48,7 +48,22 @@ export const getCurrentWifi = async () => {
     } else {
       return null
     }
-    
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const loadSDUIPage = async (url, debug) => {
+  try {
+    const res = await fetch(url)
+    const xmlText = await res.text()
+    const xml = await xml2js.parseStringPromise(xmlText)
+    if (debug) {
+      console.log(xml);
+    }
+
+    return xml
   } catch (error) {
     console.log(error)
   }

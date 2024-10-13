@@ -75,7 +75,7 @@ export const columns = [
     cell: ({ row }) => {
       const device = row.original
       if (!device) return null
-      return <CompactPlayer ip={device.ip}/>
+      return <CompactPlayer ip={device.ip} />
     }
   },
   {
@@ -203,7 +203,7 @@ export const columns = [
         }
       }
       return (
-        <div className="flex gap-1 items-center">
+        <form className="flex gap-1 items-center">
           <Input
             placeholder="API"
             className="h-7 w-40"
@@ -214,15 +214,17 @@ export const columns = [
           <ApiListDropDown ip={device.ip} openApiCall={openApiCall} setApi={setApi} />
 
           <Button
+            type="submit"
             variant="outline"
             className="h-7"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
               openApiCall(device.ip, api)
             }}
           >
             Go
           </Button>
-        </div>
+        </form>
       )
     }
   },
