@@ -1,25 +1,18 @@
 import React from 'react'
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from '@/components/ui/navigation-menu'
-import { useEffect } from 'react'
-import { useBrowsing } from '../../context/borwsingContext'
-import { getMusicServiceString } from '../../lib/utils'
-import { Button } from '../../../../components/ui/button'
+import { NavigationMenu, NavigationMenuList } from '@/components/ui/navigation-menu'
+
 import ServiceNevigationMenu from './ServiceNevigationMenu'
 const ServiceMenuList = ({ musicServiceList }) => {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="w-full flex justify-start flex-wrap gap-3">
-        {musicServiceList.map((service) => (
-          <ServiceNevigationMenu key={service.name} service={service} />
-        ))}
+      <NavigationMenuList className="w-full flex justify-start flex-wrap gap-0 xl:gap-3">
+        {musicServiceList
+          .filter((service) => service.name !== 'Spotify')
+          .map((service) => {            
+            return (
+                <ServiceNevigationMenu key={service.name} service={service} />
+            )
+          })}
       </NavigationMenuList>
     </NavigationMenu>
   )

@@ -12,13 +12,13 @@ import { Loader2, SearchIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
 import { useBrowsing } from '../../context/borwsingContext'
-import { getMusicServiceString } from '../../lib/utils'
 import JsonView from 'react18-json-view'
 
 import 'react18-json-view/src/style.css'
 import { Button } from '../../../../components/ui/button'
+import XMLViewer from 'react-xml-viewer'
 
-const MusicPage = () => {
+const BrowsePage = () => {
   const { devices } = useDevices()
   const {
     url,
@@ -30,24 +30,18 @@ const MusicPage = () => {
     loadSubmenuForService,
     selectedPlayer,
     setSelectedPlayer,
-    screen, setScreen
+    screen,
+    displayMainScreen,
+    xmlScreen
   } = useBrowsing()
 
   const [selectedService, setSelectedService] = useState('Tidal')
-
-  const loadMainScreen = async (uri) => {
-    const response = await loadSDUI(uri, true)
-    if (!response) {
-      return
-    }
-    if (response && response.screen) {
-      setScreen(response.screen)
-    }
-  }
+  const [displayMode, setDisplayMode] = useState('json') // json or xml or gui
 
   useEffect(() => {
     if (serviceList.length === 0) {
       loadServiceList()
+      displayMainScreen('/ui/Home?playnum=1')
     }
   }, [selectedPlayer])
 
@@ -94,7 +88,7 @@ const MusicPage = () => {
             className="rounded-r-full"
             onClick={(e) => {
               e.preventDefault()
-              loadMainScreen(url)
+              displayMainScreen(url)
             }}
           >
             Load
@@ -106,86 +100,33 @@ const MusicPage = () => {
         </div>
       </div>
 
-      <div className="hidden xl:block">
+      <div className="flex justify-between">
         <ServiceMenuList musicServiceList={serviceList} />
-      </div>
 
-      <div id="musicPageControlBar" className="flex items-center flex-wrap xl:hidden ">
-        <Select
-          defaultValue="TIDAL"
-          onValueChange={(value) => {
-            loadSubmenuForService(value)
-            setSelectedService(getMusicServiceString(value))
-          }}
-        >
+        <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
           <SelectTrigger className="w-fit h-8 m-1 border-none">
-            <SelectValue placeholder="Music Service" />
+            <SelectValue placeholder="Display Mode" />
           </SelectTrigger>
           <SelectContent>
-            {serviceList.map((service) => {
-              return (
-                <SelectItem value={service.name} key={service.name}>
-                  <div className="flex items-center gap-2 ">
-                    <div className="w-6 h-6">
-                      <img src={service.iconSrc} />
-                    </div>
-                    <p>{service.name}</p>
-                  </div>
-                </SelectItem>
-              )
-            })}
+            <SelectItem value="json" onClick={() => setDisplayMode('json')}>
+              JSON
+            </SelectItem>
+            <SelectItem value="xml" onClick={() => setDisplayMode('xml')}>
+              XML
+            </SelectItem>
+            <SelectItem value="gui" onClick={() => setDisplayMode('gui')}>
+              GUI
+            </SelectItem>
           </SelectContent>
         </Select>
-        {submenu && submenu.screen.$.service && (
-          <div className="flex justify-start items-center gap-2 flex-wrap pl-4">
-            {submenu && submenu.screen && submenu.screen.row && (
-              <>
-                {submenu.screen.row.map((row) => {
-                  return (
-                    <Button className="text-sm" variant="outline" size="sm" key={row.$.title}>
-                      {row.$.title}
-                    </Button>
-                  )
-                })}
-              </>
-            )}
-            {submenu && submenu.screen && submenu.screen.list && (
-              <>
-                {submenu.screen.list.map((list) => {
-                  return (
-                    <div
-                      className="flex justify-start items-center gap-2 flex-wrap"
-                      key={list.$.id}
-                    >
-                      {list &&
-                        list.item &&
-                        list.item.map((item) => {
-                          return (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-sm"
-                              key={item.$.title}
-                            >
-                              {item.$.title}
-                            </Button>
-                          )
-                        })}
-                    </div>
-                  )
-                })}
-              </>
-            )}
-          </div>
-        )}
       </div>
-      <div>
-        <JsonView src={screen} className="text-sm" />
-      </div>
+
+      {displayMode === 'xml' && <XMLViewer xml={xmlScreen} />}
+      {displayMode === 'json' && <JsonView src={screen} />}
     </ScrollArea>
   )
 }
 
-export default MusicPage
+export default BrowsePage
 
 const demoDFata = {}

@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useDevices } from './devicesContext'
-import { getMusicServiceString } from '../lib/utils'
 
 const BrowsingContext = createContext()
 
@@ -13,6 +12,7 @@ export const BrowsingProvider = ({ children }) => {
   const [serviceSubMenus, setServiceSubMenus] = useState({})
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [screen, setScreen] = useState(null)
+  const [xmlScreen, setXmlScreen] = useState(null)
 
   useEffect(() => {
     if (!selectedPlayer) {
@@ -23,12 +23,14 @@ export const BrowsingProvider = ({ children }) => {
   const loadServiceList = async () => {
     if (devices.length > 0) {
       const ip = selectedPlayer.ip || devices[0].ip
-      const response = await loadSDUI(`/ui/Sources?playnum=1`)
+      const res = await loadSDUI(`/ui/Sources?playnum=1`)
+      const response = res.json
       if (response && response.screen && response.screen.row && response.screen.row.length > 0) {
         const musicServiceArray = response.screen.row[1].list[0].service
         const musicServiceList = musicServiceArray.map((service) => {
           return {
             name: service.$.title,
+            id: service.action[0].$.service,
             icon: service.$.icon,
             iconSrc: `http://${ip}:11000${service.$.icon}`,
             uri: service.action[0].$.URI
@@ -40,30 +42,17 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const loadSubmenuForService = async (musicService) => {
-    const service = getMusicServiceString(musicService)
-    // check if service is already loaded
-    if (serviceSubMenus[service]) {
-      console.log('already loaded', service)
+    if (serviceSubMenus[musicService]) {
       return
     }
-    let uri
-    switch (service) {
-      case 'Tidal':
-        uri = `/ui/browseMenuGroup?service=${getMusicServiceString('Tidal')}&playnum=1`
-        break
-        case 'Qobuz':
-        uri = `/ui/browseMenuGroup?service=${getMusicServiceString('Qobuz')}&playnum=1`
-        break
-      default:
-        uri = `/ui/browseMenuGroup?service=${getMusicServiceString('TuneIn')}&playnum=1`
-        break
-    }
+    let uri = `/ui/browseMenuGroup?service=${musicService}&playnum=1`
 
     if (devices.length > 0) {
-      const ip = devices[0].ip
-      const response = await loadSDUI(uri)
+      const ip = selectedPlayer.ip || devices[0].ip
+      const res = await loadSDUI(uri)
+      const response = res.json
       if (response && response.screen) {
-        setServiceSubMenus((prev) => ({ ...prev, [service]: { screen: response.screen } }))
+        setServiceSubMenus((prev) => ({ ...prev, [musicService]: { screen: response.screen } }))
       }
     }
   }
@@ -76,14 +65,20 @@ export const BrowsingProvider = ({ children }) => {
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 
-  const loadMainScreen = async (uri) => {
-    setScreen("Loading...")
-    const response = await loadSDUI(uri, true)
+  const displayMainScreen = async (uri) => {
+    setScreen('Loading...')
+    setXmlScreen('<Loading.../>')
+    const res = await loadSDUI(uri, true)
+
+    const response = res.json
     if (!response) {
       return
     }
     if (response && response.screen) {
       setScreen(response.screen)
+      console.log(res)
+
+      setXmlScreen(res.xmlText)
     }
   }
 
@@ -100,7 +95,8 @@ export const BrowsingProvider = ({ children }) => {
     setSelectedPlayer,
     screen,
     setScreen,
-    loadMainScreen
+    displayMainScreen,
+    xmlScreen
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

@@ -10,25 +10,22 @@ import {
 } from '@/components/ui/navigation-menu'
 import { useEffect } from 'react'
 import { useBrowsing } from '../../context/borwsingContext'
-import { getMusicServiceString } from '../../lib/utils'
-import { Button } from '../../../../components/ui/button'
 
 const ServiceNevigationMenu = ({ service }) => {
-  const { serviceSubMenus, loadSubmenuForService, setUrl, loadMainScreen } = useBrowsing()
-  const serviceName = getMusicServiceString(service.name)
-  const submenu = serviceSubMenus[serviceName]
+  const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen } = useBrowsing()
+  const submenu = serviceSubMenus[service.id]
   const handleTriggerHover = () => {
-    loadSubmenuForService(serviceName)
+    loadSubmenuForService(service.id)
   }
 
   const handleLinkClick = (uri) => {
     setUrl(uri)
-    loadMainScreen(uri)
+    displayMainScreen(uri)
   }
 
   return (
     <NavigationMenuItem key={service.name}>
-      <NavigationMenuTrigger onPointerOver={handleTriggerHover}>
+      <NavigationMenuTrigger onPointerOver={handleTriggerHover} className="px-1 h-6 xl:px-2 xl:h-10">
         <div className="flex items-center">
           <img src={service.iconSrc} className="w-4 h-4 mr-2" />
           {service.name}

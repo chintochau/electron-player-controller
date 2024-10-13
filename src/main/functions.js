@@ -63,7 +63,7 @@ export const loadSDUIPage = async (url, debug) => {
       console.log(xml);
     }
 
-    return xml
+    return {json:xml, xmlText}
   } catch (error) {
     console.log(error)
   }
