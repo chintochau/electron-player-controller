@@ -158,7 +158,6 @@ const Footer = ({ isCollapsed }) => {
                       Run Command for Selected
                     </Button>
                     <Button
-                      variant="outline"
                       onClick={runCommandOnAllDevices}
                       className="h-8"
                       disabled={devices.length === 0}
@@ -174,6 +173,7 @@ const Footer = ({ isCollapsed }) => {
                 <Button
                   disabled={selectedDevices.length === 0}
                   onClick={rebootSelectedPlayers}
+                  variant="outline"
                   className="h-8"
                 >
                   Reboot Selected
@@ -194,6 +194,7 @@ const Footer = ({ isCollapsed }) => {
                   />
                   <div className="flex flex-col gap-y-1">
                     <Button
+                      variant="outline"
                       className="h-8"
                       disabled={selectedDevices.length === 0 || version.length === 0}
                       onClick={upgradeSelectedPlayers}
