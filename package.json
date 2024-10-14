@@ -1,10 +1,10 @@
 {
   "name": "bluos-player-controller",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "BluOS Player Controller",
   "main": "./out/main/index.js",
-  "author": "Jason",
-  "homepage": "https://electron-vite.org",
+  "author": "Jason Chau",
+  "homepage": "https://www.bluesound.com/can/bluos",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",

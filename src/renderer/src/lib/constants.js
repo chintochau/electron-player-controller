@@ -1,5 +1,12 @@
 import { AudioWaveformIcon, Drill, Headset, Network, Wifi } from 'lucide-react'
 
+
+export const enabledFeatures = {
+  // browser: true,
+  // addPlayer: true,
+  darkMode: true
+}
+
 export const commandList = [
   {
     name: "Disable Upgrade Popup",
