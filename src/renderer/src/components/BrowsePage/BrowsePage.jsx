@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Loader2, SearchIcon, SendHorizonalIcon } from 'lucide-react'
+import { ArrowLeftIcon, Loader2, SearchIcon, SendHorizonalIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
 import { useBrowsing } from '../../context/borwsingContext'
@@ -37,7 +37,8 @@ const BrowsePage = () => {
     setSearchText,
     isSearchMode,
     setIsSearchMode,
-    performSearching
+    performSearching,
+    goToPreviousUrl
   } = useBrowsing()
 
   useEffect(() => {
@@ -80,8 +81,19 @@ const BrowsePage = () => {
           </SelectContent>
         </Select>
         <form className="flex-auto w-96  flex items-center">
+          <Button
+            variant="outline"
+            type="button"
+            className="rounded-l-full"
+            onClick={(e) => {
+              e.preventDefault()
+              goToPreviousUrl()
+            }}
+            >
+              <ArrowLeftIcon className="w-4 h-4" />
+            </Button>
           <Input
-            className="rounded-l-full border-r-0"
+            className="border-x-0  rounded-none"
             placeholder="path"
             value={url}
             onChange={(e) => setUrl(e.target.value)}

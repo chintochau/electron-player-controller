@@ -21,12 +21,21 @@ export const BrowsingProvider = ({ children }) => {
   const [displayMode, setDisplayMode] = useState('xml')
   const [searchableServices, setSearchableServices] = useState(searchableServicesList)
   const [isSearchMode, setIsSearchMode] = useState(false)
+  const [historyUrl, setHistoryUrl] = useState([])
 
   useEffect(() => {
     if (!selectedPlayer) {
       setSelectedPlayer(devices[0])
     }
   }, [devices])
+
+  const goToPreviousUrl = () => {
+    if (historyUrl.length > 0) {
+      setUrl(historyUrl[historyUrl.length - 1])
+      displayMainScreen(historyUrl[historyUrl.length - 1])
+      setHistoryUrl(historyUrl.slice(0, -1))
+    }
+  }
 
   const getImagePath = (uri) => {
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
@@ -83,6 +92,7 @@ export const BrowsingProvider = ({ children }) => {
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
     setLoading(true)
+    setHistoryUrl([...historyUrl, url])
     const res = await loadSDUI(uri)
     const response = res.json
     if (!response) {
@@ -156,7 +166,8 @@ export const BrowsingProvider = ({ children }) => {
     setSearchableServices,
     performSearching,
     isSearchMode,
-    setIsSearchMode
+    setIsSearchMode,
+    goToPreviousUrl
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>
