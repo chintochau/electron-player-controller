@@ -28,7 +28,7 @@ const playlists = [
     'Playlist 10',
 ]
 
-const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait', ...props }) => {
+const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait',isArtist, ...props }) => {
   const { performAction } = useSdui()
   const { getImagePath } = useBrowsing()
   
@@ -41,7 +41,8 @@ const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait', .
               src={getImagePath(smallThumbnail?.$?.icon)}
               className={cn(
                 'h-40 w-40 object-cover transition-all hover:scale-105',
-                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
+                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square',
+                isArtist ? "rounded-full" : ""
               )}
             />
           </div>

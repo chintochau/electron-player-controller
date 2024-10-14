@@ -23,6 +23,7 @@ const SearchView = () => {
         xmlSearchResult,
         setXmlSearchResult,
         displayMode,
+        setIsSearchMode,
     } = useBrowsing()
 
     useEffect(() => {
@@ -32,6 +33,11 @@ const SearchView = () => {
         }
     }, [selectedPlayer])
 
+    const exitSearch = () => {
+        setSearchResult(null)
+        setIsSearchMode(false)
+    }
+
     return (
         <ScrollArea className="w-full h-full p-4 overflow-x-hidden pt-16">
             <div className='w-[calc(100vw-550px)] flex items-center justify-between fixed top-24'>
@@ -39,7 +45,7 @@ const SearchView = () => {
                     className="text-2xl font-bold">
                     Search Result
                 </h3>
-                <XCircleIcon className='h-6 w-6 cursor-pointer duration-300 hover:text-red-500' onClick={() => setSearchResult(null)} />
+                <XCircleIcon className='h-6 w-6 cursor-pointer duration-300 hover:text-red-500' onClick={exitSearch} />
             </div>
             {displayMode === 'xml' && <XMLViewer xml={xmlSearchResult} />}
             {displayMode === 'json' && <JsonView src={searchResult} />}

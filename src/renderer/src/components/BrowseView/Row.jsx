@@ -30,6 +30,10 @@ const Row = ({ row, index }) => {
   }, []);
 
 
+  const {$} = row || {}
+  const {title} = $ || {}
+
+  const isArtist = title === 'Artist' || title === 'Artists'
 
   return (
     <>
@@ -44,7 +48,7 @@ const Row = ({ row, index }) => {
           }
         }}
       >
-        <h2 className={cn('text-xl mx-4 font-medium text-primary/90')}>{row?.$?.title ?? ''}</h2>
+        <h2 className={cn('text-xl mx-4 font-medium text-primary/90')}>{title}</h2>
         {row?.action?.[0]?.$ && (
           <Button variant="ghost">
             <ChevronRightIcon className="w-4 h-4" />
@@ -56,7 +60,7 @@ const Row = ({ row, index }) => {
           <div className={cn("", (row?.largeThumbnail?.length > 12 && index % 2 !== 0) ? "px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2" : 'flex w-max space-x-4 p-4')}>
             {row?.largeThumbnail?.map((largeThumbnail) => {
               return (
-                <LargeThumbnail key={largeThumbnail?.$?.title} largeThumbnail={largeThumbnail} size={index % 2 === 0 ? 'large' : 'small'} />
+                <LargeThumbnail key={largeThumbnail?.$?.title} largeThumbnail={largeThumbnail} size={index % 2 === 0 ? 'large' : 'small'} isArtist={isArtist}/>
               )
             })}
           </div>
@@ -68,7 +72,7 @@ const Row = ({ row, index }) => {
           <div className={cn("px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2", row?.smallThumbnail?.length > 12 ? 'grid-rows-2' : ' ')}>
             {row?.smallThumbnail?.map((smallThumbnail) => {
               return (
-                <SmallThumbnail key={smallThumbnail?.$?.title} smallThumbnail={smallThumbnail} />
+                <SmallThumbnail key={smallThumbnail?.$?.title} smallThumbnail={smallThumbnail}  isArtist={isArtist}/>
               )
             })}
           </div>

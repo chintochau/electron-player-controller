@@ -53,8 +53,6 @@ const GUI = ({ screen }) => {
           />
         ))}
       </div>
-
-      <div className="pb-20" />
     </div>
   )
 }

@@ -29,7 +29,7 @@ const playlists = [
 ]
 
 
-const Item = ({ item, large }) => {
+const Item = ({ item, isArtist }) => {
     // size = 'small' | 'large' 
     const { $ } = item
     const { image, quality, subTitle, title, duration } = $
@@ -39,8 +39,10 @@ const Item = ({ item, large }) => {
             <ContextMenu>
                 <ContextMenuTrigger>
                 {image && <div className={
-                cn(' rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex w-14 h-14 lg:w-20 lg:h-20 xl:w-full xl:h-full')}>
-                <img className='transition-all hover:scale-105 w-full h-full object-cover ' src={image && getImagePath(image)} />
+                cn(' rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
+                    isArtist ? "rounded-full" : "",
+                )}>
+                <img className='transition-all hover:scale-105 w-full h-full object-cover aspect-square ' src={image && getImagePath(image)} />
             </div>}
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-40">
