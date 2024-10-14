@@ -1,4 +1,4 @@
-import { AudioWaveformIcon, Drill, Headset, Wifi } from 'lucide-react'
+import { AudioWaveformIcon, Drill, Headset, Network, Wifi } from 'lucide-react'
 
 export const commandList = [
   {
@@ -37,6 +37,11 @@ export const settingsList = [
     name: 'Wifi Settings',
     path: 'wificfg',
     icon: Wifi
+  },
+  {
+    name:"Static IP",
+    path:"staticip",
+    icon:Network
   },
   {
     name: 'Diagnostics',

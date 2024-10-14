@@ -17,7 +17,7 @@ export const StorageProvider = ({ children }) => {
 
 
 
-  const saveRoomList = (room) => {
+  const addRoomToList = (room) => {
     // make sure the room is not already in the list
     if (!roomList.includes(room)) {
       setRoomList(roomList => [...roomList, room]);
@@ -59,7 +59,7 @@ export const StorageProvider = ({ children }) => {
     savedPlayers,
     saveRoomForMac,
     roomList,
-    saveRoomList,
+    addRoomToList,
     checkRoomForMac,
     removeRoomFromList,
     customApiList,

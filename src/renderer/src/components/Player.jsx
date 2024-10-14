@@ -51,22 +51,23 @@ import { useStorage } from '../context/localStorageContext'
 import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
-import { goToIpAddress, playerControl } from './PlayList'
+import { goToIpAddress,  } from './PlayList'
 import { Progress } from '@/components/ui/progress'
 import AddPlayerToGroup from './AddPlayerToGroup'
 import ApiListDropDown from './ApiListDropDown'
 import { useDevices } from '../context/devicesContext'
+import { playerControl } from '../lib/utils'
+
 
 
 
 const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
     const { updateDeviceStatus, devices, setDevices } = useDevices()
-    const { savedPlayers, saveRoomForMac, roomList, saveRoomList, checkRoomForMac } = useStorage()
+    const { savedPlayers, saveRoomForMac, roomList, addRoomToList, checkRoomForMac } = useStorage()
     const [api, setApi] = useState('')
     const { refreshTime, setRefreshTime } = useRefresh()
     const { toast } = useToast()
     const [isSlaveListOpen, setIsSlaveListOpen] = useState(false)
-
 
     const upgradePlayer = () => {
         playerControl(device.ip, 'upgrade', version)

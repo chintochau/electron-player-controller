@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Loader2 } from 'lucide-react'
+import { Loader2, MinusCircleIcon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Input } from '../../../../components/ui/input'
 import { Button } from '../../../../components/ui/button'
@@ -80,13 +80,13 @@ export function DataTable({ columns, data, isCollapsed }) {
             table.setGlobalFilter(String(e.target.value))
           }}
           placeholder="Search device..."
-          className="max-w-sm"
+          className="max-w-sm rounded-full"
         />
 
         {!isCollapsed && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="ml-auto rounded-full">
                 Columns
               </Button>
             </DropdownMenuTrigger>
@@ -112,7 +112,7 @@ export function DataTable({ columns, data, isCollapsed }) {
           </DropdownMenu>
         )}
       </div>
-      <div className="rounded-md border">
+      <div className=" rounded-3xl border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import { ArrowDownNarrowWide, ArrowUpDown, ChevronDownIcon, MoreHorizontal } from 'lucide-react'
+import { ArrowDownNarrowWide, ArrowUpDown, ChevronDownIcon, MinusCircleIcon, MoreHorizontal, PlusIcon } from 'lucide-react'
 import SettingsMenu from '../SettingsMenu'
 import PlayStatus from '../PlayStatus'
 import SyncStatus from '../SyncStatus'
@@ -124,7 +124,7 @@ export const columns = [
       )
     },
     cell: ({ row }) => {
-      const { roomList, saveRoomForMac } = useStorage()
+      const { roomList, saveRoomForMac, addRoomToList, removeRoomFromList } = useStorage()
       const { setDevices } = useDevices()
       const device = row.original
       if (!device) return null
@@ -140,43 +140,55 @@ export const columns = [
               <DropdownMenuLabel>Room</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {roomList.map((room) => (
-                <DropdownMenuItem
-                  key={room}
-                  onClick={() => {
-                    setDevices((prevDevices) =>
-                      prevDevices.map((prevDevice) => {
-                        if (prevDevice.ip === device.ip) {
-                          return {
-                            ...prevDevice,
-                            room
-                          }
-                        }
-                        return prevDevice
-                      })
-                    )
-                    saveRoomForMac(device.mac, room)
-                  }}
-                >
-                  {room}
-                </DropdownMenuItem>
+                <div key={room} className='grid gap-1 grid-cols-4'>
+                  <div className='grid-cols-subgrid col-span-3'>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setDevices((prevDevices) =>
+                          prevDevices.map((prevDevice) => {
+                            if (prevDevice.ip === device.ip) {
+                              return {
+                                ...prevDevice,
+                                room
+                              }
+                            }
+                            return prevDevice
+                          })
+                        )
+                        saveRoomForMac(device.mac, room)
+                      }}
+                    >
+                      {room}
+                    </DropdownMenuItem>
+                  </div>
+                  <div className='col-span-1 flex items-center justify-center'>
+                    <button className='h-6 w-6 rounded-sm flex items-center justify-center hover:text-red-500 text-accent'>
+                      <MinusCircleIcon className="h-4 w-4" onClick={() => removeRoomFromList(room)} />
+                    </button>
+                  </div>
+                </div>
+
               ))}
-              <form className="flex gap-1">
+              <form className="flex gap-1" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                   placeholder="New Room"
-                  className="h-7 w-40"
+                  className="h-7 w-28"
                   value={newRoomName}
                   onChange={(e) => setNewRoomName(e.target.value)}
+
                 />
                 <Button
                   variant="ghost"
-                  className="h-7"
                   type="submit"
+                  size="icon"
+                  className="h-7 w-7"
                   onClick={(e) => {
                     e.preventDefault()
-                    console.log(newRoomName)
+                    addRoomToList(newRoomName)
+                    setNewRoomName('')
                   }}
                 >
-                  Add
+                  <PlusIcon className="h-4 w-4" />
                 </Button>
               </form>
             </DropdownMenuContent>

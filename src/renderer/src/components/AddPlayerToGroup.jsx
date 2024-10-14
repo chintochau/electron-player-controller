@@ -10,8 +10,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useDevices } from '../context/devicesContext'
-import { playerControl } from './PlayList'
 import { useToast } from '@/hooks/use-toast'
+import { playerControl } from '../lib/utils'
 
 
 

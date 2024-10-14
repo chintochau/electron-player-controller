@@ -144,7 +144,7 @@ const Footer = ({ isCollapsed }) => {
                         </Select>
                       </div>
                       <div className="pt-2 px-1">
-                        <ApiListDropDown setApi={setApiCommand} />
+                        <ApiListDropDown setApi={setApiCommand} footer={true} />
                       </div>
                     </div>
                   </div>

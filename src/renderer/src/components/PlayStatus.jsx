@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '../../../components/ui/button'
 import { useRefresh } from '../context/refreshContext'
+import PresetsBar from './PresetsBar'
 
 const PlayStatus = ({ ip }) => {
   const [status, setStatus] = useState(null)
@@ -136,55 +137,58 @@ const PlayStatus = ({ ip }) => {
   }
 
   return (
-    <div className="flex items-center gap-2 justify-end px-2">
-      <div className="flex items-center justify-center w-16 h-16">
-        {status?.image && (
-          <img
-            className="w-full rounded-sm aspect-auto"
-            src={getImageurl(status?.image)}
-            alt="image"
-          />
-        )}
-      </div>
-      <div className="flex flex-col flex-1 items-center">
-        <TransportControlButton status={status} />
-        {status?.progress !== null && (
-          <Progress
-            className='h-1  w-44 my-1'
-            value={status?.progress}
-          />
-        )}
-        <div className="overflow-hidden whitespace-nowrap w-52 ">
-          <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
-            <span>{status?.state === 'pause' ? '' : status?.title1}</span>
-            <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-              {status?.state === 'pause' ? '' : status?.title1}
-            </span>
-            <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-              {status?.state === 'pause' ? '' : status?.title1}
-            </span>
-          </div>
-        </div>
-        {status?.volume && (
-          <div className="flex items-center gap-2">
-            <Slider
-              value={[volume]}
-              max={100}
-              onValueChange={(v) => {
-                setVolume(v[0])
-              }}
-              onValueCommit={(v) => transportControl('volume', v[0])}
-              className="w-40"
+    <div className='flex flex-col'>
+      <div className="flex items-center gap-2 justify-end px-2">
+        <div className="flex items-center justify-center w-16 h-16">
+          {status?.image && (
+            <img
+              className="w-full rounded-sm aspect-auto"
+              src={getImageurl(status?.image)}
+              alt="image"
             />
-            <button onClick={() => transportControl('volume', Number(volume) + 5)}>
-              <PlusIcon className="h-4 w-4 bg-accent  rounded-full cursor-pointer" />
-            </button>
-            <button onClick={() => transportControl('volume', Number(volume) - 5)}>
-              <MinusIcon className="h-4 w-4 bg-accent rounded-full cursor-pointer" />
-            </button>
+          )}
+        </div>
+        <div className="flex flex-col flex-1 items-center">
+          <TransportControlButton status={status} />
+          {status?.progress !== null && (
+            <Progress
+              className='h-1  w-44 my-1'
+              value={status?.progress}
+            />
+          )}
+          <div className="overflow-hidden whitespace-nowrap w-52 ">
+            <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
+              <span>{status?.state === 'pause' ? '' : status?.title1}</span>
+              <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
+                {status?.state === 'pause' ? '' : status?.title1}
+              </span>
+              <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
+                {status?.state === 'pause' ? '' : status?.title1}
+              </span>
+            </div>
           </div>
-        )}
+          {status?.volume && (
+            <div className="flex items-center gap-2">
+              <Slider
+                value={[volume]}
+                max={100}
+                onValueChange={(v) => {
+                  setVolume(v[0])
+                }}
+                onValueCommit={(v) => transportControl('volume', v[0])}
+                className="w-40"
+              />
+              <button onClick={() => transportControl('volume', Number(volume) + 5)}>
+                <PlusIcon className="h-4 w-4 bg-accent  rounded-full cursor-pointer" />
+              </button>
+              <button onClick={() => transportControl('volume', Number(volume) - 5)}>
+                <MinusIcon className="h-4 w-4 bg-accent rounded-full cursor-pointer" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+      <PresetsBar ip={ip} />
     </div>
   )
 }

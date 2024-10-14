@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Button } from '../../../components/ui/button'
 import { EllipsisVertical } from 'lucide-react'
 import {
@@ -23,15 +23,31 @@ import {
 } from '@/components/ui/dialog'
 import { playerControl } from '../lib/utils'
 import { useDevices } from '../context/devicesContext'
+import { useBrowsing } from '../context/borwsingContext'
+import MenuGroup from './BrowseView/MenuGroup'
 
 const SettingsMenu = ({ ip }) => {
-  const {searchDeviceByIp} = useDevices()
+  const { searchDeviceByIp } = useDevices()
+  const { loadSDUI } = useBrowsing()
   const [deviceName, setDeviceName] = useState()
+  const [settingsMenu, setSettingsMenu] = useState(null)
+
   useEffect(() => {
     setDeviceName(searchDeviceByIp(ip)?.name)
   }, [ip, searchDeviceByIp])
+
+  const fetchSettings = async () => {
+    const res = await loadSDUI(`:11000/Settings`, ip)
+    setSettingsMenu(res.json)
+  }
+
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={(value) => {
+      if (value && !settingsMenu) {
+        fetchSettings()
+        // MenuGroup not yet implemented to show the result.
+      }
+    }}>
       <DropdownMenuTrigger className="hover:bg-accent p-2 rounded-md">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>

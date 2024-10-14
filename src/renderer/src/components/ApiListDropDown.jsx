@@ -41,7 +41,7 @@ import { Separator } from "@/components/ui/separator"
 import { useStorage } from '../context/localStorageContext'
 
 
-const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
+const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
 
     const [isEditMode, setIsEditMode] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
@@ -108,7 +108,6 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                         {
                             customApiList.map((command, index) => (
                                 <div className="flex items-center " key={command.command}>
-
                                     {isEditMode &&
                                         <MinusIcon
                                             onClick={() => {
@@ -123,7 +122,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                                     >
                                         <p>{command.name}</p>
                                     </DropdownMenuItem>
-                                    <Button
+                                    {!footer &&<Button
                                         variant="ghost"
                                         className="px-2 ml-1"
                                         onClick={() => {
@@ -131,7 +130,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                                         }}
                                     >
                                         <SquareArrowOutUpRightIcon className="h-4 w-4" />
-                                    </Button>
+                                    </Button>}
                                 </div>
                             ))
                         }
@@ -142,7 +141,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {commandList.map((command) => (
-                        <div className="flex items-center " key={command.command}>
+                        <div className={cn("",footer ? "" : "flex items-center ")} key={command.command}>
                             <DropdownMenuItem
                                 key={command}
                                 onClick={() =>
@@ -151,7 +150,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                             >
                                 <p>{command.name}</p>
                             </DropdownMenuItem>
-                            <Button
+                            {!footer &&<Button
                                 variant="ghost"
                                 className="px-2 ml-1"
                                 onClick={() => {
@@ -159,7 +158,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi }) => {
                                 }}
                             >
                                 <SquareArrowOutUpRightIcon className="h-4 w-4" />
-                            </Button>
+                            </Button>}
                         </div>
                     ))}
                 </>

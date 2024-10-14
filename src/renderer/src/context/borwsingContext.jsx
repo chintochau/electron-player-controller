@@ -22,6 +22,9 @@ export const BrowsingProvider = ({ children }) => {
   }, [devices])
 
   const getImagePath = (uri) => {
+    if (uri.startsWith('http://') || uri.startsWith('https://')) {
+      return uri
+    }
     return `http://${selectedPlayer.ip}:11000${uri}`
   }
   const loadServiceList = async () => {
@@ -61,11 +64,11 @@ export const BrowsingProvider = ({ children }) => {
     }
   }
 
-  const loadSDUI = async (uri, debug) => {
+  const loadSDUI = async (uri, deviceIp, debug) => {
     if (devices.length === 0) {
       return
     }
-    const ip = selectedPlayer.ip || devices[0].ip
+    const ip = deviceIp || selectedPlayer.ip || devices[0].ip
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 
@@ -73,7 +76,7 @@ export const BrowsingProvider = ({ children }) => {
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
     setLoading(true)
-    const res = await loadSDUI(uri, true)
+    const res = await loadSDUI(uri)
     const response = res.json
     if (!response) {
       setScreen('No Response')

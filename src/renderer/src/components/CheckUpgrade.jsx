@@ -21,8 +21,6 @@ const CheckUpgrade = ({ ip }) => {
     setChecking(true)
     const res = await window.api.checkUpgrade(ip)
     setUpgradeResponse(res)
-    console.log(res)
-
     setChecking(false)
   }
 
