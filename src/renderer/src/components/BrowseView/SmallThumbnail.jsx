@@ -28,27 +28,20 @@ const playlists = [
     'Playlist 10',
 ]
 
-const LargeThumbnail = ({ largeThumbnail, className, aspectRatio = 'portrait', size, ...props }) => {
+const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait', ...props }) => {
   const { performAction } = useSdui()
   const { getImagePath } = useBrowsing()
-
-  const sizes = {
-    small: "h-40 w-40",
-    large: "h-80 w-60",
-    smallWidth: "w-40",
-    largeWidth: "w-60"
-  }
+  
   return (
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
             <img
-              src={getImagePath(largeThumbnail?.$?.image)}
+              src={getImagePath(smallThumbnail?.$?.icon)}
               className={cn(
-                ' object-cover transition-all hover:scale-105',
-                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square',
-                size === "small" ? sizes.small : sizes.large
+                'h-40 w-40 object-cover transition-all hover:scale-105',
+                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
               )}
             />
           </div>
@@ -92,11 +85,11 @@ const LargeThumbnail = ({ largeThumbnail, className, aspectRatio = 'portrait', s
         </ContextMenuContent>
       </ContextMenu>
       <div className="space-y-1 text-sm">
-        <h3 className={cn("font-medium leading-none text-wrap", size === "small" ? sizes.smallWidth : sizes.largeWidth)}>{largeThumbnail.$?.title}</h3>
-        <p className={cn("text-xs text-muted-foreground w-60 text-wrap", size === "small" ? sizes.smallWidth : sizes.largeWidth)}>{largeThumbnail.$?.subTitle}</p>
+        <h3 className="font-medium leading-none w-40 text-wrap">{smallThumbnail.$?.title}</h3>
+        <p className="text-xs text-muted-foreground w-40 text-wrap">{smallThumbnail.$?.subTitle}</p>
       </div>
     </div>
   )
 }
 
-export default LargeThumbnail
+export default SmallThumbnail

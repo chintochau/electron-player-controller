@@ -84,7 +84,6 @@ export const BrowsingProvider = ({ children }) => {
       setLoading(false)
       return
     }
-    console.log('res', response)
 
     if (response && response.screen) {
       setScreen(response.screen)
