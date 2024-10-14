@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useDevices } from './devicesContext'
+import { searchableServicesList } from '../lib/constants'
 
 const BrowsingContext = createContext()
 
@@ -14,6 +15,12 @@ export const BrowsingProvider = ({ children }) => {
   const [screen, setScreen] = useState(null)
   const [xmlScreen, setXmlScreen] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [searchText, setSearchText] = useState('')
+  const [searchResult, setSearchResult] = useState([])
+  const [xmlSearchResult, setXmlSearchResult] = useState("")
+  const [displayMode, setDisplayMode] = useState('xml')
+  const [searchableServices, setSearchableServices] = useState(searchableServicesList)
+  const [isSearchMode, setIsSearchMode] = useState(false)
 
   useEffect(() => {
     if (!selectedPlayer) {
@@ -96,6 +103,29 @@ export const BrowsingProvider = ({ children }) => {
     }
   }
 
+  const performSearching = async () => {
+    const ip = selectedPlayer.ip || devices[0].ip
+    //ui/Search?playnum=1&service=SOUNDMACHINE&q="Michael"
+    let uri = `/ui/Search?playnum=1&q="${searchText}"`
+    let xmlResult = ""
+    let jsonResult = []
+    setXmlSearchResult("<Searching.../>")
+    setSearchResult(["Searching..."])
+
+    for (let i = 0; i < searchableServices.length; i++) {
+      const res = await loadSDUI(uri + '&service=' + searchableServices[i], ip)
+      const response = res.json
+      if (response && response.screen) {
+        xmlResult += `<${searchableServices[i]}>${res.xmlText}</${searchableServices[i]}>`
+        jsonResult.push(response.screen)
+      }
+    }
+
+    setXmlSearchResult(xmlResult)
+    setSearchResult(jsonResult)
+  }
+
+
   const value = {
     url,
     setUrl,
@@ -113,7 +143,20 @@ export const BrowsingProvider = ({ children }) => {
     xmlScreen,
     loading,
     setLoading,
-    getImagePath
+    getImagePath,
+    searchText,
+    setSearchText,
+    searchResult,
+    setSearchResult,
+    xmlSearchResult,
+    setXmlSearchResult,
+    displayMode,
+    setDisplayMode,
+    searchableServices,
+    setSearchableServices,
+    performSearching,
+    isSearchMode,
+    setIsSearchMode
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

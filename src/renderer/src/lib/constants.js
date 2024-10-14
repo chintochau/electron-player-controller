@@ -39,9 +39,9 @@ export const settingsList = [
     icon: Wifi
   },
   {
-    name:"Static IP",
-    path:"staticip",
-    icon:Network
+    name: "Static IP",
+    path: "staticip",
+    icon: Network
   },
   {
     name: 'Diagnostics',
@@ -56,4 +56,10 @@ export const helpList = [
     path: 'diag',
     icon: Headset
   }
+]
+
+
+export const searchableServicesList = [
+  "Qobuz",
+  "Tidal",
 ]

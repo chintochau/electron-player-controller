@@ -88,7 +88,7 @@ const Item = ({ item, large }) => {
 
                 <div className={cn(image ? "" : "underline hover:text-primary cursor-pointer")}>
                     <h3 className={cn("font-medium leading-none text-wrap", image ? "" : "text-xl")}>{title}</h3>
-                    <p className="text-xs text-muted-foreground w-60 text-wrap">
+                    <p className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4" title={subTitle}>
                         {subTitle}
                     </p>
                 </div>

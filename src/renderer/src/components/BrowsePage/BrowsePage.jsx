@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Loader2, SearchIcon } from 'lucide-react'
+import { Loader2, SearchIcon, SendHorizonalIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
 import { useBrowsing } from '../../context/borwsingContext'
@@ -18,6 +18,7 @@ import 'react18-json-view/src/style.css'
 import { Button } from '../../../../components/ui/button'
 import XMLViewer from 'react-xml-viewer'
 import GUI from '../BrowseView/GUI'
+import SearchView from '../SearchView/SearchView'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -30,10 +31,14 @@ const BrowsePage = () => {
     setSelectedPlayer,
     screen,
     displayMainScreen,
-    xmlScreen
+    xmlScreen,
+    displayMode, setDisplayMode,
+    searchText,
+    setSearchText,
+    isSearchMode,
+    setIsSearchMode,
+    performSearching
   } = useBrowsing()
-
-  const [displayMode, setDisplayMode] = useState('xml') // json or xml or gui
 
   useEffect(() => {
     if (serviceList.length === 0) {
@@ -41,6 +46,12 @@ const BrowsePage = () => {
       displayMainScreen('/ui/Home?playnum=1')
     }
   }, [selectedPlayer])
+
+  const handleSearchClick = (e) => {
+    e.preventDefault()
+    performSearching()
+    setIsSearchMode(true)
+  }
 
   return (
     <ScrollArea className="w-full h-full p-4 overflow-x-hidden">
@@ -70,7 +81,7 @@ const BrowsePage = () => {
         </Select>
         <form className="flex-auto w-96  flex items-center">
           <Input
-            className="rounded-l-full"
+            className="rounded-l-full border-r-0"
             placeholder="path"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -83,13 +94,13 @@ const BrowsePage = () => {
               displayMainScreen(url)
             }}
           >
-            Load
+            <SendHorizonalIcon className="w-4 h-4" />
           </Button>
         </form>
-        <div className="flex items-center gap-2 ml-4 flex-auto w-20 max-w-[400px]">
-          <SearchIcon className="w-4 h-4" />
-          <Input className="w-full rounded-full" placeholder="Search" />
-        </div>
+        <form className="flex items-center ml-4 flex-auto w-20 max-w-[400px]">
+          <Input className="w-full rounded-l-full border-r-0" placeholder="Search" onChange={(e) => setSearchText(e.target.value)} value={searchText} />
+          <Button type="submit" variant="ghost" className="border rounded-r-full bg-background" onClick={handleSearchClick}><SearchIcon className="w-4 h-4" /></Button>
+        </form>
         <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
           <SelectTrigger className="w-fit h-8 m-1 border-none rounded-full">
             <SelectValue placeholder="Display Mode" />
@@ -108,15 +119,19 @@ const BrowsePage = () => {
         </Select>
       </div>
 
-      <ServiceMenuList musicServiceList={serviceList} />
+      {isSearchMode ?
+        <SearchView />
+        :
+        <>
+          <ServiceMenuList musicServiceList={serviceList} />
+          {displayMode === 'xml' && <XMLViewer xml={xmlScreen} />}
+          {displayMode === 'json' && <JsonView src={screen} />}
+          {displayMode === 'gui' && <GUI screen={screen} />}
+        </>
+      }
 
-      {displayMode === 'xml' && <XMLViewer xml={xmlScreen} />}
-      {displayMode === 'json' && <JsonView src={screen} />}
-      {displayMode === 'gui' && <GUI screen={screen} />}
     </ScrollArea>
   )
 }
 
 export default BrowsePage
-
-const demoDFata = {}

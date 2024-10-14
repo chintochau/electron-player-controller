@@ -10,28 +10,54 @@ const GUI = ({ screen }) => {
     return <div className='w-full flex justify-center items-center h-1/2'><Loader2 className='animate-spin size-20' /></div>
   }
 
+  const { $, row, list } = screen || {}
+  const { screenTitle, navigationTitle, service } = $ || {}
   const onlyOneList = screen?.list?.length === 1 && !screen?.row
+
+  const renderTitle = () => {
+
+    if (service && screenTitle) {
+      return screenTitle + ' - ' + service
+    }
+    if (screenTitle) {
+      return screenTitle
+    }
+    if (navigationTitle) {
+      return navigationTitle
+    }
+    if (service) {
+      return service
+    }
+    return "Searching..."
+  }
+
   return (
     <div className="pt-4">
-      <h1 className="text-4xl text-primary font-bold pb-4">{screen && screen.$ && screen.$.screenTitle || screen && screen.$ && screen.$.navigationTitle}</h1>
+      <h1 className="text-4xl text-primary font-bold pb-4">
+        {renderTitle()}
+      </h1>
 
       <div id="rows" className="flex flex-col gap-y-2">
-        {screen?.row?.map((row, index) => {
-          return <Row key={row?.$?.id || row?.$?.title} row={row} index={index} />
-        })}
+        {row?.map((row, index) => (
+          <Row key={row?.$?.id || row?.$?.title} row={row} index={index} />
+        ))}
       </div>
-      
 
       <div id="lists">
-        {
-          screen?.list?.map((list, index) => {
-            return <List key={list?.$?.id || list?.$?.title || index} list={list} index={index} onlyOneList={onlyOneList} />
-          })
-        }
+        {list?.map((list, index) => (
+          <List
+            key={list?.$?.id || list?.$?.title || index}
+            list={list}
+            index={index}
+            onlyOneList={onlyOneList}
+          />
+        ))}
       </div>
-      <div className='pb-20' />
+
+      <div className="pb-20" />
     </div>
   )
 }
+
 
 export default GUI
