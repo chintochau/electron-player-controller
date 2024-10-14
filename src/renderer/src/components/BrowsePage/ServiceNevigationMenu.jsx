@@ -6,7 +6,8 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
 import { useEffect } from 'react'
 import { useBrowsing } from '../../context/borwsingContext'
@@ -45,7 +46,7 @@ const ServiceNevigationMenu = ({ service }) => {
                 <NavigationMenuLink
                   onClick={() => handleLinkClick(row.action[0].$.URI + '&playnum=1')}
                   key={row.$.title}
-                  className="text-sm cursor-pointer"
+                  className={navigationMenuTriggerStyle()}
                 >
                   {row.$.title}
                 </NavigationMenuLink>
@@ -62,12 +63,11 @@ const ServiceNevigationMenu = ({ service }) => {
                     key={`item-${item.$.title}-${itemIndex}`} // Combines title and index for uniqueness
                     variant="outline"
                     size="sm"
-                    className="text-sm cursor-pointer text-nowrap"
+                    className={navigationMenuTriggerStyle()  }
                     onClick={() => {
                       handleLinkClick(item.action[0].$.URI + '&playnum=1')
                     }}
-                  >
-                    {item.$.title}
+                  >{item.$.title}
                   </NavigationMenuLink>
                 ))}
               </React.Fragment>

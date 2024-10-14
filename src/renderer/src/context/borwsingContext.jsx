@@ -13,6 +13,7 @@ export const BrowsingProvider = ({ children }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [screen, setScreen] = useState(null)
   const [xmlScreen, setXmlScreen] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!selectedPlayer) {
@@ -20,6 +21,9 @@ export const BrowsingProvider = ({ children }) => {
     }
   }, [devices])
 
+  const getImagePath = (uri) => {
+    return `http://${selectedPlayer.ip}:11000${uri}`
+  }
   const loadServiceList = async () => {
     if (devices.length > 0) {
       const ip = selectedPlayer.ip || devices[0].ip
@@ -68,15 +72,25 @@ export const BrowsingProvider = ({ children }) => {
   const displayMainScreen = async (uri) => {
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
+    setLoading(true)
     const res = await loadSDUI(uri, true)
-
     const response = res.json
     if (!response) {
+      setScreen('No Response')
+      setXmlScreen('<NoResponse/>')
+      setLoading(false)
       return
     }
+    console.log('res', response)
+
     if (response && response.screen) {
       setScreen(response.screen)
       setXmlScreen(res.xmlText)
+      setLoading(false)
+    } else {
+      setScreen(response)
+      setXmlScreen(res.xmlText)
+      setLoading(false)
     }
   }
 
@@ -94,7 +108,10 @@ export const BrowsingProvider = ({ children }) => {
     screen,
     setScreen,
     displayMainScreen,
-    xmlScreen
+    xmlScreen,
+    loading,
+    setLoading,
+    getImagePath
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

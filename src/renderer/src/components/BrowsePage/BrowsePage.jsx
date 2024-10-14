@@ -17,6 +17,7 @@ import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 import { Button } from '../../../../components/ui/button'
 import XMLViewer from 'react-xml-viewer'
+import GUI from '../BrowseView/GUI'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -50,7 +51,7 @@ const BrowsePage = () => {
             setSelectedPlayer(devices.find((device) => device.mac === value))
           }
         >
-          <SelectTrigger className="w-fit h-14 m-1 border-none">
+          <SelectTrigger className="w-fit h-14 m-1 border-none rounded-full">
             <SelectValue placeholder="Player" />
           </SelectTrigger>
           <SelectContent>
@@ -89,13 +90,8 @@ const BrowsePage = () => {
           <SearchIcon className="w-4 h-4" />
           <Input className="w-full rounded-full" placeholder="Search" />
         </div>
-      </div>
-
-      <div className="flex justify-between">
-        <ServiceMenuList musicServiceList={serviceList} />
-
         <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
-          <SelectTrigger className="w-fit h-8 m-1 border-none">
+          <SelectTrigger className="w-fit h-8 m-1 border-none rounded-full">
             <SelectValue placeholder="Display Mode" />
           </SelectTrigger>
           <SelectContent>
@@ -112,8 +108,11 @@ const BrowsePage = () => {
         </Select>
       </div>
 
+      <ServiceMenuList musicServiceList={serviceList} />
+
       {displayMode === 'xml' && <XMLViewer xml={xmlScreen} />}
       {displayMode === 'json' && <JsonView src={screen} />}
+      {displayMode === 'gui' && <GUI screen={screen} />}
     </ScrollArea>
   )
 }
