@@ -228,7 +228,7 @@ export const DevicesProvider = ({ children }) => {
     const startPhaseTwo = () => {
       intervalId = setInterval(() => {
         updateDevices()
-      }, 4000)
+      }, 15000)
     }
 
     // Start phase 1 when the component mounts
