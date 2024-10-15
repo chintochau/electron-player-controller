@@ -64,7 +64,6 @@ export const SDUIProvider = ({ children }) => {
   }
 
   const browseContext = (data) => {
-    console.log(data);
     const { $, name } = data || {}
     const { service } = $ || {}
     return `:11000/BrowseContext?service=${service}&title=${name[0]._}&id=${name[0].$.id}`.replaceAll(' ', '+')

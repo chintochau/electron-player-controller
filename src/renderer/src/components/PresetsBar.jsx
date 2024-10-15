@@ -10,12 +10,12 @@ const PresetsBar = ({ ip }) => {
   const loadPresets = async () => {
     const res = await window.api.loadSDUIPage(`http://${ip}:11000/Presets`, ip)
     if (res && res.json && res.json.presets) {
-      setPresets(res.json.presets.preset)
-      console.log(res.json.presets.preset)
+      setPresets(res.json.presets.preset)      
     }
   }
 
   const getImagePath = (uri) => {
+    if (!uri) return ""
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
       return uri
     } else {
@@ -42,12 +42,12 @@ const PresetsBar = ({ ip }) => {
               runCommandForDevice(ip, `:11000/Preset?id=${preset.$.id}`, 'GET')
             }}
           >
-            <div className="size-12 flex items-center justify-center">
+            <div className="size-12 object-cover overflow-hidden flex items-center justify-center">
               <img
                 className="rounded-md "
                 alt={preset.$.name}
                 src={getImagePath(preset.$.image)}
-                onError={(e) => {
+                onError={(e) => {                    
                   e.target.onerror = null // Prevent infinite loop if fallback fails
                   e.target.src = noArtwork // Path to your fallback image
                 }}

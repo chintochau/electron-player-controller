@@ -13,7 +13,7 @@ export const DevicesProvider = ({ children }) => {
   const { checkRoomForMac } = useStorage()
 
   useEffect(() => {
-    console.log(devices)
+    // console.log(devices)
   }, [devices])
 
   const updateDeviceStatus = (ip, status) => {

@@ -18,7 +18,6 @@ const MenuGroup = ({ menuGroup, ip }) => {
         <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-                console.log(`http://${ip}${menuGroup?.$?.url}`)
                 window.api.openOverlay(`http://${ip}${menuGroup?.$?.url}`)
             }}>
             <div className='h-4 w-4 mr-2'>
