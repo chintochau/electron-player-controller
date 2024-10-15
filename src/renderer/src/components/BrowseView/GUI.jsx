@@ -41,12 +41,6 @@ const GUI = ({ screen }) => {
           {renderTitle()}
         </h1>
 
-        <div id="rows" className="flex flex-col gap-y-2">
-          {row?.map((row, index) => (
-            <Row key={row?.$?.id || row?.$?.title} row={row} index={index} />
-          ))}
-        </div>
-
         <div className={cn(
           onlyOneListWithHeader ? 'flex' : '',
         )}>
@@ -68,6 +62,14 @@ const GUI = ({ screen }) => {
             ))}
           </div>
         </div>
+
+        <div id="rows" className="flex flex-col gap-y-2">
+          {row?.map((row, index) => (
+            <Row key={row?.$?.id || row?.$?.title} row={row} index={index} />
+          ))}
+        </div>
+
+        
 
         <div>
           {

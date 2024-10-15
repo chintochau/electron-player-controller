@@ -11,7 +11,7 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
   const { $, item } = list || {}
   const { title } = $ || {}
 
-  const isArtist = title === 'Artists' || title === "Artist"
+  const isArtist = title?.toLowerCase().includes('artist') ?? false;
   return (
     <div className='z-10'>
       <h3 className='text-2xl font-bold'>{title}</h3>

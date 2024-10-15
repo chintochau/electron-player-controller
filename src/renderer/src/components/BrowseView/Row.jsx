@@ -32,7 +32,7 @@ const Row = ({ row, index }) => {
 
   const {$} = row || {}
   const {title} = $ || {}
-  const isArtist = title === 'Artist' || title === 'Artists'
+  const isArtist = title?.toLowerCase().includes('artist') ?? false;
 
   return (
     <>
