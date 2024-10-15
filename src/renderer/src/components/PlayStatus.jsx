@@ -14,6 +14,7 @@ import { Slider } from '@/components/ui/slider'
 import { Button } from '../../../components/ui/button'
 import { useRefresh } from '../context/refreshContext'
 import PresetsBar from './PresetsBar'
+import { useTable } from '../context/tableContext'
 
 const PlayStatus = ({ ip }) => {
   const [status, setStatus] = useState(null)
@@ -21,6 +22,7 @@ const PlayStatus = ({ ip }) => {
   const [volume, setVolume] = useState(null)
 
   const { refreshTime, shouldRefresh } = useRefresh()
+  const { showPreset, setShowPreset } = useTable()
 
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
@@ -187,7 +189,7 @@ const PlayStatus = ({ ip }) => {
           )}
         </div>
       </div>
-      <PresetsBar ip={ip} />
+      {showPreset && <PresetsBar ip={ip} />}
     </div>
   )
 }

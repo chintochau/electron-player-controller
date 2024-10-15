@@ -8,7 +8,7 @@ import AddPlayerButton from './AddPlayerButton'
 import { enabledFeatures } from '../lib/constants'
 
 const SettingBar = () => {
-  const { isCollapsed, setIsCollapsed } = useTable()
+  const { isCollapsed, setIsCollapsed,showPreset,setShowPreset } = useTable()
   return (
     <div className="h-screen flex flex-col justify-start mx-auto  bgred gap-y-2 w-10">
       {enabledFeatures.browser && <Button
@@ -23,6 +23,7 @@ const SettingBar = () => {
         <ThemeControlButton />
       </Button>}
       {enabledFeatures.addPlayer && <AddPlayerButton />}
+      <Button variant="ghost" size="icon" className={cn("text-2xl", showPreset ? '' : 'line-through')} onClick={() => setShowPreset(!showPreset)}>P</Button>
 
     </div>
   )
