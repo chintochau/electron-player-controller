@@ -45,6 +45,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
         'flex lg:rounded-md gap-2 w-ful xl:flex-col',
         onlyOneListWithHeader ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md' : ''
       )}
+      onClick={handleClick}
     >
       <ContextMenu>
         <ContextMenuTrigger onClick={handleClick}>

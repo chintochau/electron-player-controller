@@ -17,7 +17,7 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
       <div
         className={cn(
           onlyOneListWithHeader
-            ? 'lg:fixed lg:w-[calc(50vw-275px)] flex flex-col items-center p-10 gap-y-3 pt-14'
+            ? 'lg:fixed lg:w-[calc(50vw-275px)] flex flex-col items-center p-2 lg:p-10 gap-y-3 pt-14'
             : 'flex px-4'
         )}
       >
@@ -64,9 +64,9 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
               button.map((item, index) => <SDUIButton button={item} key={index} index={index} />)}
           </div>
 
-          {onlyOneListWithHeader && (
-            <ScrollArea className={image ? 'h-52' : 'h-96'}>
-              {description &&
+          {description && onlyOneListWithHeader && (
+            <ScrollArea className={image ? 'h-64' : 'h-64 lg:h-[50vh]'}>
+              {
                 description.map((item, index) => (
                   <Description key={index} description={item} lines={9} />
                 ))}
