@@ -29,7 +29,7 @@ import { useTable } from '../../context/tableContext'
 import CheckUpgrade from '../CheckUpgrade'
 import { playerControl } from '../../lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { goToIpAddress } from '../PlayList'
+import { goToIpAddress } from '../PlayerList'
 import { Checkbox } from '@/components/ui/checkbox'
 import CompactPlayer from '../CompactPlayer'
 

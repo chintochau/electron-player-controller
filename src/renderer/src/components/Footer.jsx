@@ -101,7 +101,7 @@ const Footer = ({ isCollapsed }) => {
   return (
     <div
       className={cn(
-        'flex h-36 w-full items-center justify-center text-sm text-foreground px-10 duration-300 ease-in',
+        'flex h-36 w-full items-center justify-center text-sm text-foreground duration-300 ease-in absolute bottom-0 pl-4 lg:px-10',
         isCollapsed ? ' translate-y-full fixed' : ''
       )}
     >

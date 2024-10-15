@@ -9,11 +9,11 @@ export const goToIpAddress = (ip) => {
 }
 
 
-const PlayList = ({ isCollapsed }) => {
+const PlayerList = ({ isCollapsed }) => {
   const { devices } = useDevices()
   return (
       <DataTable columns={columns} data={devices} isCollapsed={isCollapsed} />
   )
 }
 
-export default PlayList
+export default PlayerList

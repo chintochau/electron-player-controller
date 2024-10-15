@@ -37,20 +37,20 @@ const GUI = ({ screen }) => {
   if (screen) {
     return (
       <div className="pt-4">
-        <h1 className={cn("text-4xl text-primary font-bold pb-4", onlyOneListWithHeader ? "fixed w-[calc(50vw-275px)] text-center" : "")}>
+        <h1 className={cn("text-4xl text-primary font-bold pb-4", onlyOneListWithHeader ? "lg:fixed lg:w-[calc(50vw-275px)] text-center" : "")}>
           {renderTitle()}
         </h1>
 
         <div className={cn(
-          onlyOneListWithHeader ? 'flex' : '',
+          onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : '',
         )}>
-          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-1/2' : 'w-full',)}>
+          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full',)}>
             {header?.map((header, index) => (
               <SDUIHeader key={header?.$?.id || header?.$?.title} header={header} index={index} onlyOneListWithHeader={onlyOneListWithHeader} />
             ))}
           </div>
   
-          <div id="lists" className={cn(onlyOneListWithHeader ? 'w-1/2' : 'w-full')}>
+          <div id="lists" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full')}>
             {list?.map((list, index) => (
               <List
                 key={list?.$?.id || list?.$?.title || index}
