@@ -31,11 +31,19 @@ const playlists = [
 const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait',isArtist, ...props }) => {
   const { performAction } = useSdui()
   const { getImagePath } = useBrowsing()
+
+  const {$,action} = smallThumbnail || {}
+  const {title} = $ || {}
+
+  const handleClick = () => {
+    performAction(action)
+  }
+
   
   return (
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
-        <ContextMenuTrigger>
+        <ContextMenuTrigger onClick={handleClick}>
           <div className="overflow-hidden rounded-md">
             <img
               src={getImagePath(smallThumbnail?.$?.icon)}

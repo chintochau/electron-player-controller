@@ -88,12 +88,15 @@ export const BrowsingProvider = ({ children }) => {
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 
-  const displayMainScreen = async (uri) => {
+  const displayMainScreen = async (uri,debug) => {
+    if(debug){
+      console.log(uri);
+    }
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
     setLoading(true)
     setHistoryUrl([...historyUrl, url])
-    const res = await loadSDUI(uri)
+    const res = await loadSDUI(uri,null,debug)
     const response = res.json
     if (!response) {
       setScreen('No Response')

@@ -32,14 +32,13 @@ const Row = ({ row, index }) => {
 
   const {$} = row || {}
   const {title} = $ || {}
-
   const isArtist = title === 'Artist' || title === 'Artists'
 
   return (
     <>
       <div
         className={cn(
-          'w-full flex justify-between items-center px-2 rounded-lg',
+          'w-full flex justify-between items-center px-2 rounded-lg ',
           row?.action?.[0]?.$ ? 'cursor-pointer hover:bg-accent/30 ' : ''
         )}
         onClick={() => {
@@ -55,9 +54,10 @@ const Row = ({ row, index }) => {
           </Button>
         )}
       </div>
+
       {row?.largeThumbnail && (
         <ScrollArea className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto" ref={viewportRef} onWheel={onWheel}>
-          <div className={cn("", (row?.largeThumbnail?.length > 12 && index % 2 !== 0) ? "px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2" : 'flex w-max space-x-4 p-4')}>
+          <div className={cn("", (row?.largeThumbnail?.length > 12 && index % 2 !== 0) ? "pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2" : 'flex w-max space-x-4 p-4')}>
             {row?.largeThumbnail?.map((largeThumbnail) => {
               return (
                 <LargeThumbnail key={largeThumbnail?.$?.title} largeThumbnail={largeThumbnail} size={index % 2 === 0 ? 'large' : 'small'} isArtist={isArtist}/>
@@ -67,9 +67,10 @@ const Row = ({ row, index }) => {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       )}
+
       {row?.smallThumbnail && (
         <ScrollArea className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto" ref={viewportRef} onWheel={onWheel}>
-          <div className={cn("px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2", row?.smallThumbnail?.length > 12 ? 'grid-rows-2' : ' ')}>
+          <div className={cn("px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 pb-4", row?.smallThumbnail?.length > 12 ? 'grid-rows-2' : ' ')}>
             {row?.smallThumbnail?.map((smallThumbnail) => {
               return (
                 <SmallThumbnail key={smallThumbnail?.$?.title} smallThumbnail={smallThumbnail}  isArtist={isArtist}/>
@@ -79,13 +80,15 @@ const Row = ({ row, index }) => {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       )}
-      <div id="lists" className='px-4'>
+
+      <div id="lists" className='px-4 '>
         {
           row?.list?.map((list, index) => {
             return <List key={list?.$?.id || list?.$?.title || index} list={list} index={index} onlyOneList={false} />
           })
         }
       </div>
+
     </>
   )
 }

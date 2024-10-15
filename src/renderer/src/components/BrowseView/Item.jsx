@@ -14,6 +14,7 @@ import {
     ContextMenuTrigger,
 } from '@/components/ui/context-menu'
 import { PlusCircleIcon } from 'lucide-react'
+import { useSdui } from '../../context/sduiContext'
 
 const playlists = [
     'Playlist 1',
@@ -29,21 +30,31 @@ const playlists = [
 ]
 
 
-const Item = ({ item, isArtist }) => {
+const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
     // size = 'small' | 'large' 
-    const { $ } = item
+    const { $, action } = item
     const { image, quality, subTitle, title, duration } = $
     const { getImagePath } = useBrowsing()
+    const { performAction } = useSdui()
+
+    const handleClick = () => {
+        performAction(action)
+    }
+
     return (
-        <div className={cn('flex lg:rounded-md gap-2 w-ful xl:flex-col')}>
+        <div className={cn('flex lg:rounded-md gap-2 w-ful xl:flex-col', onlyOneListWithHeader ? "flex-row xl:flex-row" : "")}>
             <ContextMenu>
-                <ContextMenuTrigger>
-                {image && <div className={
-                cn(' rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
-                    isArtist ? "rounded-full" : "",
-                )}>
-                <img className='transition-all hover:scale-105 w-full h-full object-cover aspect-square ' src={image && getImagePath(image)} />
-            </div>}
+                <ContextMenuTrigger onClick={handleClick}>
+                    {image && 
+                    <div className={
+                        cn(
+                            onlyOneListWithHeader ?
+                                "h-20 w-20 overflow-hidden rounded-md" :
+                                ' w-20 h-20 rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
+                            isArtist ? "rounded-full" : "",
+                        )}>
+                        <img className='transition-all hover:scale-105 w-full h-full object-cover aspect-square ' src={image && getImagePath(image)} />
+                    </div>}
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-40">
                     <ContextMenuItem>Add to Library</ContextMenuItem>
@@ -84,20 +95,17 @@ const Item = ({ item, isArtist }) => {
                 </ContextMenuContent>
             </ContextMenu>
 
-
-
             <div className="space-y-1 text-sm pt-1 min-w-20 w-[calc(100%-3.5rem)] xl:w-full">
-
-                <div className={cn(image ? "" : "underline hover:text-primary cursor-pointer")}>
-                    <h3 className={cn("font-medium leading-none text-wrap", image ? "" : "text-xl")}>{title}</h3>
+                <div className={cn(image ? "" : "underline hover:text-primary cursor-pointer")} onClick={handleClick}>
+                    <h3 className={cn("font-medium leading-none text-wrap text-lg", image ? "" : "text-xl")}>{title}</h3>
                     <p className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4" title={subTitle}>
                         {subTitle}
                     </p>
                 </div>
 
-                <p
-                    className="text-xs text-muted-foreground w-60 text-wrap">
-                    {duration}
+                <p className={cn("text-xs text-muted-foreground w-60 text-wrap flex justify-between",onlyOneListWithHeader ? "w-full" : "")}>
+                    <p>{duration}</p>
+                    <p>{quality}</p>
                 </p>
 
             </div>
