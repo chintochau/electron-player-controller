@@ -4,6 +4,7 @@ import { useBrowsing } from '../../context/browsingContext'
 import { Button } from '@/components/ui/button'
 import SDUIButton from './SDUIButton'
 import Description from './Description'
+import { ScrollArea } from '../../../../components/ui/scroll-area'
 
 const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
     const { $, button, description, viewAll } = header || {}
@@ -24,7 +25,7 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
                     <div className={
                         cn("z-20",
                             onlyOneListWithHeader ?
-                                "w-2/3 h-2/3 min-w-28 min-h-28 rounded-lg overflow-hidden bg-blue-50" :
+                                "w-3/5 aspect-square min-w-28 min-h-28 rounded-lg overflow-hidden bg-blue-50" :
                                 'w-20 h-20 rounded-md overflow-hidden object-cover flex-shrink-0  items-center justify-center flex lg:w-1/3 lg:h-1/3 '
                         )}>
                         <img className='transition-all hover:scale-105 w-full h-full object-cover aspect-square ' src={image && getImagePath(image)} />
@@ -53,10 +54,16 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
                             <SDUIButton button={item} key={index} index={index} />
                         ))}
                     </div>
+
+                    <ScrollArea className='h-52'>
+                        {description && onlyOneListWithHeader && description.map((item, index) => (
+                        <Description key={index} description={item} lines={9}/>
+                    ))}
+                    </ScrollArea>
                 </div>
             </div>
-            {description && description.map((item, index) => (
-                    <Description key={index} description={item} />
+            {description && !onlyOneListWithHeader && description.map((item, index) => (
+                    <Description key={index} description={item} lines={4}/>
                 ))}
         </>
     )

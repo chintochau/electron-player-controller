@@ -44,7 +44,7 @@ const GUI = ({ screen }) => {
         <div className={cn(
           onlyOneListWithHeader ? 'flex' : '',
         )}>
-          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-1/2' : 'w-full')}>
+          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-1/2' : 'w-full',)}>
             {header?.map((header, index) => (
               <SDUIHeader key={header?.$?.id || header?.$?.title} header={header} index={index} onlyOneListWithHeader={onlyOneListWithHeader} />
             ))}
