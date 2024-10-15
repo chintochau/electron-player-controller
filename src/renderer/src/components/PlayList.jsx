@@ -14,7 +14,7 @@ const PlayList = ({ isCollapsed }) => {
   return (
     <div
       className={cn(
-        ' ease-in-out duration-300',
+        ' ease-in-out duration-300 overflow-scroll',
         isCollapsed ? 'pb-0 h-[calc(100vh-48px)]' : 'pb-40 h-[calc(100vh-192px)]'
       )}
     >

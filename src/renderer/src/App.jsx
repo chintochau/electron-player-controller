@@ -18,13 +18,13 @@ function App() {
         <StorageProvider>
           <DevicesProvider>
             <TableProvider>
-              <BrowsingProvider>
-                <SDUIProvider>
+              {/* <BrowsingProvider>
+                <SDUIProvider> */}
                   <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                     <Dashboard />
                   </ThemeProvider>
-                </SDUIProvider>
-              </BrowsingProvider>
+                {/* </SDUIProvider>
+              </BrowsingProvider> */}
             </TableProvider>
           </DevicesProvider>
         </StorageProvider>

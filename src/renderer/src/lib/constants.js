@@ -2,8 +2,8 @@ import { AudioWaveformIcon, Drill, Headset, Network, Wifi } from 'lucide-react'
 
 
 export const enabledFeatures = {
-  browser: true,
-  addPlayer: true,
+  // browser: true,
+  // addPlayer: true,
   darkMode: true
 }
 

@@ -188,7 +188,7 @@ const PlayStatus = ({ ip }) => {
           )}
         </div>
       </div>
-      <PresetsBar ip={ip} />
+      {/* <PresetsBar ip={ip} /> */}
     </div>
   )
 }

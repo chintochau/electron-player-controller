@@ -12,7 +12,7 @@ export const mapValueToKey = (value) => {
 }
 
 export const SDUIProvider = ({ children }) => {
-  const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing()
+  const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
   const { toast } = useToast()
 
 
@@ -62,6 +62,7 @@ export const SDUIProvider = ({ children }) => {
       }
     }
   }
+
   const browseContext = (data) => {
     console.log(data);
     const { $, name } = data || {}

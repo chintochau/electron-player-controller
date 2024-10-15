@@ -28,7 +28,7 @@ import MenuGroup from './BrowseView/MenuGroup'
 
 const SettingsMenu = ({ ip }) => {
   const { searchDeviceByIp } = useDevices()
-  const { loadSDUI } = useBrowsing()
+  // const { loadSDUI } = useBrowsing()
   const [deviceName, setDeviceName] = useState()
   const [settingsMenu, setSettingsMenu] = useState(null)
 
@@ -42,12 +42,7 @@ const SettingsMenu = ({ ip }) => {
   }
 
   return (
-    <DropdownMenu onOpenChange={(value) => {
-      if (value && !settingsMenu) {
-        fetchSettings()
-        // MenuGroup not yet implemented to show the result.
-      }
-    }}>
+    <DropdownMenu >
       <DropdownMenuTrigger className="hover:bg-accent p-2 rounded-md">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>
