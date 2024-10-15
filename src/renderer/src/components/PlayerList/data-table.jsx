@@ -110,7 +110,7 @@ export function DataTable({ columns, data, isCollapsed }) {
           </DropdownMenu>
         )}
       </div>
-        <div className='overflow-hidden rounded-xl border border-slate-200 '>
+        <div className='overflow-hidden rounded-xl border border-accent '>
           <div className='h-fit max-h-[calc(100vh-270px)] overflow-y-auto relative pb-4'>
             <Table>
               <TableHeader className="sticky top-0 bg-background z-10">

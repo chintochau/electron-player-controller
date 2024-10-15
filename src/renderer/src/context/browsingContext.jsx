@@ -11,7 +11,7 @@ export const BrowsingProvider = ({ children }) => {
   const [url, setUrl] = useState('/ui/Home?playnum=1')
   const [serviceList, setServiceList] = useState([])
   const [serviceSubMenus, setServiceSubMenus] = useState({})
-  const [selectedPlayer, setSelectedPlayer] = useState(null)
+  const [selectedPlayer, setSelectedPlayer] = useState({name:"", ip:""})
   const [screen, setScreen] = useState(null)
   const [xmlScreen, setXmlScreen] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -22,12 +22,6 @@ export const BrowsingProvider = ({ children }) => {
   const [searchableServices, setSearchableServices] = useState(searchableServicesList)
   const [isSearchMode, setIsSearchMode] = useState(false)
   const [historyUrl, setHistoryUrl] = useState([])
-
-  useEffect(() => {
-    if (!selectedPlayer) {
-      setSelectedPlayer(devices[0])
-    }
-  }, [devices])
 
   const addToHistory = (url, url2) => {
     // check if previous url is same as current url

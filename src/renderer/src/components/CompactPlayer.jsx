@@ -27,6 +27,7 @@ const demoPlayqueue = [
 ]
 
 const CompactPlayer = ({ ip }) => {
+  return null
   const { devices } = useDevices()
   const { selectedPlayer, setSelectedPlayer } = useBrowsing()
   const device = devices.find((device) => device.ip === ip)
