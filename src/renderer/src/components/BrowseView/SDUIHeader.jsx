@@ -17,13 +17,13 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
       <div
         className={cn(
           onlyOneListWithHeader
-            ? 'lg:fixed lg:w-[calc(50vw-275px)] flex flex-col items-center p-2 lg:p-10 gap-y-3 pt-14'
+            ? 'lg:fixed lg:w-[calc(50vw-275px)] flex flex-col items-center p-2  gap-y-3 pt-14'
             : 'flex px-4'
         )}
       >
         {image && (
           <div
-            className="absolute -z-20 translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-120"
+            className="absolute z-10 translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-150 pointer-events-none"
             style={{ backgroundImage: `url(${getImagePath(image)})` }}
           />
         )}
@@ -55,17 +55,19 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
             {title}
           </h3>
 
-          <p>{subTitle}</p>
+          <p
+          className='z-20'>{subTitle}</p>
 
-          <p>{subSubTitle}</p>
+          <p
+          className='z-20'>{subSubTitle}</p>
 
-          <div className="flex flex-col xl:flex-row gap-2">
+          <div className="flex flex-col xl:flex-row gap-2 z-20">
             {button &&
               button.map((item, index) => <SDUIButton button={item} key={index} index={index} />)}
           </div>
 
-          {description && onlyOneListWithHeader && (
-            <ScrollArea className={image ? 'h-64' : 'h-64 lg:h-[50vh]'}>
+          {onlyOneListWithHeader && description && (
+            <ScrollArea className={cn("",image ? 'h-64' : 'h-64 lg:h-[50vh]')}>
               {
                 description.map((item, index) => (
                   <Description key={index} description={item} lines={9} />

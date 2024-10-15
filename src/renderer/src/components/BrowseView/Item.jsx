@@ -30,8 +30,8 @@ const playlists = [
 
 const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   // size = 'small' | 'large'
-  const { $, action } = item
-  const { image, quality, subTitle, title, duration, track } = $
+  const { $, action } = item || {}
+  const { image, quality, subTitle, title, duration, track } = $ || {}
   const { getImagePath } = useBrowsing()
   const { performAction } = useSdui()
 
