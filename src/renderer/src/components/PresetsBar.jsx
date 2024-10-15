@@ -16,6 +16,7 @@ const PresetsBar = ({ ip }) => {
   }
 
   const getImagePath = (uri) => {
+    if(!uri) return noArtwork
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
       return uri
     } else {
