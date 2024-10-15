@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import React from 'react'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 import { Button } from '@/components/ui/button'
 import SDUIButton from './SDUIButton'
 import Description from './Description'

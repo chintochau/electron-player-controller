@@ -24,7 +24,6 @@ const PlayStatus = ({ ip }) => {
 
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
-
     const response = res
     setStatus(response)
     setVolume((prev) => {
@@ -188,7 +187,7 @@ const PlayStatus = ({ ip }) => {
           )}
         </div>
       </div>
-      {/* <PresetsBar ip={ip} /> */}
+      <PresetsBar ip={ip} />
     </div>
   )
 }

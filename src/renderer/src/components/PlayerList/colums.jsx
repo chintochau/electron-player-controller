@@ -9,7 +9,14 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import { ArrowDownNarrowWide, ArrowUpDown, ChevronDownIcon, MinusCircleIcon, MoreHorizontal, PlusIcon } from 'lucide-react'
+import {
+  ArrowDownNarrowWide,
+  ArrowUpDown,
+  ChevronDownIcon,
+  MinusCircleIcon,
+  MoreHorizontal,
+  PlusIcon
+} from 'lucide-react'
 import SettingsMenu from '../SettingsMenu'
 import PlayStatus from '../PlayStatus'
 import SyncStatus from '../SyncStatus'
@@ -140,8 +147,8 @@ export const columns = [
               <DropdownMenuLabel>Room</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {roomList.map((room) => (
-                <div key={room} className='grid gap-1 grid-cols-4'>
-                  <div className='grid-cols-subgrid col-span-3'>
+                <div key={room} className="grid gap-1 grid-cols-4">
+                  <div className="grid-cols-subgrid col-span-3">
                     <DropdownMenuItem
                       onClick={() => {
                         setDevices((prevDevices) =>
@@ -161,13 +168,15 @@ export const columns = [
                       {room}
                     </DropdownMenuItem>
                   </div>
-                  <div className='col-span-1 flex items-center justify-center'>
-                    <button className='h-6 w-6 rounded-sm flex items-center justify-center hover:text-red-500 text-accent'>
-                      <MinusCircleIcon className="h-4 w-4" onClick={() => removeRoomFromList(room)} />
+                  <div className="col-span-1 flex items-center justify-center">
+                    <button className="h-6 w-6 rounded-sm flex items-center justify-center hover:text-red-500 text-accent">
+                      <MinusCircleIcon
+                        className="h-4 w-4"
+                        onClick={() => removeRoomFromList(room)}
+                      />
                     </button>
                   </div>
                 </div>
-
               ))}
               <form className="flex gap-1" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
@@ -175,7 +184,6 @@ export const columns = [
                   className="h-7 w-28"
                   value={newRoomName}
                   onChange={(e) => setNewRoomName(e.target.value)}
-
                 />
                 <Button
                   variant="ghost"
@@ -272,12 +280,17 @@ export const columns = [
     cell: ({ row }) => {
       const device = row.original
       if (!device) return null
-      const { devices } = useDevices()
+      const { devices } = useDevices() || []
+      const matchingDevice = devices.find((d) => {
+        if (!d) return false
+        return d.mac === device.mac
+      })
+      const version = matchingDevice?.version
 
       return (
         <div className="text-center">
           <p>{device.model}</p>
-          <p>{devices.find((d) => d.ip === device.ip)?.version}</p>
+          <p>{version || 'N/A'}</p>
         </div>
       )
     }

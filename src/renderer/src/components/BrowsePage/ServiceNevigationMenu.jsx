@@ -10,7 +10,7 @@ import {
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
 import { useEffect } from 'react'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 
 const ServiceNevigationMenu = ({ service }) => {
   const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen } = useBrowsing()

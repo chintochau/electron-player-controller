@@ -1,45 +1,63 @@
 import React, { useEffect, useState } from 'react'
-import { useBrowsing } from '../context/borwsingContext'
+import { useBrowsing } from '../context/browsingContext'
 import { useSdui } from '../context/sduiContext'
 import { playerControl, runCommandForDevice } from '../lib/utils'
+import noArtwork from "../assets/noartwork.png"
 
 const PresetsBar = ({ ip }) => {
-    const { loadSDUI,getImagePath } = useBrowsing()
-    const [presets, setPresets] = useState([])
+  const [presets, setPresets] = useState([])
 
-    const loadPresets = async () => {
-        const res = await loadSDUI(`:11000/Presets`, ip)
-        setPresets(res.json?.presets?.preset || [])
+  const loadPresets = async () => {
+    const res = await window.api.loadSDUIPage(`http://${ip}:11000/Presets`, ip)
+    if (res && res.json && res.json.presets) {
+      setPresets(res.json.presets.preset)
+      console.log(res.json.presets.preset)
     }
+  }
 
-    useEffect(() => {
-        loadPresets()
-    }, [])
+  const getImagePath = (uri) => {
+    if (uri.startsWith('http://') || uri.startsWith('https://')) {
+      return uri
+    } else {
+      if (uri.startsWith('/images')) {
+      }
+    }
+    return `http://${ip}:11000${uri}`
+  }
 
+  useEffect(() => {
+    loadPresets()
+  }, [])
 
-    if (presets.length === 0) return null
+  if (presets === undefined || presets.length === 0) return null
 
-    return (
-        <div className='flex justify-end border-t mt-3 pt-2 '>
-            <div className='flex rounded-md '>
-                {presets.slice(0, 5).map((preset) => (
-                    <div
-                        key={preset.$.id}
-                        className='flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary transition-colors rounded-md px-1.5 py-1'
-                        onClick={() => {
-                            runCommandForDevice(ip, `:11000/Preset?id=${preset.$.id}`, 'GET')
-                        }}
-                    >
-                        <div className='size-12 flex items-center justify-center'>
-                            <img
-                                className='rounded-md '
-                                alt={preset.$.name}
-                                src={getImagePath(preset.$.image)} />
-                        </div>
-                    </div>))}
+  return (
+    <div className="flex justify-end border-t mt-3 pt-2 ">
+      <div className="flex rounded-md ">
+        {presets.slice(0, 5).map((preset) => (
+          <div
+            key={preset.$.id}
+            className="flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary transition-colors rounded-md px-1.5 py-1"
+            onClick={() => {
+              runCommandForDevice(ip, `:11000/Preset?id=${preset.$.id}`, 'GET')
+            }}
+          >
+            <div className="size-12 flex items-center justify-center">
+              <img
+                className="rounded-md "
+                alt={preset.$.name}
+                src={getImagePath(preset.$.image)}
+                onError={(e) => {
+                  e.target.onerror = null // Prevent infinite loop if fallback fails
+                  e.target.src = noArtwork // Path to your fallback image
+                }}
+              />
             </div>
-        </div>
-    )
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default PresetsBar

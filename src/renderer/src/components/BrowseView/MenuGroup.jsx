@@ -8,7 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 
 // TODO: implement MenuGroup
 

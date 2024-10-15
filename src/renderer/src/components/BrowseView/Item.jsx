@@ -1,5 +1,5 @@
 import React from 'react'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 import { cn } from '@/lib/utils'
 
 

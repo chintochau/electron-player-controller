@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react'
-import { useBrowsing } from './borwsingContext'
+import { useBrowsing } from './browsingContext'
 import { runCommandForDevice } from '../lib/utils'
 import { useToast } from '@/hooks/use-toast'
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDevices } from '../../context/devicesContext'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 import JsonView from 'react18-json-view'
 
 import 'react18-json-view/src/style.css'

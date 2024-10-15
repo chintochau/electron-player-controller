@@ -101,6 +101,7 @@ export const BrowsingProvider = ({ children }) => {
     }
     return `http://${selectedPlayer.ip}:11000${uri}`
   }
+  
   const loadServiceList = async () => {
     if (devices.length > 0) {
       const ip = selectedPlayer.ip || devices[0].ip

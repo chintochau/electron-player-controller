@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSdui } from '../../context/sduiContext'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 
 import {
     ContextMenu,

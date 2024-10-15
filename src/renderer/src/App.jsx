@@ -6,7 +6,7 @@ import { RefreshProvider } from './context/refreshContext'
 import { TableProvider } from './context/tableContext'
 import { ThemeProvider } from './context/themeContext'
 import Dashboard from './components/Dashboard'
-import { BrowsingProvider } from './context/borwsingContext'
+import { BrowsingProvider } from './context/browsingContext'
 import { SDUIProvider } from './context/sduiContext'
 
 function App() {

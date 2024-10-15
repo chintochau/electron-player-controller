@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dialog'
 import { playerControl } from '../lib/utils'
 import { useDevices } from '../context/devicesContext'
-import { useBrowsing } from '../context/borwsingContext'
+import { useBrowsing } from '../context/browsingContext'
 import MenuGroup from './BrowseView/MenuGroup'
 
 const SettingsMenu = ({ ip }) => {

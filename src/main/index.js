@@ -252,7 +252,7 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       res = await fetch(`http://${ip}:11000/Back`)
       break
     case 'upgrade':
-      console.log('upgrade',ip, param)
+      console.log('upgrade', ip, param)
       res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`)
       break
     case "removeSlave":
@@ -278,10 +278,10 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
 })
 
 
-ipcMain.handle('run-command-for-device', async (event, { ip, command,type="GET" }) => {
+ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GET" }) => {
   // send fetch request to device
   console.log('run-command-for-device', ip, command, type);
-  
+
   const res = await fetch(`http://${ip}${command}`, { method: type })
   if (!res || !res.ok) {
     console.log('Error response:', res)
@@ -327,8 +327,8 @@ ipcMain.handle("get-current-wifi", async () => {
   return await getCurrentWifi();
 });
 
-ipcMain.handle("load-sd-ui-page", async (event, {url,debug}) => {
-  return await loadSDUIPage(url,debug);
+ipcMain.handle("load-sd-ui-page", async (event, { url, debug }) => {
+  return await loadSDUIPage(url, debug);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

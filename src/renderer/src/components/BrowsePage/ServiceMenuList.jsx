@@ -14,7 +14,7 @@ const appMenuList = [
 ]
 
 import ServiceNevigationMenu from './ServiceNevigationMenu'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 const ServiceMenuList = ({ musicServiceList }) => {
   const { displayMainScreen, setUrl } = useBrowsing()
   return (

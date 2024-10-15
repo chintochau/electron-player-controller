@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSdui } from '../../context/sduiContext'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 
 const Playlist = ({ playlists }) => {
     const {browseContext} = useSdui()

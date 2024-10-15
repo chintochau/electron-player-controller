@@ -13,7 +13,7 @@ const Dashboard = () => {
       <div className="flex">
         <div
           className={cn(
-            'duration-300 ease-in overflow-hidden',
+            'duration-300 ease-in overflow-hidden h-screen',
             isCollapsed ? ' min-w-fit w-96 px-2' : 'pl-10 w-full'
           )}
         >

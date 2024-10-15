@@ -11,7 +11,7 @@ import {
 import { ArrowLeftIcon, Loader2, SearchIcon, SendHorizonalIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 import JsonView from 'react18-json-view'
 
 import 'react18-json-view/src/style.css'

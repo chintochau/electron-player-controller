@@ -1,7 +1,7 @@
 import React from 'react'
 import Row from './Row'
 import List from './List'
-import { useBrowsing } from '../../context/borwsingContext'
+import { useBrowsing } from '../../context/browsingContext'
 import { Loader2 } from 'lucide-react'
 import Playlist from './Playlist'
 import SDUIHeader from './SDUIHeader'
