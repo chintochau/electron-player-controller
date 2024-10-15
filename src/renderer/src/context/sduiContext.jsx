@@ -49,7 +49,7 @@ export const SDUIProvider = ({ children }) => {
           break
         case 'player-link':
           url = ":11000" + URI
-          runCommandForDevice(selectedPlayer.ip, url, 'GET')
+          runCommandForDevice(selectedPlayer?.ip, url, 'GET')
           break
         case 'browse':
           url = URI + '&playnum=1'

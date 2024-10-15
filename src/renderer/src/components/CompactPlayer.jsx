@@ -27,7 +27,6 @@ const demoPlayqueue = [
 ]
 
 const CompactPlayer = ({ ip }) => {
-  return null
   const { devices } = useDevices()
   const { selectedPlayer, setSelectedPlayer } = useBrowsing()
   const device = devices.find((device) => device.ip === ip)
@@ -36,7 +35,7 @@ const CompactPlayer = ({ ip }) => {
   return (
     <div
       onClick={() => setSelectedPlayer(device)}
-      className={cn("flex flex-col w-68 outline outline-1  outline-accent rounded-md p-2", selectedPlayer.ip === ip ? "bg-primary/20" : "")}>
+      className={cn("flex flex-col w-68 outline outline-1  outline-accent rounded-md p-2", selectedPlayer?.ip === ip ? "bg-primary/20" : "")}>
       <div className="flex items-center">
         <SyncStatus ip={ip} compact={true} />
         <h3>{device.name}</h3>

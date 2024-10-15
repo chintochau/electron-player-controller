@@ -28,6 +28,7 @@ const SearchView = () => {
 
     useEffect(() => {
         if (serviceList.length === 0) {
+            // initially load service list
             loadServiceList()
             displayMainScreen('/ui/Home?playnum=1')
         }

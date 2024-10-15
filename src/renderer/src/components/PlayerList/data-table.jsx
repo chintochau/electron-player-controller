@@ -26,6 +26,7 @@ import { useState, useEffect } from 'react'
 import { Input } from '../../../../components/ui/input'
 import { Button } from '../../../../components/ui/button'
 import { ScrollArea, ScrollBar } from '../../../../components/ui/scroll-area'
+import { cn } from '../../lib/utils'
 
 export function DataTable({ columns, data, isCollapsed }) {
   const [sorting, setSorting] = useState([])
@@ -110,47 +111,52 @@ export function DataTable({ columns, data, isCollapsed }) {
           </DropdownMenu>
         )}
       </div>
-        <div className='overflow-hidden rounded-xl border border-accent '>
-          <div className='h-fit max-h-[calc(100vh-270px)] overflow-y-auto relative pb-4'>
-            <Table>
-              <TableHeader className="sticky top-0 bg-background z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} className="text-center">
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
-                        </TableHead>
-                      )
-                    })}
+      <div className="overflow-hidden rounded-xl border border-accent ">
+        <div
+          className={cn(
+            'h-fit overflow-y-auto relative pb-4',
+            isCollapsed ? 'max-h-[calc(100vh-145px)]' : 'max-h-[calc(100vh-270px)]'
+          )}
+        >
+          <Table>
+            <TableHeader className="sticky top-0 bg-background z-10">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="text-center">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                      <p>Searching devices {searchString ? `matching '${searchString}'` : ''}</p>
-                      <Loader2 className="mx-auto h-6 w-6 animate-spin" />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    <p>Searching devices {searchString ? `matching '${searchString}'` : ''}</p>
+                    <Loader2 className="mx-auto h-6 w-6 animate-spin" />
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
+      </div>
     </>
   )
 }

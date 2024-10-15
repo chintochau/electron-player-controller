@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { ArrowLeftIcon, Loader2, SearchIcon, SendHorizonalIcon } from 'lucide-react'
+import { ArrowLeftIcon, SearchIcon, SendHorizonalIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
 import { useBrowsing } from '../../context/browsingContext'
@@ -39,7 +39,6 @@ const BrowsePage = () => {
     setIsSearchMode,
     performSearching,
     goToPreviousUrl,
-    historyUrl
   } = useBrowsing()
 
   useEffect(() => {
@@ -48,6 +47,12 @@ const BrowsePage = () => {
       displayMainScreen('/ui/Home?playnum=1')
     }
   }, [selectedPlayer])
+
+  useEffect(() => {
+    if (devices && devices.length > 0 && !selectedPlayer) {
+      setSelectedPlayer(devices[0])
+    }
+  },[])
 
   const handleSearchClick = (e) => {
     e.preventDefault()

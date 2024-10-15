@@ -11,7 +11,7 @@ export const BrowsingProvider = ({ children }) => {
   const [url, setUrl] = useState('/ui/Home?playnum=1')
   const [serviceList, setServiceList] = useState([])
   const [serviceSubMenus, setServiceSubMenus] = useState({})
-  const [selectedPlayer, setSelectedPlayer] = useState({name:"", ip:""})
+  const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [screen, setScreen] = useState(null)
   const [xmlScreen, setXmlScreen] = useState(null)
   const [loading, setLoading] = useState(true)
