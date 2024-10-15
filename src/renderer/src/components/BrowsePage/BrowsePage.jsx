@@ -38,7 +38,8 @@ const BrowsePage = () => {
     isSearchMode,
     setIsSearchMode,
     performSearching,
-    goToPreviousUrl
+    goToPreviousUrl,
+    historyUrl
   } = useBrowsing()
 
   useEffect(() => {
@@ -130,7 +131,6 @@ const BrowsePage = () => {
           </SelectContent>
         </Select>
       </div>
-
       {isSearchMode ?
         <SearchView />
         :

@@ -33,7 +33,7 @@ const playlists = [
 const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
     // size = 'small' | 'large' 
     const { $, action } = item
-    const { image, quality, subTitle, title, duration } = $
+    const { image, quality, subTitle, title, duration,track } = $
     const { getImagePath } = useBrowsing()
     const { performAction } = useSdui()
 
@@ -97,7 +97,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
 
             <div className="space-y-1 text-sm pt-1 min-w-20 w-[calc(100%-3.5rem)] xl:w-full">
                 <div className={cn(image ? "" : "underline hover:text-primary cursor-pointer")} onClick={handleClick}>
-                    <h3 className={cn("font-medium leading-none text-wrap text-lg", image ? "" : "text-xl")}>{title}</h3>
+                    <h3 className={cn("font-medium leading-none text-wrap text-lg", image ? "" : "text-xl")}>{track && `${track}. `} {title}</h3>
                     <p className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4" title={subTitle}>
                         {subTitle}
                     </p>

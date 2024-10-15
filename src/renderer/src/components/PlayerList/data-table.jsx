@@ -58,9 +58,6 @@ export function DataTable({ columns, data, isCollapsed }) {
         case 'version':
           column.toggleVisibility(false)
           break
-        case 'select':
-          column.toggleVisibility(true)
-          break
         case 'compact':
           column.toggleVisibility(isCollapsed)
           break

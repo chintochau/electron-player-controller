@@ -29,12 +29,70 @@ export const BrowsingProvider = ({ children }) => {
     }
   }, [devices])
 
+  const addToHistory = (url, url2) => {
+    // check if previous url is same as current url
+    if (historyUrl[historyUrl.length - 1] !== url) {
+      if (url2) {
+        setHistoryUrl([...historyUrl, url, url2])
+      }
+      else {
+        setHistoryUrl([...historyUrl, url])
+      }
+    }
+  }
+
   const goToPreviousUrl = () => {
     if (historyUrl.length > 0) {
-      setUrl(historyUrl[historyUrl.length - 1])
-      displayMainScreen(historyUrl[historyUrl.length - 1])
-      setHistoryUrl(historyUrl.slice(0, -1))
+      if (url === "search") {
+        setUrl(historyUrl[historyUrl.length - 1])
+        displayMainScreen(historyUrl[historyUrl.length - 1])
+        setHistoryUrl(historyUrl.slice(0, -1))
+      } else if (isSearchMode) {
+        setIsSearchMode(false)
+      } else if (historyUrl[historyUrl.length - 1] === "search") {
+        setIsSearchMode(true)
+        setHistoryUrl(historyUrl.slice(0, -1))
+        setUrl(historyUrl[historyUrl.length - 1])
+      } else {
+        setUrl(historyUrl[historyUrl.length - 1])
+        displayMainScreen(historyUrl[historyUrl.length - 1])
+        setHistoryUrl(historyUrl.slice(0, -1))
+      }
     }
+  }
+
+
+  const displayMainScreen = async (uri, debug) => {
+    if (debug) {
+      console.log(uri);
+    }
+    setScreen('Loading...')
+    setXmlScreen('<Loading.../>')
+    setLoading(true)
+    if (isSearchMode) {
+      addToHistory(url, "search")
+    } else {
+      addToHistory(url)
+    }
+    const res = await loadSDUI(uri, null, debug)
+    const response = res.json
+    if (!response) {
+      setScreen('No Response')
+      setXmlScreen('<NoResponse/>')
+      setLoading(false)
+      return
+    }
+
+    if (response && response.screen) {
+      setScreen(response.screen)
+      setXmlScreen(res.xmlText)
+      setLoading(false)
+    } else {
+      setScreen(response)
+      setXmlScreen(res.xmlText)
+      setLoading(false)
+    }
+    setIsSearchMode(false)
   }
 
   const getImagePath = (uri) => {
@@ -88,33 +146,6 @@ export const BrowsingProvider = ({ children }) => {
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 
-  const displayMainScreen = async (uri,debug) => {
-    if(debug){
-      console.log(uri);
-    }
-    setScreen('Loading...')
-    setXmlScreen('<Loading.../>')
-    setLoading(true)
-    setHistoryUrl([...historyUrl, url])
-    const res = await loadSDUI(uri,null,debug)
-    const response = res.json
-    if (!response) {
-      setScreen('No Response')
-      setXmlScreen('<NoResponse/>')
-      setLoading(false)
-      return
-    }
-
-    if (response && response.screen) {
-      setScreen(response.screen)
-      setXmlScreen(res.xmlText)
-      setLoading(false)
-    } else {
-      setScreen(response)
-      setXmlScreen(res.xmlText)
-      setLoading(false)
-    }
-  }
 
   const performSearching = async () => {
     const ip = selectedPlayer.ip || devices[0].ip
@@ -133,7 +164,6 @@ export const BrowsingProvider = ({ children }) => {
         jsonResult.push(response.screen)
       }
     }
-
     setXmlSearchResult(xmlResult)
     setSearchResult(jsonResult)
   }
@@ -170,7 +200,8 @@ export const BrowsingProvider = ({ children }) => {
     performSearching,
     isSearchMode,
     setIsSearchMode,
-    goToPreviousUrl
+    goToPreviousUrl,
+    historyUrl
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

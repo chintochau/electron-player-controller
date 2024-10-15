@@ -2,12 +2,17 @@ import React from 'react'
 import { useDevices } from '../context/devicesContext'
 import SyncStatus from './SyncStatus'
 import PlayStatus from './PlayStatus'
+import { useBrowsing } from '../context/borwsingContext'
+import { cn } from '@/lib/utils'
 
 const CompactPlayer = ({ ip }) => {
   const { devices } = useDevices()
+  const { selectedPlayer, setSelectedPlayer } = useBrowsing()
   const device = devices.find((device) => device.ip === ip)
   return (
-    <div className="flex flex-col w-68 outline outline-1  outline-accent rounded-md p-2 hover:bg-background">
+    <div
+      onClick={() => setSelectedPlayer(device)}
+      className={cn("flex flex-col w-68 outline outline-1  outline-accent rounded-md p-2", selectedPlayer.ip === ip ? "bg-primary/20" : "")}>
       <div className="flex items-center">
         <SyncStatus ip={ip} compact={true} />
         <h3>{device.name}</h3>
