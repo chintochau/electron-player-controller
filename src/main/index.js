@@ -90,6 +90,7 @@ ipcMain.handle('discover-devices', async () => {
 
     // Stop discovery after a timeout (e.g., 5 seconds)
     setTimeout(() => {
+      bonjourService.destroy(); // Stop Bonjour service to prevent memory leaks
       resolve(discoveredDevices) // Resolve with the discovered devices
     }, 1000) // Adjust the timeout as needed
   })
@@ -203,7 +204,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
 
       response = {
         success: true,
-        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent?[0] && `(${percent[0]}%)`:''}`,
+        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent ? [0] && `(${percent[0]}%)` : ''}`,
       }
     }
 
