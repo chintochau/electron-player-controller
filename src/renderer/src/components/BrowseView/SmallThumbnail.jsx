@@ -55,7 +55,7 @@ const SmallThumbnail = ({
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger onClick={handleClick}>
-          <div className="relative overflow-hidden rounded-md group">
+          <div className="relative overflow-hidden rounded-md group transition ease-out duration-300 active:scale-110">
             <img
               src={getImagePath(smallThumbnail?.$?.icon)}
               className={cn(

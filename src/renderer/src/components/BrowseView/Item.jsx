@@ -50,7 +50,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   return (
     <div
       className={cn(
-        'flex lg:rounded-md gap-2 w-ful xl:flex-col group',
+        'flex lg:rounded-md gap-2 w-ful xl:flex-col group ease-out duration-300 active:scale-110',
         onlyOneListWithHeader
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
           : ''

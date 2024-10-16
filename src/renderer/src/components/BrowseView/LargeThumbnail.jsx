@@ -65,7 +65,7 @@ const LargeThumbnail = ({
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger onClick={handleClick} className="">
-          <div className="relative overflow-hidden rounded-md group">
+          <div className="transition ease-out duration-300 active:scale-110 relative overflow-hidden rounded-md group">
             <img
               src={getImagePath(largeThumbnail?.$?.image)}
               className={cn(

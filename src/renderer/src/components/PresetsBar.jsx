@@ -39,7 +39,7 @@ const PresetsBar = ({ ip }) => {
         {presets.slice(0, 5).map((preset) => (
           <div
             key={preset.$.id}
-            className="flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary transition-colors rounded-md px-1.5 py-1  relative group"
+            className="flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary rounded-md px-1.5 py-1  relative group transition ease-out duration-300 active:scale-110"
             onClick={() => {
               runCommandForDevice(ip, `:11000/Preset?id=${preset.$.id}`, 'GET')
             }}
@@ -54,7 +54,7 @@ const PresetsBar = ({ ip }) => {
                   e.target.src = noArtwork // Path to your fallback image
                 }}
               />
-            {renderComponent('player-link', 6, true)}
+              {renderComponent('player-link', 6, true)}
             </div>
           </div>
         ))}

@@ -7,23 +7,22 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-
 const demoPlayqueue = [
-  "Song 1",
-  "Song 2",
-  "Song 3",
-  "Song 4",
-  "Song 5",
-  "Song 6",
-  "Song 7",
-  "Song 8",
-  "Song 9",
-  "Song 10",
-  "Song 11",
-  "Song 12",
-  "Song 13",
-  "Song 14",
-  "Song 15",
+  'Song 1',
+  'Song 2',
+  'Song 3',
+  'Song 4',
+  'Song 5',
+  'Song 6',
+  'Song 7',
+  'Song 8',
+  'Song 9',
+  'Song 10',
+  'Song 11',
+  'Song 12',
+  'Song 13',
+  'Song 14',
+  'Song 15'
 ]
 
 const CompactPlayer = ({ ip }) => {
@@ -35,7 +34,11 @@ const CompactPlayer = ({ ip }) => {
   return (
     <div
       onClick={() => setSelectedPlayer(device)}
-      className={cn("flex flex-col w-68 outline outline-1  outline-accent rounded-md p-2", selectedPlayer?.ip === ip ? "bg-primary/20" : "")}>
+      className={cn(
+        'flex flex-col w-68 outline outline-1 outline-accent rounded-md p-2  transition ease-out duration-300 active:scale-105',
+        selectedPlayer?.ip === ip ? 'bg-primary/20' : ''
+      )}
+    >
       <div className="flex items-center">
         <SyncStatus ip={ip} compact={true} />
         <h3>{device.name}</h3>
@@ -46,16 +49,19 @@ const CompactPlayer = ({ ip }) => {
       <Button onClick={() => setIsMenuOpen(!isMenuOpen)} className="mt-4" variant="outline">
         Queue
       </Button>
-      <ScrollArea className={cn("flex w-full duration-300 ease-in flex-col", isMenuOpen ? "w-full h-96 " : "h-0 overflow-hidden")}>
-        {
-          demoPlayqueue.map((song, index) => (
-            <div key={index} className="flex flex-col w-full text-3xl">
-              <div className="flex items-center">
-                {index + 1}. {song}
-              </div>
+      <ScrollArea
+        className={cn(
+          'flex w-full duration-300 ease-in flex-col',
+          isMenuOpen ? 'w-full h-96 ' : 'h-0 overflow-hidden'
+        )}
+      >
+        {demoPlayqueue.map((song, index) => (
+          <div key={index} className="flex flex-col w-full text-3xl">
+            <div className="flex items-center">
+              {index + 1}. {song}
             </div>
-          ))
-        }
+          </div>
+        ))}
       </ScrollArea>
     </div>
   )
