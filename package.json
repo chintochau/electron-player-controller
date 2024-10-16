@@ -1,6 +1,6 @@
 {
   "name": "bluos-player-controller",
-  "version": "1.2.3",
+  "version": "1.2.4-beta1",
   "description": "BluOS Player Controller",
   "main": "./out/main/index.js",
   "author": "Jason Chau",
