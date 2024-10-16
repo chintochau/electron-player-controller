@@ -73,9 +73,9 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
                 className="transition-all group-hover:scale-105 w-full h-full object-cover aspect-square "
                 src={image && getImagePath(image)}
               />
-              <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
-                {IconComponent && <IconComponent className="h-6 w-6" />}
-              </div>
+              {IconComponent && <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+                <IconComponent className="h-6 w-6" />
+              </div>}
               {renderComponent(actionType, 10)}
             </div>
           )}

@@ -75,9 +75,9 @@ const LargeThumbnail = ({
                 isArtist ? 'rounded-full' : ''
               )}
             />
-            <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
-              {IconComponent && <IconComponent className="h-6 w-6" />}
-            </div>
+           {IconComponent &&  <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+              <IconComponent className="h-6 w-6" />
+            </div>}
             {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>

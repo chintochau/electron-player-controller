@@ -98,7 +98,7 @@ export const BrowsingProvider = ({ children }) => {
   
   const loadServiceList = async () => {
     if (devices.length > 0) {
-      const ip = selectedPlayer.ip || devices[0].ip
+      const ip = selectedPlayer?.ip || devices[0]?.ip
       const res = await loadSDUI(`/ui/Sources?playnum=1`)
       const response = res.json
       if (response && response.screen && response.screen.row && response.screen.row.length > 0) {
@@ -137,7 +137,7 @@ export const BrowsingProvider = ({ children }) => {
     if (devices.length === 0) {
       return
     }
-    const ip = deviceIp || selectedPlayer.ip || devices[0].ip
+    const ip = deviceIp || selectedPlayer?.ip || devices[0]?.ip
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 

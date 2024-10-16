@@ -32,7 +32,7 @@ export const getIconForType = (type) => {
     case "song":
       return MusicIcon
     default:
-      return type
+      return null
   }
 }
 
