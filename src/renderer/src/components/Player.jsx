@@ -95,8 +95,6 @@ const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
             title: 'Ungrouping Device',
             description: 'Ungrouping Device: ' + slaveDevice.name + " : " + slaveDevice.ip
         })
-        console.log(slaveDevice);
-
         ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
         playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
     }

@@ -21,8 +21,10 @@ const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
   const [apiCommand, setApiCommand] = useState('')
   const { devices, selectedDevices, refreshDevices, updateDeviceStatus } = useDevices()
-  const [requestType, setRequestType] = useState('GET')
 
+
+
+  const [requestType, setRequestType] = useState('GET')
   const { toast } = useToast()
 
   const runCommandForDevices = () => {

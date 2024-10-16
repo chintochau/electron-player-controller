@@ -38,6 +38,7 @@ export const columns = [
     id: 'select',
     header: ({ table }) => {
       const { selectAllDevices, removeAllSelectedDevices } = useDevices()
+      if(!useDevices) return null
       return (
         <Checkbox
           checked={
@@ -58,6 +59,8 @@ export const columns = [
     },
     cell: ({ row }) => {
       const { selectDeviceByIp, removeSelectedDeviceByIp } = useDevices()
+      if(!useDevices) return null
+
       const device = row.original
       if (!device) return null
       return (
@@ -133,6 +136,7 @@ export const columns = [
     cell: ({ row }) => {
       const { roomList, saveRoomForMac, addRoomToList, removeRoomFromList } = useStorage()
       const { setDevices } = useDevices()
+      if(!useDevices || !useStorage ) return null
       const device = row.original
       if (!device) return null
       const [newRoomName, setNewRoomName] = useState('')
@@ -281,6 +285,8 @@ export const columns = [
       const device = row.original
       if (!device) return null
       const { devices } = useDevices() || []
+
+      if (! useDevices) return null
       const matchingDevice = devices.find((d) => {
         if (!d) return false
         return d.mac === device.mac
@@ -304,6 +310,8 @@ export const columns = [
       const { version } = useTable()
       const { updateDeviceStatus } = useDevices()
       const { toast } = useToast()
+
+      if (!useDevices || !useToast) return null
 
       const upgradePlayer = () => {
         playerControl(device.ip, 'upgrade', version)
@@ -331,6 +339,8 @@ export const columns = [
       if (!device) return null
       const { toast } = useToast()
       const { setDevices } = useDevices()
+      if (!useDevices || !useToast) return null
+
       const rebootPlayer = () => {
         toast({
           title: 'Rebooting Player',

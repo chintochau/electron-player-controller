@@ -9,6 +9,9 @@ import SettingBar from './SettingBar'
 
 const Dashboard = () => {
   const { isCollapsed } = useTable()
+  
+  if (!useTable) return null
+
   return (
     <div className="flex">
       <div
