@@ -199,7 +199,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
 
       response = {
         success: true,
-        status: `Upgrading: ${upgrade.git[0]}`
+        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent?[0] && `(${percent[0]}%)`:''}`,
       }
     }
 

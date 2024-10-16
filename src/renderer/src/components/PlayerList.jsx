@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDevices } from '../context/devicesContext'
 import { columns } from './PlayerList/colums'
 import { DataTable } from './PlayerList/data-table'
@@ -8,9 +8,10 @@ export const goToIpAddress = (ip) => {
   window.open(`http://${ip}/`, '_blank')
 }
 
-
-const PlayList = ({ isCollapsed }) => {
+const PlayerList = ({ isCollapsed }) => {
   const { devices } = useDevices()
+  if (!useDevices) return null
+
   return (
     <div
       className={cn(
@@ -23,4 +24,4 @@ const PlayList = ({ isCollapsed }) => {
   )
 }
 
-export default PlayList
+export default PlayerList

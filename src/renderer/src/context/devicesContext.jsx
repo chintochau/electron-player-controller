@@ -9,7 +9,6 @@ export const useDevices = () => useContext(DevicesContext)
 export const DevicesProvider = ({ children }) => {
   const [devices, setDevices] = useState([])
   const [selectedDevices, setSelectedDevices] = useState([]) // ips of selected devices
-  const { refreshTime } = useRefresh()
   const { checkRoomForMac } = useStorage()
 
   useEffect(() => {
@@ -228,7 +227,7 @@ export const DevicesProvider = ({ children }) => {
     const startPhaseTwo = () => {
       intervalId = setInterval(() => {
         updateDevices()
-      }, 4000)
+      }, 7000)
     }
 
     // Start phase 1 when the component mounts

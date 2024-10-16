@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from './Header'
-import PlayList from './PlayList'
+import PlayerList from './PlayerList'
 import Footer from './Footer'
 import { useTable } from '../context/tableContext'
 import { cn } from '../lib/utils'
@@ -9,6 +9,9 @@ import SettingBar from './SettingBar'
 
 const Dashboard = () => {
   const { isCollapsed } = useTable()
+  
+  if (!useTable) return null
+
   return (
       <div className="flex">
         <div
@@ -18,7 +21,7 @@ const Dashboard = () => {
           )}
         >
           <Header isCollapsed={isCollapsed} />
-          <PlayList isCollapsed={isCollapsed} />
+          <PlayerList isCollapsed={isCollapsed} />
           <Footer isCollapsed={isCollapsed} />
         </div>
         <div className={cn('duration-300 ease-in', isCollapsed ? 'mx-0 w-[calc(100vw-450px)] overflow-x-hidden' : 'w-0')}>
