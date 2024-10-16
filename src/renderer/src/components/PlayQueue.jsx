@@ -26,17 +26,15 @@ const PlayQueue = ({ ip }) => {
 
     useEffect(() => {
         let interval
-        if (isMenuOpen && !queue) {
-            
+        if (isMenuOpen) {
             loadQueue()
             interval = setInterval(() => {
             console.log("loading queue");
-
                 loadQueue()
             }, 7000);
         }
         return () => clearInterval(interval)
-    }, [queue, isMenuOpen])
+    }, [isMenuOpen])
 
     const handleMenuClick = () => {
         if (!isSelectedPlayer) {
