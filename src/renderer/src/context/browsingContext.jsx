@@ -18,7 +18,7 @@ export const BrowsingProvider = ({ children }) => {
   const [searchText, setSearchText] = useState('')
   const [searchResult, setSearchResult] = useState([])
   const [xmlSearchResult, setXmlSearchResult] = useState("")
-  const [displayMode, setDisplayMode] = useState('xml')
+  const [displayMode, setDisplayMode] = useState('gui')
   const [searchableServices, setSearchableServices] = useState(searchableServicesList)
   const [isSearchMode, setIsSearchMode] = useState(false)
   const [historyUrl, setHistoryUrl] = useState([])
