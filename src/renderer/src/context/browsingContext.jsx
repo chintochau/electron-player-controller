@@ -157,6 +157,8 @@ export const BrowsingProvider = ({ children }) => {
       if (response && response.screen) {
         xmlResult += `<${searchableServices[i]}>${res.xmlText}</${searchableServices[i]}>`
         jsonResult.push(response.screen)
+        setXmlSearchResult(xmlResult)
+        setSearchResult(jsonResult)
       }
     }
     setXmlSearchResult(xmlResult)
