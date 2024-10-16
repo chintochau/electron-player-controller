@@ -14,6 +14,9 @@ import {
 } from '@/components/ui/context-menu'
 import { PlusCircleIcon } from 'lucide-react'
 import { useSdui } from '../../context/sduiContext'
+import { renderComponent } from './GUI'
+import { getIconForType } from '../../lib/utils'
+import { PlayIcon } from '@heroicons/react/24/solid'
 
 const playlists = [
   'Playlist 1',
@@ -35,6 +38,11 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   const { getImagePath } = useBrowsing()
   const { performAction } = useSdui()
 
+  const resultType = action[0]?.$?.resultType || action[0]?.$?.type
+  const actionType = action[0]?.$?.type
+
+  const IconComponent = getIconForType(resultType)
+
   const handleClick = () => {
     performAction(action)
   }
@@ -42,8 +50,10 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   return (
     <div
       className={cn(
-        'flex lg:rounded-md gap-2 w-ful xl:flex-col',
-        onlyOneListWithHeader ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md' : ''
+        'flex lg:rounded-md gap-2 w-ful xl:flex-col group',
+        onlyOneListWithHeader
+          ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
+          : ''
       )}
       onClick={handleClick}
     >
@@ -52,6 +62,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
           {image && (
             <div
               className={cn(
+                'relative group',
                 onlyOneListWithHeader
                   ? 'h-20 w-20 overflow-hidden rounded-md'
                   : ' w-20 h-20 rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
@@ -59,9 +70,13 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
               )}
             >
               <img
-                className="transition-all hover:scale-105 w-full h-full object-cover aspect-square "
+                className="transition-all group-hover:scale-105 w-full h-full object-cover aspect-square "
                 src={image && getImagePath(image)}
               />
+              <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+                {IconComponent && <IconComponent className="h-6 w-6" />}
+              </div>
+              {renderComponent(actionType, 10)}
             </div>
           )}
         </ContextMenuTrigger>
@@ -105,19 +120,26 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
       </ContextMenu>
 
       <div className="space-y-1 text-sm pt-1 min-w-20 w-[calc(100%-3.5rem)] xl:w-full">
-        <div
-          className={cn(image ? '' : 'underline hover:text-primary cursor-pointer')}
-          onClick={handleClick}
-        >
-          <h3 className={cn('font-medium leading-none text-wrap text-lg', image ? '' : 'text-xl')}>
-            {track && `${track}. `} {title}
-          </h3>
-          <p
-            className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4"
-            title={subTitle}
+        <div className="flex justify-between items-center w-full">
+          <div
+            className={cn(image ? '' : 'underline hover:text-primary cursor-pointer')}
+            onClick={handleClick}
           >
-            {subTitle}
-          </p>
+            <h3
+              className={cn('font-medium leading-none text-wrap text-lg', image ? '' : 'text-xl')}
+            >
+              {track && `${track}. `} {title}
+            </h3>
+            <p
+              className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4"
+              title={subTitle}
+            >
+              {subTitle}
+            </p>
+          </div>
+          <div className="w-8 h-8 pr-2">
+            {!image && actionType === "player-link" &&<PlayIcon className="text-primary w-6 h-6 opacity-0 group-hover:opacity-100 pointer-events-none" />}
+          </div>
         </div>
 
         <p

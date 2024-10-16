@@ -6,9 +6,18 @@ import { Loader2 } from 'lucide-react'
 import Playlist from './Playlist'
 import SDUIHeader from './SDUIHeader'
 import { cn } from '@/lib/utils'
+import { useSdui } from '../../context/sduiContext'
+import { PlayIcon } from '@heroicons/react/24/solid'
 
 const GUI = ({ screen }) => {
   const { loading } = useBrowsing()
+  const {} = useSdui()
+
+
+  if (!useSdui || !useBrowsing) {
+    return <Loader2 className='animate-spin size-20' />
+  }
+
   if (loading) {
     return <div className='w-full flex justify-center items-center h-1/2'><Loader2 className='animate-spin size-20' /></div>
   }
@@ -92,3 +101,21 @@ const GUI = ({ screen }) => {
 
 
 export default GUI
+
+
+
+export const renderComponent = (type,size=20,rounded=false) => {
+  switch (type) {
+    case 'player-link':
+      return (
+        <>
+          <div className={cn("absolute inset-0 bg-black transition  ease-in-out  duration-300 opacity-0 group-hover:opacity-50",rounded ? 'rounded-md' : '')}></div>
+          <PlayIcon
+            src="overlay-image-url.png"
+            alt="Overlay Image"
+            className={`text-white absolute z-20 inset-0 w-${size} h-${size} object-cover opacity-0 group-hover:opacity-100 mx-auto my-auto pointer-events-none`}
+          />
+        </>
+      )
+  }
+}

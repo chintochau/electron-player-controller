@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import SDUIButton from './SDUIButton'
 import Description from './Description'
 import { ScrollArea } from '../../../../components/ui/scroll-area'
+import tidalLogo from '../../assets/tidal.png'
 
 const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
   const { $, button, description, viewAll } = header || {}
@@ -21,12 +22,10 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
             : 'flex px-4'
         )}
       >
-        {image && (
-          <div
-            className="absolute z-10 translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-150 pointer-events-none"
-            style={{ backgroundImage: `url(${getImagePath(image)})` }}
-          />
-        )}
+        <div
+          className="absolute z-10 translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-150 pointer-events-none"
+          style={{ backgroundImage: `url(${image ? getImagePath(image) : tidalLogo})` }}
+        />
 
         {image && (
           <div
@@ -55,11 +54,9 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
             {title}
           </h3>
 
-          <p
-          className='z-20'>{subTitle}</p>
+          <p className="z-20">{subTitle}</p>
 
-          <p
-          className='z-20'>{subSubTitle}</p>
+          <p className="z-20">{subSubTitle}</p>
 
           <div className="flex flex-col xl:flex-row gap-2 z-20">
             {button &&
@@ -67,11 +64,10 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
           </div>
 
           {onlyOneListWithHeader && description && (
-            <ScrollArea className={cn("",image ? 'h-64' : 'h-64 lg:h-[50vh]')}>
-              {
-                description.map((item, index) => (
-                  <Description key={index} description={item} lines={9} />
-                ))}
+            <ScrollArea className={cn('', image ? 'h-64' : 'h-64 lg:h-[50vh]')}>
+              {description.map((item, index) => (
+                <Description key={index} description={item} lines={9} />
+              ))}
             </ScrollArea>
           )}
         </div>

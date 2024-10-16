@@ -12,9 +12,9 @@ export const DevicesProvider = ({ children }) => {
   const { refreshTime } = useRefresh()
   const { checkRoomForMac } = useStorage()
 
-  useEffect(() => {
-    console.log(devices)
-  }, [devices])
+//   useEffect(() => {
+//     console.log(devices)
+//   }, [devices])
 
   const updateDeviceStatus = (ip, status) => {
     setDevices((prevDevices) => {

@@ -1,4 +1,6 @@
+import { PlayIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
+import { DiscAlbumIcon, ListMusicIcon, MusicIcon } from 'lucide-react'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs) {
@@ -13,3 +15,24 @@ export const playerControl = async (ip, control, param) => {
 export const runCommandForDevice = async (ip, command, type) => {
   const res = await window.api.runCommandForDevice(ip, command, type)
 }
+
+
+export const getIconForType = (type) => {
+  if (!type) {
+    return null
+  }
+  switch (type.toLowerCase()) {
+    case "album":
+      return DiscAlbumIcon
+    case "artist":
+      return ""
+    case "screen":
+    case "playlist":
+      return ListMusicIcon
+    case "song":
+      return MusicIcon
+    default:
+      return type
+  }
+}
+
