@@ -197,9 +197,13 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
     if (UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3) {
       const upgrade = UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3
 
+      console.log('upgrade', upgrade);
+      
+      const {step,total,percent,git} = upgrade
+
       response = {
         success: true,
-        status: `Upgrading: ${upgrade.git[0]}`
+        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent?[0] && `(${percent[0]}%)`:''}`,
       }
     }
 
