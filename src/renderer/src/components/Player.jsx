@@ -51,7 +51,7 @@ import { useStorage } from '../context/localStorageContext'
 import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
-import { goToIpAddress,  } from './PlayList'
+import { goToIpAddress,  } from './PlayerList'
 import { Progress } from '@/components/ui/progress'
 import AddPlayerToGroup from './AddPlayerToGroup'
 import ApiListDropDown from './ApiListDropDown'
@@ -95,8 +95,6 @@ const Player = ({ device, index, setDeviceGroupingStatus, version }) => {
             title: 'Ungrouping Device',
             description: 'Ungrouping Device: ' + slaveDevice.name + " : " + slaveDevice.ip
         })
-        console.log(slaveDevice);
-
         ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
         playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
     }

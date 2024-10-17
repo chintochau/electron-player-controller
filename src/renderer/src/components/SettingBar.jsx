@@ -23,7 +23,7 @@ const SettingBar = () => {
         <ThemeControlButton />
       </Button>}
       {enabledFeatures.addPlayer && <AddPlayerButton />}
-      {/* <Button variant="ghost" size="icon" className={cn("text-2xl", showPreset ? '' : 'line-through')} onClick={() => setShowPreset(!showPreset)}>P</Button> */}
+      <Button variant="ghost" size="icon" className={cn("text-2xl", showPreset ? '' : 'line-through')} onClick={() => setShowPreset(!showPreset)}>P</Button>
 
     </div>
   )

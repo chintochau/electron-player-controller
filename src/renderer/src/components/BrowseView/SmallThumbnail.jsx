@@ -3,56 +3,71 @@ import { useSdui } from '../../context/sduiContext'
 import { useBrowsing } from '../../context/browsingContext'
 
 import {
-    ContextMenu,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuSeparator,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
-    ContextMenuTrigger,
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { cn } from '../../lib/utils'
+import { cn, getIconForType } from '../../lib/utils'
 import { PlusCircleIcon } from 'lucide-react'
+import { renderComponent } from './GUI'
 
 const playlists = [
-    'Playlist 1',
-    'Playlist 2',
-    'Playlist 3',
-    'Playlist 4',
-    'Playlist 5',
-    'Playlist 6',
-    'Playlist 7',
-    'Playlist 8',
-    'Playlist 9',
-    'Playlist 10',
+  'Playlist 1',
+  'Playlist 2',
+  'Playlist 3',
+  'Playlist 4',
+  'Playlist 5',
+  'Playlist 6',
+  'Playlist 7',
+  'Playlist 8',
+  'Playlist 9',
+  'Playlist 10'
 ]
 
-const SmallThumbnail = ({ smallThumbnail, className, aspectRatio = 'portrait',isArtist, ...props }) => {
+const SmallThumbnail = ({
+  smallThumbnail,
+  className,
+  aspectRatio = 'portrait',
+  isArtist,
+  ...props
+}) => {
   const { performAction } = useSdui()
   const { getImagePath } = useBrowsing()
 
-  const {$,action} = smallThumbnail || {}
-  const {title} = $ || {}
+  const { $, action } = smallThumbnail || {}
+  const { title } = $ || {}
+
+  const resultType = action[0]?.$?.resultType || action[0]?.$?.type
+  const actionType = action[0]?.$?.type
+
+  const IconComponent = getIconForType(resultType)
 
   const handleClick = () => {
     performAction(action)
   }
 
-  
   return (
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger onClick={handleClick}>
-          <div className="overflow-hidden rounded-md">
+          <div className="relative overflow-hidden rounded-md group transition ease-out duration-300 active:scale-110">
             <img
               src={getImagePath(smallThumbnail?.$?.icon)}
               className={cn(
                 'h-40 w-40 object-cover transition-all hover:scale-105',
                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square',
-                isArtist ? "rounded-full" : ""
+                isArtist ? 'rounded-full' : ''
               )}
             />
+            {IconComponent && <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+              <IconComponent className="h-6 w-6" />
+            </div>}
+            {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">

@@ -21,8 +21,10 @@ const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
   const [apiCommand, setApiCommand] = useState('')
   const { devices, selectedDevices, refreshDevices, updateDeviceStatus } = useDevices()
-  const [requestType, setRequestType] = useState('GET')
 
+
+
+  const [requestType, setRequestType] = useState('GET')
   const { toast } = useToast()
 
   const runCommandForDevices = () => {
@@ -101,7 +103,7 @@ const Footer = ({ isCollapsed }) => {
   return (
     <div
       className={cn(
-        'flex h-36 w-full items-center justify-center text-sm text-foreground px-10 duration-300 ease-in',
+        'flex h-36 w-full items-center justify-center text-sm text-foreground duration-300 ease-in absolute bottom-0 pl-4 lg:px-10',
         isCollapsed ? ' translate-y-full fixed' : ''
       )}
     >

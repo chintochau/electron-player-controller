@@ -68,6 +68,204 @@
 
     --radius: 0.5rem;
   }
+
+  .ocean {
+    --background: 195 100% 95%; /* Light sky blue */
+    --foreground: 198 40% 20%;  /* Deep sea blue */
+  
+    --muted: 196 53% 85%; /* Soft teal */
+    --muted-foreground: 200 30% 40%; /* Faded deep blue */
+  
+    --popover: 195 100% 95%; /* Light sky blue */
+    --popover-foreground: 198 40% 20%; /* Deep sea blue */
+  
+    --border: 196 53% 85%; /* Soft teal */
+    --input: 196 53% 85%; /* Soft teal */
+  
+    --card: 195 100% 95%; /* Light sky blue */
+    --card-foreground: 198 40% 20%; /* Deep sea blue */
+  
+    --primary: 195 70% 40%; /* Ocean teal */
+    --primary-foreground: 0 0% 100%; /* White for contrast */
+  
+    --secondary: 192 70% 70%; /* Light aqua */
+    --secondary-foreground: 198 40% 20%; /* Deep sea blue */
+  
+    --accent: 195 100% 85%; /* Light blue foam */
+    --accent-foreground: 198 40% 20%; /* Deep sea blue */
+  
+    --destructive: 0 63% 31%; /* Coral red */
+    --destructive-foreground: 210 100% 98%; /* Very light blue */
+  
+    --ring: 192 53% 65%; /* Deep aqua */
+  
+    --radius: 0.5rem;
+  }
+  
+  .darkOcean {
+    --background: 200 35% 15%; /* Deep ocean blue */
+    --foreground: 195 60% 85%; /* Soft sea foam */
+  
+    --muted: 201 25% 20%; /* Dark navy */
+    --muted-foreground: 198 30% 75%; /* Soft sea foam */
+  
+    --accent: 195 40% 20%; /* Deep teal */
+    --accent-foreground: 195 60% 85%; /* Soft sea foam */
+  
+    --popover: 200 35% 15%; /* Deep ocean blue */
+    --popover-foreground: 195 60% 85%; /* Soft sea foam */
+  
+    --border: 201 25% 20%; /* Dark navy */
+    --input: 201 25% 20%; /* Dark navy */
+  
+    --card: 200 35% 15%; /* Deep ocean blue */
+    --card-foreground: 195 60% 85%; /* Soft sea foam */
+  
+    --primary: 195 60% 85%; /* Soft sea foam */
+    --primary-foreground: 200 35% 15%; /* Deep ocean blue */
+  
+    --secondary: 195 40% 20%; /* Deep teal */
+    --secondary-foreground: 195 60% 85%; /* Soft sea foam */
+  
+    --destructive: 0 63% 31%; /* Coral red */
+    --destructive-foreground: 210 100% 98%; /* Very light blue */
+  
+    --ring: 195 40% 20%; /* Deep teal */
+  
+    --radius: 0.5rem;
+  }
+
+  .rose  {
+    --background: 0 100% 95%; /* Light red */
+    --foreground: 0 60% 20%;  /* Deep red */
+  
+    --muted: 0 53% 85%; /* Soft pink */
+    --muted-foreground: 0 30% 40%; /* Faded red */
+  
+    --popover: 0 100% 95%; /* Light red */
+    --popover-foreground: 0 60% 20%; /* Deep red */
+  
+    --border: 0 53% 85%; /* Soft pink */
+    --input: 0 53% 85%; /* Soft pink */
+  
+    --card: 0 100% 95%; /* Light red */
+    --card-foreground: 0 60% 20%; /* Deep red */
+  
+    --primary: 0 70% 40%; /* Crimson red */
+    --primary-foreground: 0 0% 100%; /* White for contrast */
+  
+    --secondary: 0 70% 70%; /* Light pink */
+    --secondary-foreground: 0 60% 20%; /* Deep red */
+  
+    --accent: 0 100% 85%; /* Light coral */
+    --accent-foreground: 0 60% 20%; /* Deep red */
+  
+    --destructive: 0 100% 50%; /* Bright red */
+    --destructive-foreground: 0 0% 100%; /* White */
+  
+    --ring: 0 53% 65%; /* Deep red */
+  
+    --radius: 0.5rem;
+  }
+  
+  .darkRose {
+    --background: 0 35% 15%; /* Dark crimson */
+    --foreground: 0 60% 85%; /* Soft pink */
+  
+    --muted: 0 25% 20%; /* Dark burgundy */
+    --muted-foreground: 0 30% 75%; /* Soft pink */
+  
+    --accent: 0 40% 20%; /* Deep red */
+    --accent-foreground: 0 60% 85%; /* Soft pink */
+  
+    --popover: 0 35% 15%; /* Dark crimson */
+    --popover-foreground: 0 60% 85%; /* Soft pink */
+  
+    --border: 0 25% 20%; /* Dark burgundy */
+    --input: 0 25% 20%; /* Dark burgundy */
+  
+    --card: 0 35% 15%; /* Dark crimson */
+    --card-foreground: 0 60% 85%; /* Soft pink */
+  
+    --primary: 0 60% 85%; /* Soft pink */
+    --primary-foreground: 0 35% 15%; /* Dark crimson */
+  
+    --secondary: 0 40% 20%; /* Deep red */
+    --secondary-foreground: 0 60% 85%; /* Soft pink */
+  
+    --destructive: 0 100% 50%; /* Bright red */
+    --destructive-foreground: 0 0% 100%; /* White */
+  
+    --ring: 0 40% 20%; /* Deep red */
+  
+    --radius: 0.5rem;
+  }
+
+  .lavender {
+    --background: 270 100% 95%; /* Light violet */
+    --foreground: 270 40% 20%;  /* Deep purple */
+  
+    --muted: 270 53% 85%; /* Soft lavender */
+    --muted-foreground: 270 30% 40%; /* Faded purple */
+  
+    --popover: 270 100% 95%; /* Light violet */
+    --popover-foreground: 270 40% 20%; /* Deep purple */
+  
+    --border: 270 53% 85%; /* Soft lavender */
+    --input: 270 53% 85%; /* Soft lavender */
+  
+    --card: 270 100% 95%; /* Light violet */
+    --card-foreground: 270 40% 20%; /* Deep purple */
+  
+    --primary: 270 70% 40%; /* Rich purple */
+    --primary-foreground: 0 0% 100%; /* White for contrast */
+  
+    --secondary: 270 70% 70%; /* Light lilac */
+    --secondary-foreground: 270 40% 20%; /* Deep purple */
+  
+    --accent: 270 100% 85%; /* Soft violet */
+    --accent-foreground: 270 40% 20%; /* Deep purple */
+  
+    --destructive: 0 100% 50%; /* Bright red */
+    --destructive-foreground: 0 0% 100%; /* White */
+  
+    --ring: 270 53% 65%; /* Deep violet */
+  
+    --radius: 0.5rem;
+  }
+  
+  .darkLavender {
+    --background: 270 35% 15%; /* Dark purple */
+    --foreground: 270 60% 85%; /* Soft lavender */
+  
+    --muted: 270 25% 20%; /* Dark violet */
+    --muted-foreground: 270 30% 75%; /* Soft lavender */
+  
+    --accent: 270 40% 20%; /* Deep purple */
+    --accent-foreground: 270 60% 85%; /* Soft lavender */
+  
+    --popover: 270 35% 15%; /* Dark purple */
+    --popover-foreground: 270 60% 85%; /* Soft lavender */
+  
+    --border: 270 25% 20%; /* Dark violet */
+    --input: 270 25% 20%; /* Dark violet */
+  
+    --card: 270 35% 15%; /* Dark purple */
+    --card-foreground: 270 60% 85%; /* Soft lavender */
+  
+    --primary: 270 60% 85%; /* Soft lavender */
+    --primary-foreground: 270 35% 15%; /* Dark purple */
+  
+    --secondary: 270 40% 20%; /* Deep violet */
+    --secondary-foreground: 270 60% 85%; /* Soft lavender */
+  
+    --destructive: 0 100% 50%; /* Bright red */
+    --destructive-foreground: 0 0% 100%; /* White */
+  
+    --ring: 270 40% 20%; /* Deep violet */
+  
+    --radius: 0.5rem;
+  }
 }
 
 @layer base {
