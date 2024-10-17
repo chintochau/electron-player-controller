@@ -12,10 +12,7 @@ export const StorageProvider = ({ children }) => {
   const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : ["Unassigned", "A", "B"]);
   // read custom api list from local storage, if not found, save commandList to the local storage, and return commandList
   const [customApiList, setCustomApiList] = useState(localStorage.getItem('customApiList') ? JSON.parse(localStorage.getItem('customApiList')) : commandList);
-
-
-
-
+const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{name: "Home", uri: "/ui/Home?playnum=1"}]);
 
   const addRoomToList = (room) => {
     // make sure the room is not already in the list
@@ -45,6 +42,17 @@ export const StorageProvider = ({ children }) => {
     localStorage.setItem('customApiList', JSON.stringify(customApiList.filter((_, i) => i !== index)));
   }
 
+  const addToBookmarks = (bookmark) => {
+    setBookmarks(bookmarks => [...bookmarks, bookmark]);
+    localStorage.setItem('bookmarks', JSON.stringify([...bookmarks, bookmark]));
+  }
+
+  const removeFromBookmarks = (index) => {
+    setBookmarks(bookmarks => bookmarks.filter((_, i) => i !== index));
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks.filter((_, i) => i !== index)));
+  }
+
+
 
 
 
@@ -64,7 +72,10 @@ export const StorageProvider = ({ children }) => {
     removeRoomFromList,
     customApiList,
     addToCustomApiList,
-    removeFromCustomApiList
+    removeFromCustomApiList,
+    addToBookmarks,
+    removeFromBookmarks,
+    bookmarks
   };
 
   return (

@@ -7,6 +7,7 @@ const BrowsingContext = createContext()
 export const useBrowsing = () => useContext(BrowsingContext)
 
 export const BrowsingProvider = ({ children }) => {
+  if (!useDevices) return null
   const { devices } = useDevices()
   const [url, setUrl] = useState('/ui/Home?playnum=1')
   const [serviceList, setServiceList] = useState([])
