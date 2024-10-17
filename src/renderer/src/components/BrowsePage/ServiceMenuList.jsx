@@ -64,7 +64,8 @@ const ServiceMenuList = ({ musicServiceList }) => {
           {bookmarks.map((bookmark, index) => {
             return (
               <ContextMenu key={bookmark.name + index}>
-                <ContextMenuTrigger><NavigationMenuItem key={bookmark.name + index}>
+                <ContextMenuTrigger>
+                  <NavigationMenuItem key={bookmark.name + index}>
                   <NavigationMenuLink
                     className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2'}
                     onClick={() => {
@@ -84,7 +85,7 @@ const ServiceMenuList = ({ musicServiceList }) => {
         </NavigationMenuList>
       </NavigationMenu>
       <Popover>
-        <PopoverTrigger><BookmarkIcon className="w-6 h-6" /></PopoverTrigger>
+        <PopoverTrigger><Button variant="ghost" size="icon"><BookmarkIcon className="w-6 h-6" /></Button></PopoverTrigger>
         <PopoverContent className="flex gap-x-2">
           <Input
             placeholder="Enter name to bookmark"
@@ -100,8 +101,6 @@ const ServiceMenuList = ({ musicServiceList }) => {
           </Button>
         </PopoverContent>
       </Popover>
-      <Button variant="ghost" size="icon" onClick={() => addToBookmarks()}>
-      </Button>
     </div >
   )
 }
