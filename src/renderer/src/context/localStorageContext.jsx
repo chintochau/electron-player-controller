@@ -13,6 +13,7 @@ export const StorageProvider = ({ children }) => {
   // read custom api list from local storage, if not found, save commandList to the local storage, and return commandList
   const [customApiList, setCustomApiList] = useState(localStorage.getItem('customApiList') ? JSON.parse(localStorage.getItem('customApiList')) : commandList);
 const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{name: "Home", uri: "/ui/Home?playnum=1"}]);
+const [isPresetVisible, setIsPresetVisible] = useState(localStorage.getItem('isPresetVisible') ? JSON.parse(localStorage.getItem('isPresetVisible')) : false);
 
   const addRoomToList = (room) => {
     // make sure the room is not already in the list
@@ -52,6 +53,11 @@ const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? J
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks.filter((_, i) => i !== index)));
   }
 
+  const togglePresetVisibility = () => {
+    setIsPresetVisible(!isPresetVisible);
+    localStorage.setItem('isPresetVisible', JSON.stringify(!isPresetVisible));
+  }
+
 
 
 
@@ -75,7 +81,9 @@ const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? J
     removeFromCustomApiList,
     addToBookmarks,
     removeFromBookmarks,
-    bookmarks
+    bookmarks,
+    isPresetVisible,
+    togglePresetVisibility
   };
 
   return (
