@@ -38,7 +38,7 @@ export const columns = [
     id: 'select',
     header: ({ table }) => {
       const { selectAllDevices, removeAllSelectedDevices } = useDevices()
-      if(!useDevices) return null
+      if (!useDevices) return null
       return (
         <Checkbox
           checked={
@@ -59,7 +59,7 @@ export const columns = [
     },
     cell: ({ row }) => {
       const { selectDeviceByIp, removeSelectedDeviceByIp } = useDevices()
-      if(!useDevices) return null
+      if (!useDevices) return null
 
       const device = row.original
       if (!device) return null
@@ -106,6 +106,19 @@ export const columns = [
     cell: ({ row }) => {
       const device = row.original
       if (!device) return null
+      const { devices } = useDevices() || []
+
+      //TODO: show master/slave
+
+      if (!useDevices) return null
+      const matchingDevice = devices.find((d) => {
+        if (!d) return false
+        return d.mac === device.mac
+      })
+
+      const { isMaster, isSlave } = matchingDevice || {}
+
+      const isGrouped = isMaster || isSlave
       return (
         <div className="">
           <p>{device.name}</p>
@@ -115,6 +128,7 @@ export const columns = [
           >
             {device.ip}
           </a>
+          {isGrouped && isMaster && <p>Master</p>}
         </div>
       )
     }
@@ -136,7 +150,7 @@ export const columns = [
     cell: ({ row }) => {
       const { roomList, saveRoomForMac, addRoomToList, removeRoomFromList } = useStorage()
       const { setDevices } = useDevices()
-      if(!useDevices || !useStorage ) return null
+      if (!useDevices || !useStorage) return null
       const device = row.original
       if (!device) return null
       const [newRoomName, setNewRoomName] = useState('')
@@ -286,7 +300,7 @@ export const columns = [
       if (!device) return null
       const { devices } = useDevices() || []
 
-      if (! useDevices) return null
+      if (!useDevices) return null
       const matchingDevice = devices.find((d) => {
         if (!d) return false
         return d.mac === device.mac
