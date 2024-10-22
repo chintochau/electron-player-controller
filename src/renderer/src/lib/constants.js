@@ -30,7 +30,7 @@ export const commandList = [
   },
   // {
   //   name:"/Initialize=true",
-  //   command:"SetInitialized?init=1"
+  //   command:"/SetInitialized?init=1"
   // },
 ]
 

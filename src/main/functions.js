@@ -1,6 +1,11 @@
 import xml2js from 'xml2js'
 import wifi from 'node-wifi'
 
+wifi.init({
+  iface: null // network interface, choose a specific interface or leave it null for automatic selection
+});
+
+
 export const checkUpgrade = async (ip) => {
   try {
     const res = await fetch(`http://${ip}:11000/upgrade?upgrade=check`)
@@ -38,10 +43,6 @@ export const checkUpgrade = async (ip) => {
 
 export const getCurrentWifi = async () => {
   try {
-    wifi.init({
-      iface: null // network interface, choose a specific interface or leave it null for automatic selection
-    });
-
     const connectedWifi = await wifi.getCurrentConnections()
     if (connectedWifi && connectedWifi.length > 0) {
       return connectedWifi[0].ssid
@@ -57,9 +58,6 @@ export const getWifiList = async () => {
   console.log('getWifiList');
 
   try {
-    wifi.init({
-      iface: null // network interface, choose a specific interface or leave it null for automatic selection
-    });
 
     const wifiList = await wifi.scan()
     console.log('wifiList', wifiList);
