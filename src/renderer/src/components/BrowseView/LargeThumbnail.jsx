@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+
 import { useSdui } from '../../context/sduiContext'
 import { useBrowsing } from '../../context/browsingContext'
 import { BeakerIcon, PlayIcon } from '@heroicons/react/24/solid'
@@ -18,6 +19,7 @@ import { cn, getIconForType } from '../../lib/utils'
 import { PlusCircleIcon } from 'lucide-react'
 import { getHoverEffectForType } from '../../lib/utilComponents'
 import { renderComponent } from './GUI'
+import SDUIContextMenu from './SDUIContextMenu'
 
 const playlists = [
   'Playlist 1',
@@ -43,13 +45,16 @@ const LargeThumbnail = ({
   ...props
 }) => {
   const { performAction } = useSdui()
-  const { getImagePath } = useBrowsing()
-  const { $, action } = largeThumbnail || {}
+  const { getImagePath,loadContextMenu } = useBrowsing()
+  
+  const { $, action,contextMenu } = largeThumbnail || {}
 
   const resultType = action[0]?.$?.resultType || action[0]?.$?.type
   const actionType = action[0]?.$?.type
 
   const IconComponent = getIconForType(resultType)
+  const [contextMenuWithItems, setContextMenuWithItems] = useState(null)
+
   const handleClick = () => {
     performAction(action)
   }
@@ -64,7 +69,12 @@ const LargeThumbnail = ({
 
   return (
     <div className={cn('space-y-3', className)} {...props}>
-      <ContextMenu>
+      <ContextMenu onOpenChange={async (e) => {
+        if (e && !contextMenuWithItems) {
+          const menuItems = await loadContextMenu(contextMenu?.[0])
+          setContextMenuWithItems(menuItems)
+        }
+      }}>
         <ContextMenuTrigger onClick={handleClick} className="">
           <div className="transition ease-out duration-300 active:scale-110 relative overflow-hidden rounded-md group">
             <img
@@ -85,43 +95,8 @@ const LargeThumbnail = ({
             {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-40">
-          <ContextMenuItem>Add to Library</ContextMenuItem>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Add to Playlist</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48">
-              <ContextMenuItem>
-                <PlusCircleIcon className="mr-2 h-4 w-4" />
-                New Playlist
-              </ContextMenuItem>
-              <ContextMenuSeparator />
-              {playlists.map((playlist) => (
-                <ContextMenuItem key={playlist}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="mr-2 h-4 w-4"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3" />
-                  </svg>
-                  {playlist}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-          <ContextMenuSeparator />
-          <ContextMenuItem>Play Next</ContextMenuItem>
-          <ContextMenuItem>Play Later</ContextMenuItem>
-          <ContextMenuItem>Create Station</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem>Like</ContextMenuItem>
-          <ContextMenuItem>Share</ContextMenuItem>
-        </ContextMenuContent>
+        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly/>}
+
       </ContextMenu>
       <div className="space-y-1 text-sm">
         <h3

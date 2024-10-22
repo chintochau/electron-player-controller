@@ -90,6 +90,7 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const getImagePath = (uri) => {
+    if (!uri) return null
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
       return uri
     }
@@ -165,28 +166,35 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const loadNextLink = async (nextLink) => {
-    const result = await loadSDUI(":11000"+nextLink)
+    const result = await loadSDUI(":11000" + nextLink)
     console.log(result);
-    
-    const { list:newList } = result.json || {}
-    const {item:newItems,nextLink:newNextLink} = newList || {}
-    
+
+    const { list: newList } = result.json || {}
+    const { item: newItems, nextLink: newNextLink } = newList || {}
+
     setScreen((prev) => {
-      const { list:oldList } = prev || {}
+      const { list: oldList } = prev || {}
       if (newList) {
-        const {  item:oldItems } = oldList?.[0] || {}
+        const { item: oldItems } = oldList?.[0] || {}
         return {
           ...prev,
           list: [
             {
               item: [...oldItems, ...newItems],
-              nextLink:newNextLink
+              nextLink: newNextLink
             }
           ]
         }
       }
       return prev
     })
+  }
+
+  const loadContextMenu = async (contextMenu) => {
+    const { $ } = contextMenu || {}
+    const { URI, type, resultType } = $ || {}
+    const response = await loadSDUI(":11000" + URI)
+    return response?.json?.contextMenu
   }
 
   const value = {
@@ -223,7 +231,8 @@ export const BrowsingProvider = ({ children }) => {
     goToPreviousUrl,
     historyUrl,
     loadNextLink,
-    containerRef
+    containerRef,
+    loadContextMenu
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

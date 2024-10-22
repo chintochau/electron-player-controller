@@ -12,8 +12,7 @@ export const mapValueToKey = (value) => {
 }
 
 export const SDUIProvider = ({ children }) => {
-  const { displayMainScreen, setUrl, selectedPlayer,loadSDUI } = useBrowsing() || {}
-  const { toast } = useToast()
+  const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
 
   const mapToURL = ({ URI, resultType, title, service }) => {
     // Map the given parameters to the new format
@@ -35,6 +34,8 @@ export const SDUIProvider = ({ children }) => {
   }
 
   const performAction = (action) => {
+    console.log('performAction', action);
+
     const { $ } = action[0] || {}
     const { URI, type, resultType, service, title, haptic } = $ || {}
     let url
@@ -51,9 +52,16 @@ export const SDUIProvider = ({ children }) => {
           runCommandForDevice(selectedPlayer?.ip, url, 'GET')
           break
         case 'browse':
-          url = ':11000' + URI
-          setUrl(url)
-          displayMainScreen(url)
+          switch (resultType) {
+            case "Info":
+              //TODO : handle Info
+              break
+            default:
+              url = ':11000' + URI
+              setUrl(url)
+              displayMainScreen(url)
+              break
+          }
           break
         case 'deep-link':
           // URI = "/music-service/Tidal"
@@ -87,7 +95,6 @@ export const SDUIProvider = ({ children }) => {
     )
   }
 
-  
 
   const value = {
     performAction,

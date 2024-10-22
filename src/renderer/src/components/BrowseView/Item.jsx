@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useBrowsing } from '../../context/browsingContext'
 import { cn } from '@/lib/utils'
 import noartwork from '../../assets/noartwork.png'
@@ -18,6 +18,7 @@ import { useSdui } from '../../context/sduiContext'
 import { renderComponent } from './GUI'
 import { getIconForType } from '../../lib/utils'
 import { PlayIcon } from '@heroicons/react/24/solid'
+import SDUIContextMenu from './SDUIContextMenu'
 
 const playlists = [
   'Playlist 1',
@@ -34,16 +35,16 @@ const playlists = [
 
 const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   // size = 'small' | 'large'
-  const { $, action } = item || {}
+  const { $, action, contextMenu } = item || {}
   const { image, quality, subTitle, title, duration, track } = $ || {}
-  const { getImagePath } = useBrowsing()
+  const { getImagePath,loadContextMenu } = useBrowsing()
   const { performAction } = useSdui()
 
   const resultType = action[0]?.$?.resultType || action[0]?.$?.type
   const actionType = action[0]?.$?.type
 
   const IconComponent = getIconForType(resultType)
-
+  const [contextMenuWithItems, setContextMenuWithItems] = useState(null)
   const handleClick = () => {
     performAction(action)
   }
@@ -56,10 +57,14 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
           : ''
       )}
-      onClick={handleClick}
     >
-      <ContextMenu>
-        <ContextMenuTrigger onClick={handleClick}>
+      <ContextMenu onOpenChange={async (e) => {
+        if (e && !contextMenuWithItems) {
+          const menuItems = await loadContextMenu(contextMenu?.[0])
+          setContextMenuWithItems(menuItems)
+        }
+      }}>
+        <ContextMenuTrigger onClick={handleClick} >
           {image && (
             <div
               className={cn(
@@ -82,43 +87,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
             </div>
           )}
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-40">
-          <ContextMenuItem>Add to Library</ContextMenuItem>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Add to Playlist</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48">
-              <ContextMenuItem>
-                <PlusCircleIcon className="mr-2 h-4 w-4" />
-                New Playlist
-              </ContextMenuItem>
-              <ContextMenuSeparator />
-              {playlists.map((playlist) => (
-                <ContextMenuItem key={playlist}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="mr-2 h-4 w-4"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3" />
-                  </svg>
-                  {playlist}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-          <ContextMenuSeparator />
-          <ContextMenuItem>Play Next</ContextMenuItem>
-          <ContextMenuItem>Play Later</ContextMenuItem>
-          <ContextMenuItem>Create Station</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem>Like</ContextMenuItem>
-          <ContextMenuItem>Share</ContextMenuItem>
-        </ContextMenuContent>
+        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly/>}
       </ContextMenu>
 
       <div className="space-y-1 text-sm pt-1 min-w-20 w-[calc(100%-3.5rem)] xl:w-full">
@@ -140,7 +109,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
             </p>
           </div>
           <div className="w-8 h-8 pr-2">
-            {!image && actionType === "player-link" &&<PlayIcon className="text-primary w-6 h-6 opacity-0 group-hover:opacity-100 pointer-events-none" />}
+            {!image && actionType === "player-link" && <PlayIcon className="text-primary w-6 h-6 opacity-0 group-hover:opacity-100 pointer-events-none" />}
           </div>
         </div>
 

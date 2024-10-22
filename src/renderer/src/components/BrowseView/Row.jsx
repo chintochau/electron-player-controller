@@ -107,7 +107,7 @@ const Row = ({ row, index }) => {
             {smallThumbnail?.map((smallThumbnailItem) => {
               return (
                 <SmallThumbnail
-                  key={smallThumbnailItem?.$?.title}
+                  key={smallThumbnailItem?.$?.title || smallThumbnailItem?.$?.id || smallThumbnailItem?.$?.icon}
                   smallThumbnail={smallThumbnailItem}
                   isArtist={isArtist}
                 />
