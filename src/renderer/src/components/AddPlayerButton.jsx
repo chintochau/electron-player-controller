@@ -10,43 +10,61 @@ import {
 } from '@/components/ui/dialog'
 import { useRefresh } from '../context/refreshContext'
 import { cn } from '@/lib/utils'
-import { CirclePlusIcon } from 'lucide-react'
+import { CirclePlusIcon, Loader2 } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 
 const AddPlayerButton = () => {
   const { shouldRefresh, setShouldRefresh } = useRefresh()
   const [currentWifi, setCurrentWifi] = useState('')
   const [correctWifiFormat, setCorrectWifiFormat] = useState(false)
+  const [wifiList, setWifiList] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [timer, setTimer] = useState(0)
 
   const getWifi = async () => {
-    const wifi = await window.api.getCurrentWifi()
-    setCurrentWifi(wifi)
-    checkWifiFormat(wifi)
+    const wifiList = await window.api.getWifiList()
+    setWifiList(wifiList.map((wifi) => {
+      return isWifiFormatCorrect(wifi.ssid) ? wifi.ssid : null
+    }).filter((wifi) => wifi !== null)
+    )
   }
 
-  useEffect(() => {
-    getWifi()
-  }, [])
-
-  const checkWifiFormat = (ssid) => {
-    if (!ssid) return
+  const isWifiFormatCorrect = (ssid) => {
+    if (!ssid || ssid === '') return false
     // * - XXXX
     if (ssid.split(' - ').length > 1 && ssid.split(' - ')[1].length === 4) {
-      setCorrectWifiFormat(true)
+      return true
     } else {
-      setCorrectWifiFormat(false)
+      return false
     }
   }
 
+  useEffect(() => {
+    if (isOpen) {
+      const intervalId = setInterval(getWifi, 5000)
+      // update timer each second
+      const intervalId2 = setInterval(() => {
+        setTimer(prevTimer => prevTimer + 1)
+      }, 1000)
+      return () => {
+        clearInterval(intervalId)
+        clearInterval(intervalId2)
+        setTimer(0)
+      }
+    }
+  }, [isOpen])
   return (
     <Dialog
       onOpenChange={(open) => {
+        setIsOpen(open)
         if (open) {
           setShouldRefresh(false)
         } else {
           setShouldRefresh(true)
         }
       }}
+      open={isOpen}
     >
       <DialogTrigger className="hover:bg-accent p-2 rounded-md">
         <CirclePlusIcon className="h-6 w-6" />
@@ -54,52 +72,30 @@ const AddPlayerButton = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Connect to your player</DialogTitle>
-          <DialogDescription></DialogDescription>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Enable Hotspot Mode on your player.</li>
-            <li>Connect to the Player’s Wi-Fi: </li>
-            <li>
-              Look for a Wi-Fi network (SSID) named{' '}
-              <span className=" italic bg-primary/40 w-fit rounded-sm px-1">
-                PRODUCT NAME - XXXX
-              </span>{' '}
-              in your Wi-Fi settings and connect to it.
-            </li>
-            <li>
-              Currently Connected Wifi:
-              <p
-                className={cn(
-                  'inline  w-fit rounded-sm px-1.5 py-1',
-                  correctWifiFormat ? 'text-green-500 bg-green-200' : 'text-red-500 bg-red-100'
-                )}
-              >
-                {currentWifi || 'Not Connected'}
-              </p>
-              <p className="inline"></p>
-            </li>
-            {correctWifiFormat ? (
-              <li>
-                Click{' '}
-                <button
-                  className="underline text-blue-500"
-                  onClick={
-                    // open http://10.1.2.3/wificfg
-                    () => {
-                      window.open(`http://10.1.2.3/wificfg`, '_blank')
-                    }
-                  }
-                >
-                  here
-                </button>{' '}
-                to setup the WiFi.
-              </li>
-            ) : (
-              <li className="underline text-red-400">
-                It seems you’re not connected to the player yet. Please connect to the player by following the steps above.
-              </li>
-            )}
-          </ul>
         </DialogHeader>
+        <DialogDescription>
+          Enable Hotspot Mode on your player.
+        </DialogDescription>
+        <div className='w-full bg-accent rounded-xl flex flex-col items-center justify-center'>
+          {wifiList && wifiList.length > 0 ?
+            wifiList.map((wifi) => {
+              return (
+                <li key={wifi.ssid}>
+                  {wifi.ssid}
+                </li>
+              )
+            }) : (
+              <div className='flex flex-col items-center justify-center py-14'>
+                <Loader2 className='animate-spin size-14' />
+                <p className='text-xl'>
+                  Searching For BluOS Device...
+                </p>
+                {timer && <p>{timer}
+                </p>}
+              </div>
+            )
+          }
+        </div>
       </DialogContent>
     </Dialog>
   )

@@ -34,8 +34,6 @@ export const SDUIProvider = ({ children }) => {
   }
 
   const performAction = (action) => {
-    console.log('performAction', action);
-
     const { $ } = action[0] || {}
     const { URI, type, resultType, service, title, haptic } = $ || {}
     let url

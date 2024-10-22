@@ -10,8 +10,10 @@ const api = {
   openOverlay: (url) => ipcRenderer.invoke('open-overlay', url),
   checkUpgrade:(ip) => ipcRenderer.invoke('check-upgrade', ip),
   getCurrentWifi: () => ipcRenderer.invoke('get-current-wifi'),
+  getWifiList: () => ipcRenderer.invoke('get-wifi-list'),
   runCommandForDevice: (ip, command, type) => ipcRenderer.invoke('run-command-for-device', {ip, command, type}),
   loadSDUIPage: (url,debug) => ipcRenderer.invoke('load-sd-ui-page', {url, debug}),
+
 
 }
 

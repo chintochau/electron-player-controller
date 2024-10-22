@@ -48,12 +48,26 @@ export const getCurrentWifi = async () => {
     } else {
       return null
     }
-
   } catch (error) {
     console.log(error)
   }
 }
 
+export const getWifiList = async () => {
+  console.log('getWifiList');
+
+  try {
+    wifi.init({
+      iface: null // network interface, choose a specific interface or leave it null for automatic selection
+    });
+
+    const wifiList = await wifi.scan()
+    console.log('wifiList', wifiList);
+    return wifiList
+  } catch (error) {
+    console.log(error)
+  }
+}
 export const loadSDUIPage = async (url, debug) => {
   try {
     const res = await fetch(url)
