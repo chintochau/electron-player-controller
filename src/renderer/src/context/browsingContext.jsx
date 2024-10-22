@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDevices } from './devicesContext'
 import { searchableServicesList } from '../lib/constants'
 
@@ -18,19 +18,19 @@ export const BrowsingProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [searchText, setSearchText] = useState('')
   const [searchResult, setSearchResult] = useState([])
-  const [xmlSearchResult, setXmlSearchResult] = useState("")
+  const [xmlSearchResult, setXmlSearchResult] = useState('')
   const [displayMode, setDisplayMode] = useState('gui')
   const [searchableServices, setSearchableServices] = useState(searchableServicesList)
   const [isSearchMode, setIsSearchMode] = useState(false)
   const [historyUrl, setHistoryUrl] = useState([])
+  const containerRef = useRef(null)
 
   const addToHistory = (url, url2) => {
     // check if previous url is same as current url
     if (historyUrl[historyUrl.length - 1] !== url) {
       if (url2) {
         setHistoryUrl([...historyUrl, url, url2])
-      }
-      else {
+      } else {
         setHistoryUrl([...historyUrl, url])
       }
     }
@@ -38,13 +38,13 @@ export const BrowsingProvider = ({ children }) => {
 
   const goToPreviousUrl = () => {
     if (historyUrl.length > 0) {
-      if (url === "search") {
+      if (url === 'search') {
         setUrl(historyUrl[historyUrl.length - 1])
         displayMainScreen(historyUrl[historyUrl.length - 1])
         setHistoryUrl(historyUrl.slice(0, -1))
       } else if (isSearchMode) {
         setIsSearchMode(false)
-      } else if (historyUrl[historyUrl.length - 1] === "search") {
+      } else if (historyUrl[historyUrl.length - 1] === 'search') {
         setIsSearchMode(true)
         setHistoryUrl(historyUrl.slice(0, -1))
         setUrl(historyUrl[historyUrl.length - 1])
@@ -56,16 +56,15 @@ export const BrowsingProvider = ({ children }) => {
     }
   }
 
-
   const displayMainScreen = async (uri, debug) => {
     if (debug) {
-      console.log(uri);
+      console.log(uri)
     }
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
     setLoading(true)
     if (isSearchMode) {
-      addToHistory(url, "search")
+      addToHistory(url, 'search')
     } else {
       addToHistory(url)
     }
@@ -94,9 +93,9 @@ export const BrowsingProvider = ({ children }) => {
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
       return uri
     }
-    return `http://${selectedPlayer.ip}:11000${uri}`
+    return `http://${selectedPlayer?.ip}:11000${uri}`
   }
-  
+
   const loadServiceList = async () => {
     if (devices.length > 0) {
       const ip = selectedPlayer?.ip || devices[0]?.ip
@@ -142,15 +141,14 @@ export const BrowsingProvider = ({ children }) => {
     return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
   }
 
-
   const performSearching = async () => {
     const ip = selectedPlayer.ip || devices[0].ip
     //ui/Search?playnum=1&service=SOUNDMACHINE&q="Michael"
     let uri = `/ui/Search?playnum=1&q="${searchText}"`
-    let xmlResult = ""
+    let xmlResult = ''
     let jsonResult = []
-    setXmlSearchResult("<Searching.../>")
-    setSearchResult(["Searching..."])
+    setXmlSearchResult('<Searching.../>')
+    setSearchResult(['Searching...'])
 
     for (let i = 0; i < searchableServices.length; i++) {
       const res = await loadSDUI(uri + '&service=' + searchableServices[i], ip)
@@ -166,6 +164,28 @@ export const BrowsingProvider = ({ children }) => {
     setSearchResult(jsonResult)
   }
 
+  const loadNextLink = async (nextLink) => {
+    const result = await loadSDUI(nextLink)
+    const { list:newList } = result.json || {}
+    const {item:newItems,nextLink:newNextLink} = newList
+    
+    setScreen((prev) => {
+      const { list:oldList } = prev || {}
+      if (newList) {
+        const {  item:oldItems } = oldList[0] || {}
+        return {
+          ...prev,
+          list: [
+            {
+              item: [...oldItems, ...newItems],
+              nextLink:newNextLink
+            }
+          ]
+        }
+      }
+      return prev
+    })
+  }
 
   const value = {
     url,
@@ -199,7 +219,9 @@ export const BrowsingProvider = ({ children }) => {
     isSearchMode,
     setIsSearchMode,
     goToPreviousUrl,
-    historyUrl
+    historyUrl,
+    loadNextLink,
+    containerRef
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

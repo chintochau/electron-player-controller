@@ -65,7 +65,7 @@ const SDUIService = ({ service, isArtist, onlyOneListWithHeader }) => {
                 'relative group',
                 onlyOneListWithHeader
                   ? 'h-20 w-20 overflow-hidden rounded-md'
-                  : ' w-20 h-20 rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
+                  : ' w-20 h-20 rounded-lg xl:rounded-3xl overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',
                 isArtist ? 'rounded-full' : ''
               )}
             >

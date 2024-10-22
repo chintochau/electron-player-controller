@@ -15,6 +15,7 @@ import {
 import { cn, getIconForType } from '../../lib/utils'
 import { PlusCircleIcon } from 'lucide-react'
 import { renderComponent } from './GUI'
+import placeholder from "../../assets/noartwork.png"
 
 const playlists = [
   'Playlist 1',
@@ -63,10 +64,16 @@ const SmallThumbnail = ({
                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square',
                 isArtist ? 'rounded-full' : ''
               )}
+              onError={(e) => {
+                e.target.onerror = null
+                e.target.src = placeholder
+              }}
             />
-            {IconComponent && <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
-              <IconComponent className="h-6 w-6" />
-            </div>}
+            {IconComponent && (
+              <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+                <IconComponent className="h-6 w-6" />
+              </div>
+            )}
             {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>

@@ -7,60 +7,84 @@ import { ArrowLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { Button } from '../../../../components/ui/button'
 import SmallThumbnail from './SmallThumbnail'
 import List from './List'
+import MenuAction from './MenuAction'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
 
-  const viewportRef = useRef(null);
+  const viewportRef = useRef(null)
 
   const onWheel = useCallback((e) => {
     // Ignore this event unless it's a strictly vertical wheel event (horizontal wheel events are already handled by the library)
     if (!viewportRef.current || e.deltaY === 0 || e.deltaX !== 0) {
-      return;
+      return
     }
 
     // Capture up/down wheel events and scroll the viewport horizontally
-    const delta = e.deltaY;
-    const currPos = viewportRef.current.scrollLeft;
-    const scrollWidth = viewportRef.current.scrollWidth;
+    const delta = e.deltaY
+    const currPos = viewportRef.current.scrollLeft
+    const scrollWidth = viewportRef.current.scrollWidth
 
-    const newPos = Math.max(0, Math.min(scrollWidth, currPos + delta));
+    const newPos = Math.max(0, Math.min(scrollWidth, currPos + delta))
 
-    viewportRef.current.scrollLeft = newPos;
-  }, []);
+    viewportRef.current.scrollLeft = newPos
+  }, [])
 
-
-  const {$} = row || {}
-  const {title} = $ || {}
-  const isArtist = title?.toLowerCase().includes('artist') ?? false;
+  const { $, menuAction, input, list, largeThumbnail, smallThumbnail,action } = row || {}
+  const { title } = $ || {}
+  const isArtist = title?.toLowerCase().includes('artist') ?? false
 
   return (
     <>
       <div
         className={cn(
           'w-full flex justify-between items-center px-2 rounded-lg ',
-          row?.action?.[0]?.$ ? 'cursor-pointer hover:bg-accent/30 ' : ''
+          action?.[0]?.$ ? 'cursor-pointer hover:bg-accent/30 ' : ''
         )}
         onClick={() => {
-          if (row?.action?.[0]?.$) {
-            performAction(row?.action)
+          if (action?.[0]?.$) {
+            performAction(action)
           }
         }}
       >
-        <h2 className={cn('text-xl mx-4 font-medium text-primary/90')}>{title}</h2>
-        {row?.action?.[0]?.$ && (
-          <Button variant="ghost">
+        <div className="w-full flex pr-10 xl:pr-0">
+          <h2 className={cn('text-2xl font-medium mx-4 text-primary/90 flex')}>
+            {title}
+          </h2>
+          {menuAction && !action &&
+            menuAction.map((menuActionItem, index) => {
+              return <MenuAction key={'menuAction' + index} menuAction={menuActionItem} />
+            })}
+        </div>
+        {action && action[0].$ && (
+          <div  className='my-1.5 xl:mr-4'>
             <ChevronRightIcon className="w-4 h-4" />
-          </Button>
+          </div>
         )}
       </div>
 
-      {row?.largeThumbnail && (
-        <ScrollArea className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto" ref={viewportRef} onWheel={onWheel}>
-          <div className={cn("", (row?.largeThumbnail?.length > 12 && index % 2 !== 0) ? "pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2" : 'flex w-max space-x-4 p-4')}>
-            {row?.largeThumbnail?.map((largeThumbnail) => {
+      {largeThumbnail && (
+        <ScrollArea
+          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
+          ref={viewportRef}
+          onWheel={onWheel}
+        >
+          <div
+            className={cn(
+              '',
+              largeThumbnail?.length > 12 && index % 2 !== 0
+                ? 'pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2'
+                : 'flex w-max space-x-4 p-4'
+            )}
+          >
+            {largeThumbnail?.map((largeThumbnailItem) => {
               return (
-                <LargeThumbnail key={largeThumbnail?.$?.title} largeThumbnail={largeThumbnail} size={index % 2 === 0 ? 'large' : 'small'} isArtist={isArtist}/>
+                <LargeThumbnail
+                  key={largeThumbnailItem?.$?.title}
+                  largeThumbnail={largeThumbnailItem}
+                  size={index % 2 === 0 ? 'large' : 'small'}
+                  isArtist={isArtist}
+                />
               )
             })}
           </div>
@@ -68,12 +92,25 @@ const Row = ({ row, index }) => {
         </ScrollArea>
       )}
 
-      {row?.smallThumbnail && (
-        <ScrollArea className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto" ref={viewportRef} onWheel={onWheel}>
-          <div className={cn("px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 pb-4", row?.smallThumbnail?.length > 12 ? 'grid-rows-2' : ' ')}>
-            {row?.smallThumbnail?.map((smallThumbnail) => {
+      {smallThumbnail && (
+        <ScrollArea
+          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
+          ref={viewportRef}
+          onWheel={onWheel}
+        >
+          <div
+            className={cn(
+              'px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 pb-4',
+              smallThumbnail?.length > 12 ? 'grid-rows-2' : ' '
+            )}
+          >
+            {smallThumbnail?.map((smallThumbnailItem) => {
               return (
-                <SmallThumbnail key={smallThumbnail?.$?.title} smallThumbnail={smallThumbnail}  isArtist={isArtist}/>
+                <SmallThumbnail
+                  key={smallThumbnailItem?.$?.title}
+                  smallThumbnail={smallThumbnailItem}
+                  isArtist={isArtist}
+                />
               )
             })}
           </div>
@@ -81,14 +118,20 @@ const Row = ({ row, index }) => {
         </ScrollArea>
       )}
 
-      <div id="lists" className='px-4 '>
-        {
-          row?.list?.map((list, index) => {
-            return <List key={list?.$?.id || list?.$?.title || index} list={list} index={index} onlyOneList={false} />
-          })
-        }
-      </div>
-
+      {list && (
+        <div id="lists" className="px-4 ">
+          {list.map((list, index) => {
+            return (
+              <List
+                key={list?.$?.id || list?.$?.title || index}
+                list={list}
+                index={index}
+                onlyOneList={false}
+              />
+            )
+          })}
+        </div>
+      )}
     </>
   )
 }

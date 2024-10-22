@@ -12,9 +12,8 @@ export const mapValueToKey = (value) => {
 }
 
 export const SDUIProvider = ({ children }) => {
-  const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
+  const { displayMainScreen, setUrl, selectedPlayer,loadSDUI } = useBrowsing() || {}
   const { toast } = useToast()
-
 
   const mapToURL = ({ URI, resultType, title, service }) => {
     // Map the given parameters to the new format
@@ -24,15 +23,15 @@ export const SDUIProvider = ({ children }) => {
       title: title,
       service: service,
       url: URI
-    };
+    }
 
     // Construct the query string
     const queryString = Object.keys(params)
-      .map(key => `${key}=${encodeURIComponent(params[key])}`)
-      .join('&');
+      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      .join('&')
 
     // Return the full URL
-    return `/ui/browseContext?${queryString}`;
+    return `/ui/browseContext?${queryString}`
   }
 
   const performAction = (action) => {
@@ -42,19 +41,35 @@ export const SDUIProvider = ({ children }) => {
 
     if (URI && type) {
       switch (type) {
-        case "context-browse":
+        case 'context-browse':
           url = mapToURL($)
           setUrl(url)
           displayMainScreen(url, true)
           break
         case 'player-link':
-          url = ":11000" + URI
+          url = ':11000' + URI
           runCommandForDevice(selectedPlayer?.ip, url, 'GET')
           break
         case 'browse':
-          url = URI + '&playnum=1'
+          url = ':11000' + URI
           setUrl(url)
           displayMainScreen(url)
+          break
+        case 'deep-link':
+          // URI = "/music-service/Tidal"
+          // split URI by / and get the first part
+          url = URI.split('/')[1]
+          switch (url) {
+            case 'music-service':
+              url = '/ui/browseMenuGroup?service=' + service + '&playnum=1'
+              setUrl(url)
+              displayMainScreen(url)
+              break
+            default:
+              console.log('not supported url type', url)
+              break
+          }
+
           break
         default:
           console.log('not supported type', action[0].$)
@@ -66,8 +81,13 @@ export const SDUIProvider = ({ children }) => {
   const browseContext = (data) => {
     const { $, name } = data || {}
     const { service } = $ || {}
-    return `:11000/BrowseContext?service=${service}&title=${name[0]._}&id=${name[0].$.id}`.replaceAll(' ', '+')
+    return `:11000/BrowseContext?service=${service}&title=${name[0]._}&id=${name[0].$.id}`.replaceAll(
+      ' ',
+      '+'
+    )
   }
+
+  
 
   const value = {
     performAction,

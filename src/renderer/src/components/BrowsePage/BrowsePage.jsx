@@ -39,6 +39,7 @@ const BrowsePage = () => {
     setIsSearchMode,
     performSearching,
     goToPreviousUrl,
+    containerRef
   } = useBrowsing()
 
   useEffect(() => {
@@ -61,7 +62,7 @@ const BrowsePage = () => {
   }
 
   return (
-    <ScrollArea className="w-full h-full p-4 overflow-x-hidden">
+    <ScrollArea className="w-full h-full p-4 overflow-x-hidden" ref={containerRef}>
       <div id="urlBar" className="flex items-center justify-between sticky top-0 z-50">
         <Select
           value={selectedPlayer && selectedPlayer.mac}
@@ -69,7 +70,7 @@ const BrowsePage = () => {
             setSelectedPlayer(devices.find((device) => device.mac === value))
           }
         >
-          <SelectTrigger className="w-fit h-14 m-1 border-none rounded-full">
+          <SelectTrigger className="w-fit m-1  rounded-full">
             <SelectValue placeholder="Player" />
           </SelectTrigger>
           <SelectContent>
@@ -79,7 +80,6 @@ const BrowsePage = () => {
                   <SelectItem key={device.mac} value={device.mac}>
                     <div className="flex flex-col items-start text-left">
                       <p>{device.name}</p>
-                      <p>{device.ip}</p>
                     </div>
                   </SelectItem>
                 )

@@ -31,6 +31,8 @@ export const getIconForType = (type) => {
       return ListMusicIcon
     case "song":
       return MusicIcon
+    case "deep-link":
+      return null
     default:
       return null
   }

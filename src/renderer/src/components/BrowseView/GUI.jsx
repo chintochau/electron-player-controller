@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Row from './Row'
 import List from './List'
 import { useBrowsing } from '../../context/browsingContext'
@@ -8,21 +8,25 @@ import SDUIHeader from './SDUIHeader'
 import { cn } from '@/lib/utils'
 import { useSdui } from '../../context/sduiContext'
 import { PlayIcon } from '@heroicons/react/24/solid'
+import InfoPanel from './InfoPanel'
 
 const GUI = ({ screen }) => {
   const { loading } = useBrowsing()
   const {} = useSdui()
 
-
   if (!useSdui || !useBrowsing) {
-    return <Loader2 className='animate-spin size-20' />
+    return <Loader2 className="animate-spin size-20" />
   }
 
   if (loading) {
-    return <div className='w-full flex justify-center items-center h-1/2'><Loader2 className='animate-spin size-20' /></div>
+    return (
+      <div className="w-full flex justify-center items-center h-1/2">
+        <Loader2 className="animate-spin size-20" />
+      </div>
+    )
   }
 
-  const { $, row, list, playlists, header } = screen || {}
+  const { $, row, list, playlists, header, infoPanel } = screen || {}
   const { screenTitle, navigationTitle, service } = $ || {}
   const onlyOneList = screen?.list?.length === 1 && !screen?.row
   const onlyOneListWithHeader = onlyOneList && header
@@ -40,25 +44,33 @@ const GUI = ({ screen }) => {
     if (service) {
       return service
     }
-    return ""
+    return ''
   }
 
   if (screen) {
     return (
       <div className="pt-4">
-        <h1 className={cn("text-4xl text-primary font-bold pb-4", onlyOneListWithHeader ? "lg:fixed lg:w-[calc(50vw-275px)] text-center" : "")}>
+        <h1
+          className={cn(
+            'text-4xl text-primary font-bold pb-4',
+            onlyOneListWithHeader ? 'lg:fixed lg:w-[calc(50vw-275px)] text-center' : ''
+          )}
+        >
           {renderTitle()}
         </h1>
 
-        <div className={cn(
-          onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : '',
-        )}>
-          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full',)}>
+        <div className={cn(onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : '')}>
+          <div id="headers" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full')}>
             {header?.map((header, index) => (
-              <SDUIHeader key={header?.$?.id || header?.$?.title} header={header} index={index} onlyOneListWithHeader={onlyOneListWithHeader} />
+              <SDUIHeader
+                key={header?.$?.id || header?.$?.title}
+                header={header}
+                index={index}
+                onlyOneListWithHeader={onlyOneListWithHeader}
+              />
             ))}
           </div>
-  
+
           <div id="lists" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full')}>
             {list?.map((list, index) => (
               <List
@@ -78,38 +90,37 @@ const GUI = ({ screen }) => {
           ))}
         </div>
 
-        
-
         <div>
-          {
-            playlists && (
-              <Playlist
-                key={playlists?.$?.id || playlists?.$?.title || playlists?.$?.service || index}
-                playlists={playlists}
-              />
-            )
-          }
+          {playlists && (
+            <Playlist
+              key={playlists?.$?.id || playlists?.$?.title || playlists?.$?.service || index}
+              playlists={playlists}
+            />
+          )}
         </div>
+        {infoPanel &&
+          infoPanel.map((infoPanelItem, index) => (
+            <InfoPanel key={index} infoPanel={infoPanelItem} />
+          ))}
       </div>
     )
   }
-  return <div>
-    Nothing to show
-  </div>
-
+  return <div>Nothing to show</div>
 }
-
 
 export default GUI
 
-
-
-export const renderComponent = (type,size=20,rounded=false) => {
+export const renderComponent = (type, size = 20, rounded = false) => {
   switch (type) {
     case 'player-link':
       return (
         <>
-          <div className={cn("absolute inset-0 bg-black transition  ease-in-out  duration-300 opacity-0 group-hover:opacity-50",rounded ? 'rounded-md' : '')}></div>
+          <div
+            className={cn(
+              'absolute inset-0 bg-black transition  ease-in-out  duration-300 opacity-0 group-hover:opacity-50',
+              rounded ? 'rounded-md' : ''
+            )}
+          ></div>
           <PlayIcon
             src="overlay-image-url.png"
             alt="Overlay Image"

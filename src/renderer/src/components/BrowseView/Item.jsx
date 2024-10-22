@@ -1,6 +1,7 @@
 import React from 'react'
 import { useBrowsing } from '../../context/browsingContext'
 import { cn } from '@/lib/utils'
+import noartwork from '../../assets/noartwork.png'
 
 import {
   ContextMenu,
@@ -50,7 +51,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
   return (
     <div
       className={cn(
-        'flex lg:rounded-md gap-2 w-ful xl:flex-col group ease-out duration-300 active:scale-110',
+        'flex lg:rounded-md gap-2 w-full xl:flex-col group ease-out duration-300 active:scale-110',
         onlyOneListWithHeader
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
           : ''
@@ -72,6 +73,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
               <img
                 className="transition-all group-hover:scale-105 w-full h-full object-cover aspect-square "
                 src={image && getImagePath(image)}
+                onError={(e) => (e.target.src = noartwork)}
               />
               {IconComponent && <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
                 <IconComponent className="h-6 w-6" />
@@ -144,12 +146,12 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
 
         <p
           className={cn(
-            'text-xs text-muted-foreground w-60 text-wrap flex justify-between',
+            'text-xs text-muted-foreground text-wrap flex justify-between w-full',
             onlyOneListWithHeader ? 'w-full' : ''
           )}
         >
-          <p>{duration}</p>
-          <p>{quality}</p>
+          <p className=' text-primary/40 text-sm'>{duration}</p>
+          <p className=' text-primary/40'>{quality}</p>
         </p>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import { useSdui } from '../../context/sduiContext'
 import { useBrowsing } from '../../context/browsingContext'
 import { BeakerIcon, PlayIcon } from '@heroicons/react/24/solid'
+import noartwork from '../../assets/noartwork.png'
 
 import {
   ContextMenu,
@@ -74,6 +75,9 @@ const LargeThumbnail = ({
                 size === 'small' ? sizes.small : sizes.large,
                 isArtist ? 'rounded-full' : ''
               )}
+              onError={(e) => {
+                e.target.src = noartwork
+              }}
             />
            {IconComponent &&  <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
               <IconComponent className="h-6 w-6" />

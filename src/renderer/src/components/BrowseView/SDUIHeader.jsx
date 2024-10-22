@@ -6,6 +6,7 @@ import SDUIButton from './SDUIButton'
 import Description from './Description'
 import { ScrollArea } from '../../../../components/ui/scroll-area'
 import tidalLogo from '../../assets/tidal.png'
+import noartwork from '../../assets/noartwork.png'
 
 const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
   const { $, button, description, viewAll } = header || {}
@@ -41,6 +42,7 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
             <img
               className="transition-all hover:scale-105 w-full h-full object-cover aspect-square "
               src={image && getImagePath(image)}
+              onError={(e) => (e.target.src = noartwork)}
             />
           </div>
         )}
