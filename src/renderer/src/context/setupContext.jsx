@@ -21,15 +21,41 @@ export const SetupProvider = ({ children }) => {
             }, 2000)
             return () => clearInterval(intervalId)
         }
-    }, [inProgress])
+    }, [inProgress, setupMatrix])
 
     const runPlayersSetupProcess = () => {
 
         // loop through the matrix
+        // [{name:"alpha IQ", version:"1.0.0", ip:"237.84.2.178", mac:"00:00:00:00:00:00", isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
 
         //0. reboot devices that is already initialized, set finish flag
+        let matrix = setupMatrix.forEach((device) => {
+            if (!device.ip) return
+            if (device.isInitialized && !device.isRebooted) {
+                playerControl(device.ip, 'reboot', null)
+                device.isRebooted = true
+            }
+        })
         //1. initialize devices that is connected and already upgraded to the latest version
+        matrix = matrix.forEach((device) => {
+            if (!device.ip) return
+            if (device.isConnected && !device.isInitialized) {
+
+                device.isInitialized = true
+            }
+        })
         //2. check upgrade for devices that is not upgraded, send the command and update the flag
+
+        matrix = matrix.forEach(async (device) => {
+
+            const res = await window.api.checkUpgrade(ip)
+            // res = {inProgress:false,version: null,available:false}
+            // res = {inProgress:false, version 4.6.3, available: true}
+            // res = null (timeout)
+            if (res && res.available === "true") {
+                
+            }
+        })
         //3. connect devices that is not connected
 
     }
