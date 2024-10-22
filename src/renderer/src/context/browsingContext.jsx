@@ -165,9 +165,11 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const loadNextLink = async (nextLink) => {
-    const result = await loadSDUI(nextLink)
+    const result = await loadSDUI(":11000"+nextLink)
+    console.log(result);
+    
     const { list:newList } = result.json || {}
-    const {item:newItems,nextLink:newNextLink} = newList
+    const {item:newItems,nextLink:newNextLink} = newList || {}
     
     setScreen((prev) => {
       const { list:oldList } = prev || {}

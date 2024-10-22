@@ -30,6 +30,8 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
 
         // Trigger load more when scroll position exceeds 80% (0.8)
         if (scrollPosition >= 0.8 && nextLink && nextLink.length > 0) {
+          console.log('nextLink', nextLink[0]);
+          
           loadNextLink(nextLink[0])
           // only load once, cleanup the event listener
           container.removeEventListener('scroll', handleScroll)
@@ -109,10 +111,16 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
           ))}
         </div>
       )}
-      {nextLink && nextLink.length > 0 && (
+      {nextLink && nextLink.length > 0 ? (
         <div className="w-full items-center justify-center flex">
           <Loader2 className="animate-spin size-10 text-secondary" />
         </div>
+      ) : (
+        <>
+          {onlyOneList ? (
+            <p className="w-full text-center text-foreground/30 text-sm py-4">No more items</p>
+          ) : null}
+        </>
       )}
     </div>
   )

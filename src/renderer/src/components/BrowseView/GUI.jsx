@@ -59,7 +59,7 @@ const GUI = ({ screen }) => {
           {renderTitle()}
         </h1>
 
-        <div className={cn(onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : '')}>
+        <div className={cn(onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : 'mb-2')}>
           <div id="headers" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full')}>
             {header?.map((header, index) => (
               <SDUIHeader
