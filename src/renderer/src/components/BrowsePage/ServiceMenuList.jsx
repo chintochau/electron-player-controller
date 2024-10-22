@@ -40,12 +40,12 @@ const ServiceMenuList = ({ musicServiceList }) => {
   return (
     <div className='flex'>
       <NavigationMenu>
-        <NavigationMenuList className="w-full flex justify-start flex-wrap gap-0 xl:gap-3">
+        <NavigationMenuList className="w-full flex justify-start flex-wrap gap-0 xl:gap-3 ">
           {appMenuList.map((app) => {
             return (
               <NavigationMenuItem key={app.name}>
                 <NavigationMenuLink
-                  className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2'}
+                  className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2 '}
                   onClick={() => {
                     setUrl(app.uri)
                     displayMainScreen(app.uri)
@@ -67,7 +67,7 @@ const ServiceMenuList = ({ musicServiceList }) => {
                 <ContextMenuTrigger>
                   <NavigationMenuItem key={bookmark.name + index}>
                   <NavigationMenuLink
-                    className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2'}
+                    className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2 '}
                     onClick={() => {
                       setUrl(bookmark.uri)
                       displayMainScreen(bookmark.uri)

@@ -174,7 +174,7 @@ export const BrowsingProvider = ({ children }) => {
     setScreen((prev) => {
       const { list:oldList } = prev || {}
       if (newList) {
-        const {  item:oldItems } = oldList[0] || {}
+        const {  item:oldItems } = oldList?.[0] || {}
         return {
           ...prev,
           list: [

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useSdui } from '../../context/sduiContext'
 import { cn } from '../../lib/utils'
 import Item from './Item'
@@ -53,6 +53,18 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
     }
   }, [list, nextLink, loadNextLink])
 
+    const memoizedItems = useMemo(() => {
+      return list?.item?.map((item) => (
+        <Item
+          item={item}
+          key={item?.$?.id}
+          large={onlyOneList}
+          onlyOneListWithHeader={onlyOneListWithHeader}
+          isArtist={isArtist}
+        />
+      ))
+    }, [list]) || []
+
   return (
     <div className="z-10">
       <div
@@ -81,15 +93,7 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
               : 'py-4 grid gap-3 auto-cols-min grid-cols-1 lg:grid-cols-2  xl:grid-cols-4 2xl:grid-cols-5'
           )}
         >
-          {list?.item?.map((item) => (
-            <Item
-              item={item}
-              key={item?.$?.id}
-              large={onlyOneList}
-              onlyOneListWithHeader={onlyOneListWithHeader}
-              isArtist={isArtist}
-            />
-          ))}
+          {memoizedItems}
         </div>
       )}
       {service && (

@@ -31,7 +31,7 @@ const ServiceNevigationMenu = ({ service }) => {
         onClick={() => {
           handleLinkClick(`/ui/browseMenuGroup?service=${service.id}&playnum=1`)
         }}
-        className="px-1 h-6 xl:px-2 xl:h-10"
+        className="px-1 h-6 xl:px-2 xl:h-10 rounded-xl"
       >
         <div className="flex items-center">
           <img src={service.iconSrc} className="w-4 h-4 mr-2" />
