@@ -8,6 +8,7 @@ import { ThemeProvider } from './context/themeContext'
 import Dashboard from './components/Dashboard'
 import { BrowsingProvider } from './context/browsingContext'
 import { SDUIProvider } from './context/sduiContext'
+import { SetupProvider } from './context/setupContext'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -17,15 +18,17 @@ function App() {
       <RefreshProvider>
         <StorageProvider>
           <DevicesProvider>
-            <TableProvider>
-              <BrowsingProvider>
-                <SDUIProvider>
-                  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-                    <Dashboard />
-                  </ThemeProvider>
-                </SDUIProvider>
-              </BrowsingProvider>
-            </TableProvider>
+           <SetupProvider>
+              <TableProvider>
+                <BrowsingProvider>
+                  <SDUIProvider>
+                    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+                      <Dashboard />
+                    </ThemeProvider>
+                  </SDUIProvider>
+                </BrowsingProvider>
+              </TableProvider>
+           </SetupProvider>
           </DevicesProvider>
         </StorageProvider>
       </RefreshProvider>

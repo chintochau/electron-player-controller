@@ -25,12 +25,14 @@ import { playerControl } from '../lib/utils'
 import { useDevices } from '../context/devicesContext'
 import { useBrowsing } from '../context/browsingContext'
 import MenuGroup from './BrowseView/MenuGroup'
+import { toast } from '@/hooks/use-toast'
 
 const SettingsMenu = ({ ip }) => {
   const { searchDeviceByIp } = useDevices()
   // const { loadSDUI } = useBrowsing()
   const [deviceName, setDeviceName] = useState()
   const [settingsMenu, setSettingsMenu] = useState(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   useEffect(() => {
     setDeviceName(searchDeviceByIp(ip)?.name)
@@ -79,7 +81,7 @@ const SettingsMenu = ({ ip }) => {
             </DropdownMenuItem>
           )
         })}
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger className="text-red-300 duration-300 transition hover:text-red-600 px-2 text-sm py-2">
             Reset
           </DialogTrigger>
@@ -96,7 +98,15 @@ const SettingsMenu = ({ ip }) => {
               </DialogClose>
               <Button
                 variant="destructive"
-                onClick={() => playerControl(ip, 'factoryreset')}
+                onClick={() => {
+                  playerControl(ip, 'factoryreset')
+                  setIsDialogOpen(false)
+                  toast({
+                    title: 'Factory Reset',
+                    description: 'Resetting Device: ' + deviceName + ' : ' + ip,
+                    status: 'success'
+                  })
+                }}
               >
                 Reset
               </Button>

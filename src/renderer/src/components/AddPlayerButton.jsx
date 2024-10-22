@@ -14,16 +14,31 @@ import { CirclePlusIcon, Loader2 } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
+import { useSetup } from '../context/setupContext'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const AddPlayerButton = () => {
-  const { shouldRefresh, setShouldRefresh } = useRefresh()
+  const { setShouldRefresh } = useRefresh()
   const [bluosDevicesList, setBluosDevicesList] = useState([])
   const [wifiList, setWifiList] = useState([])
   const [isOpen, setIsOpen] = useState(false)
   const [timer, setTimer] = useState(0)
-
-  const [selectedWifi, setSelectedWifi] = useState('')
-  const [wifiPassword, setWifiPassword] = useState('')
+  const {
+    needSetupDevices,
+    setNeedSetupDevices,
+    selectedWifi,
+    setSelectedWifi,
+    wifiPassword,
+    setWifiPassword,
+    setupMatrix,
+    setSetupMatrix,
+    createMatrixAndStart,
+    selectDevice,
+    deselectDevice,
+    inProgress,
+    setInProgress,
+    isDeviceSelected
+  } = useSetup()
 
   const getWifi = async () => {
     const wifiList = await window.api.getWifiList()
@@ -39,7 +54,7 @@ const AddPlayerButton = () => {
   const isWifiFormatCorrect = (ssid) => {
     if (!ssid || ssid === '') return false
     // * - XXXX
-    if (ssid.split(' - ').length > 1 && ssid.split(' - ')[1].length === 4) {
+    if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4) {
       return true
     } else {
       return false
@@ -82,62 +97,87 @@ const AddPlayerButton = () => {
         <DialogDescription>
           Enable Hotspot Mode on your player.
         </DialogDescription>
+
         <div className='w-full bg-accent rounded-xl flex flex-col justify-center'>
-          {bluosDevicesList && bluosDevicesList.length > 0 ?
-            bluosDevicesList.map((wifi) => {
-              return (
-                <div className='w-full' key={wifi.ssid}>
-                  {wifi.ssid}
+          {!inProgress && <>
+            { bluosDevicesList && bluosDevicesList.length > 0 ?
+              bluosDevicesList.map((wifi) => {
+                return (
+                  <div className='w-full p-3' key={wifi.ssid}>
+                    <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
+                    {wifi.ssid}
+                  </div>
+                )
+              }) : (
+                <div className='flex flex-col items-center justify-center py-14'>
+                  <Loader2 className='animate-spin size-14' />
+                  <p className='text-xl'>
+                    Searching For BluOS Device...
+                  </p>
+                  {timer && <p>{timer}
+                  </p>}
                 </div>
               )
-            }) : (
-              <div className='flex flex-col items-center justify-center py-14'>
-                <Loader2 className='animate-spin size-14' />
-                <p className='text-xl'>
-                  Searching For BluOS Device...
-                </p>
-                {timer && <p>{timer}
-                </p>}
-              </div>
-            )
+            }
+          </>}
+
+          {
+            inProgress && setupMatrix && setupMatrix.length > 0 ? setupMatrix.map((device) => {
+              return (
+                <div className='grid grid-cols-6 gap-2'>
+                  <h3>{device.name}</h3>
+                  <p>{device.ip}</p>
+                  <p>{device.mac}</p>
+                  <p>{device.version}</p>
+                  <p>{device.isConnected ? "Connected" : "Not Connected"}</p>
+                  <p>{device.isInitialized ? 'Initialized' : 'Not Initialized'}</p>
+                </div>
+              )
+            }) : null
           }
         </div>
-        {wifiList && wifiList.length > 0 ? <form className='w-full flex gap-2'>
-          <Select value={selectedWifi} onValueChange={setSelectedWifi}  >
-            <SelectTrigger className="w-fit min-w-40">
-              <SelectValue placeholder="Select Wifi"/>
-            </SelectTrigger>
-            <SelectContent>
-              {
-                wifiList.map((wifi) => {
-                  return (
-                    <SelectItem key={wifi.ssid} value={wifi.ssid}>
-                      {wifi.ssid}
-                    </SelectItem>
-                  )
-                })
-              }
-            </SelectContent>
-          </Select>
-          <Input
-            value={wifiPassword}
-            onChange={(e) => setWifiPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            className="flex-1 w-40"
-          /><Button
-            type="submit"
-            variant="outline"
-            onClick={(e) => {
-              e.preventDefault()
-            }}
-          >
-            Connect
-          </Button>
-        </form> : <p>
-          Looking for available Wifi Network...
-        </p>
-        }
+
+        {!inProgress &&
+        <>
+          {wifiList && wifiList.length > 0 ? <form className='w-full flex gap-2'>
+            <Select value={selectedWifi} onValueChange={setSelectedWifi}  >
+              <SelectTrigger className="w-fit min-w-40">
+                <SelectValue placeholder="Select Wifi" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  wifiList.map((wifi) => {
+                    return (
+                      <SelectItem key={wifi.ssid} value={wifi.ssid}>
+                        {wifi.ssid}
+                      </SelectItem>
+                    )
+                  })
+                }
+              </SelectContent>
+            </Select>
+            <Input
+              value={wifiPassword}
+              onChange={(e) => setWifiPassword(e.target.value)}
+              placeholder="Password"
+              type="password"
+              className="flex-1 w-40"
+            /><Button
+              type="submit"
+              variant="outline"
+              onClick={(e) => {
+                e.preventDefault()
+                createMatrixAndStart()
+              }}
+            >
+              Connect
+            </Button>
+          </form> : <p>
+            Looking for available Wifi Network...
+          </p>
+          }
+        </>}
+
       </DialogContent>
     </Dialog>
   )
