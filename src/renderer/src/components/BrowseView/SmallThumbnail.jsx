@@ -31,8 +31,8 @@ const SmallThumbnail = ({
   const { $, action,contextMenu } = smallThumbnail || {}
   const { title } = $ || {}
 
-  const resultType = action[0]?.$?.resultType || action[0]?.$?.type
-  const actionType = action[0]?.$?.type
+  const resultType = action?.[0]?.$?.resultType ?? action?.[0]?.$?.type ?? 'defaultType'
+  const actionType = action?.[0]?.$?.type ?? 'defaultType'
 
   const IconComponent = getIconForType(resultType)
   const [contextMenuWithItems, setContextMenuWithItems] = useState(null)
