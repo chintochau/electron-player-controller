@@ -28,7 +28,7 @@ const AddPlayerToGroup = ({ ip }) => {
     }
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className='hover:bg-accent p-2 rounded-md'><UngroupIcon className="h-4 w-4" /></DropdownMenuTrigger>
+            <DropdownMenuTrigger className='hover:bg-accent p-2 rounded-md text-primary/40'><UngroupIcon className="h-4 w-4" /></DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="max-h-96 overflow-y-auto">
                 <DropdownMenuLabel>Add Player To This Group</DropdownMenuLabel>
                 <DropdownMenuSeparator />

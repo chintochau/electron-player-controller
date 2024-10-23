@@ -38,3 +38,8 @@ export const getIconForType = (type) => {
   }
 }
 
+
+export const removeFromGroup = (slaveDevice) => {
+  ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
+  playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
+}

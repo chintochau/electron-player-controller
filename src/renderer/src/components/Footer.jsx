@@ -21,7 +21,17 @@ const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
   const [apiCommand, setApiCommand] = useState('')
   const { devices, selectedDevices, refreshDevices, updateDeviceStatus } = useDevices()
+  const [appVersion, setAppVersion] = useState()
 
+  const getAppVersion = async () => {
+    const version = await window.api.getAppVersion()
+    setAppVersion(version)
+  }
+
+
+  useEffect(() => {
+    getAppVersion()
+  }, [])
 
 
   const [requestType, setRequestType] = useState('GET')
@@ -109,14 +119,19 @@ const Footer = ({ isCollapsed }) => {
     >
       <div className="w-full border-foreground h-full px-2 bg-background">
         <div className="flex h-full items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <p className="text-foreground text-lg">
-              {selectedDevices.length} of {devices.length} Device(s) selected
+          <div className='flex flex-col'>
+            <div className="flex items-center space-x-2">
+              <p className="text-foreground text-xs sm:text-sm md:text-lg">
+                {selectedDevices.length} of {devices.length} Device(s) selected
+              </p>
+              <RefreshCcw
+                className="h-4 w-4 min-w-4 cursor-pointer duration-300 hover:animate-spin"
+                onClick={refreshDevices}
+              />
+            </div>
+            <p className='text-xs text-muted-foreground'>
+              v{appVersion}
             </p>
-            <RefreshCcw
-              className="h-4 w-4 cursor-pointer duration-300 hover:animate-spin"
-              onClick={refreshDevices}
-            />
           </div>
           <div className="flex justify-end gap-x-4">
             <div className="flex">
