@@ -346,8 +346,6 @@ ipcMain.handle("connect-to-wifi", async (event, { ssid }) => {
 })
 
 ipcMain.handle('get-app-version', () => {
-  console.log( app.getVersion());
-  
   return app.getVersion();
 });
 

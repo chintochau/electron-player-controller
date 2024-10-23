@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useStorage } from './localStorageContext'
 import { playerControl, runCommandForDevice } from '../lib/utils'
 import { useDevices } from './devicesContext'
@@ -131,7 +131,7 @@ export const SetupProvider = ({ children }) => {
             if (device.isInitialized && !device.isRebooted) {
                 rebootDevice(device.ip)
                 device.isRebooted = true
-                device.currentStatus = 'Rebooting'
+                device.currentStatus = 'Finalizing'
             }
             return device
         })
@@ -143,7 +143,7 @@ export const SetupProvider = ({ children }) => {
             if (device.isUpgraded && device.isConnected && !device.isInitialized) {
                 initializeDevice(device.ip)
                 device.isInitialized = true
-                device.currentStatus = 'Initialized'
+                device.currentStatus = 'Rebooting'
             }
             return device
         })
@@ -152,6 +152,7 @@ export const SetupProvider = ({ children }) => {
         matrix = await Promise.all(matrix.map(async (device) => {
             const controller = new AbortController()
             const timeoutId = setTimeout(() => controller.abort(), 2000)
+            if (device.isUpgraded) return device
             try {
                 const res = await window.api.checkUpgrade(device.ip, { signal: controller.signal })
                 clearTimeout(timeoutId)
@@ -160,17 +161,13 @@ export const SetupProvider = ({ children }) => {
                         // res = {inProgress:false,version: null,available:false}
                         const thisDevice = getDeviceFromListByName(device.name)
                         if (!thisDevice) return device
-                        setLatestVersion(thisDevice.version)
                         device.isUpgraded = true
                         device.version = thisDevice.version
                         device.ip = thisDevice.ip
-                        device.currentStatus = `Upgraded to ${thisDevice.version}`
                     }
                     if (res.available === "true" && res.version) {
                         // res = {inProgress:false, version 4.6.3, available: true}
                         window.api.playerControl(device.ip, 'upgrade', res.version)
-                        setLatestVersion(res.version)
-                        console.log(`Upgrading device ${device.name} to ${res.version}`);
                         device.currentStatus = `Upgrading to ${res.version}`
                     }
                 }
@@ -184,15 +181,15 @@ export const SetupProvider = ({ children }) => {
 
         //3. link devices that is not connected to the selected wifi
         matrix = matrix.map((device) => {
+            if (device.isConnected) return device
             const thisDevice = getDeviceFromListByName(device.name)            
             if (thisDevice) {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
                 device.isConnected = true
-                device.currentStatus = `Connected to ${currentConnectedWifi}`
+                device.currentStatus = `Connected to ${selectedWifi}`
             } else if (currentConnectedWifi && currentConnectedWifi === device.name && !device.isConnected) {
-                console.log(`Connecting ${device.name} to ${currentConnectedWifi}`);
-                device.currentStatus = `Connecting to ${currentConnectedWifi}`
+                device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
             }
             return device

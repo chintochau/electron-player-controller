@@ -128,11 +128,10 @@ const AddPlayerButton = () => {
                   <h3>{device.name}</h3>
                   <p>{device.ip}</p>
                   <p>{device.version}</p>
-                  <p>{device.isConnected ? "Connected" : "Not Connected"}</p>
-                  <p>{device.isUpgraded ? 'Upgraded' : 'Not Upgraded'}</p>
-                  <p>{device.isInitialized ? 'Initialized' : 'Not Initialized'}</p>
-                  <p>{device.isRebooted ? 'Rebooted' : 'Not Rebooted'}</p>
-                  <p>{device.isFinished ? 'Finished' : 'Not Finished'}</p>
+                  <p>{device.isConnected ? "Connected" : ""}</p>
+                  <p>{device.isUpgraded ? 'Upgraded' : ''}</p>
+                  <p>{device.isInitialized ? 'Initialized' : ''}</p>
+                  <p>{device.isRebooted ? 'Rebooted' : ''}</p>
                   <p>{device.currentStatus}</p>
                 </div>
               )
