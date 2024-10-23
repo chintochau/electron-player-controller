@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
-import { checkUpgrade, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
+import { checkUpgrade, connectToDeviceThroughWifi, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
 
 let masterWindow
 function createWindow() {
@@ -289,7 +289,7 @@ ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GE
 
   const res = await fetch(`http://${ip}${command}`, { method: type })
   if (!res || !res.ok) {
-    console.log('Error response:', res)
+    console.log(`Failed Command: ${command}`)
     return { success: false }
   }
   console.log('Control command successful:', command)
@@ -339,6 +339,11 @@ ipcMain.handle("get-wifi-list", async () => {
 ipcMain.handle("load-sd-ui-page", async (event, { url, debug }) => {
   return await loadSDUIPage(url, debug);
 });
+
+ipcMain.handle("connect-to-wifi", async (event, { ssid }) => {
+  console.log('connect-to-wifi', ssid);
+  return await connectToDeviceThroughWifi(ssid)
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

@@ -28,10 +28,13 @@ export const commandList = [
     name: '/ui/Home',
     command: ':11000/ui/Home?playnum=1'
   },
-  // {
-  //   name:"/Initialize=true",
-  //   command:"/SetInitialized?init=1"
-  // },
+  {
+    name:"/Initialize=true",
+    command:":11000/SetInitialized?init=1"
+  },{
+    name:"/Initialize=false",
+    command:":11000/SetInitialized?init=0"
+  }
 ]
 
 export const settingsList = [

@@ -56,11 +56,8 @@ export const getCurrentWifi = async () => {
 
 export const getWifiList = async () => {
   console.log('getWifiList');
-
   try {
-
     const wifiList = await wifi.scan()
-    console.log('wifiList', wifiList);
     return wifiList
   } catch (error) {
     console.log(error)
@@ -79,5 +76,13 @@ export const loadSDUIPage = async (url, debug) => {
   } catch (error) {
     console.log(error)
     return {json:null, xmlText:null}
+  }
+}
+
+export const connectToDeviceThroughWifi = async (ssid) => {
+  try {
+    wifi.connect({ssid: ssid})
+  } catch (error) {
+    console.log(error)
   }
 }

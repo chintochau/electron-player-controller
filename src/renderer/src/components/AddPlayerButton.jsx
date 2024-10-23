@@ -37,7 +37,8 @@ const AddPlayerButton = () => {
     deselectDevice,
     inProgress,
     setInProgress,
-    isDeviceSelected
+    isDeviceSelected,
+    currentConnectedWifi
   } = useSetup()
 
   const getWifi = async () => {
@@ -87,35 +88,34 @@ const AddPlayerButton = () => {
       }}
       open={isOpen}
     >
-      <DialogTrigger className="hover:bg-accent p-2 rounded-md">
+      <DialogTrigger className="hover:bg-accent p-2 rounded-md ">
         <CirclePlusIcon className="h-6 w-6" />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Connect your player(s)</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Enable Hotspot Mode on your player.
+          <p>Enable Hotspot Mode on your player.</p>
+          <p> Currently Connected Wifi: {currentConnectedWifi ? currentConnectedWifi : 'None'}</p>
         </DialogDescription>
 
         <div className='w-full bg-accent rounded-xl flex flex-col justify-center'>
           {!inProgress && <>
-            { bluosDevicesList && bluosDevicesList.length > 0 ?
+            {bluosDevicesList && bluosDevicesList.length > 0 ?
               bluosDevicesList.map((wifi) => {
                 return (
-                  <div className='w-full p-3' key={wifi.ssid}>
+                  <div className='w-full p-3 cursor-pointer flex items-center gap-3' key={wifi.ssid} onClick={() => selectDevice(wifi.ssid)}>
                     <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
-                    {wifi.ssid}
+                    <p className='text-xl'>{wifi.ssid}</p>
                   </div>
                 )
               }) : (
                 <div className='flex flex-col items-center justify-center py-14'>
                   <Loader2 className='animate-spin size-14' />
                   <p className='text-xl'>
-                    Searching For BluOS Device...
+                    Searching For BluOS Device...{timer}
                   </p>
-                  {timer && <p>{timer}
-                  </p>}
                 </div>
               )
             }
@@ -124,13 +124,16 @@ const AddPlayerButton = () => {
           {
             inProgress && setupMatrix && setupMatrix.length > 0 ? setupMatrix.map((device) => {
               return (
-                <div className='grid grid-cols-6 gap-2'>
+                <div className='flex gap-2 text-xs p-2'>
                   <h3>{device.name}</h3>
                   <p>{device.ip}</p>
-                  <p>{device.mac}</p>
                   <p>{device.version}</p>
                   <p>{device.isConnected ? "Connected" : "Not Connected"}</p>
+                  <p>{device.isUpgraded ? 'Upgraded' : 'Not Upgraded'}</p>
                   <p>{device.isInitialized ? 'Initialized' : 'Not Initialized'}</p>
+                  <p>{device.isRebooted ? 'Rebooted' : 'Not Rebooted'}</p>
+                  <p>{device.isFinished ? 'Finished' : 'Not Finished'}</p>
+                  <p>{device.currentStatus}</p>
                 </div>
               )
             }) : null
@@ -138,45 +141,45 @@ const AddPlayerButton = () => {
         </div>
 
         {!inProgress &&
-        <>
-          {wifiList && wifiList.length > 0 ? <form className='w-full flex gap-2'>
-            <Select value={selectedWifi} onValueChange={setSelectedWifi}  >
-              <SelectTrigger className="w-fit min-w-40">
-                <SelectValue placeholder="Select Wifi" />
-              </SelectTrigger>
-              <SelectContent>
-                {
-                  wifiList.map((wifi) => {
-                    return (
-                      <SelectItem key={wifi.ssid} value={wifi.ssid}>
-                        {wifi.ssid}
-                      </SelectItem>
-                    )
-                  })
-                }
-              </SelectContent>
-            </Select>
-            <Input
-              value={wifiPassword}
-              onChange={(e) => setWifiPassword(e.target.value)}
-              placeholder="Password"
-              type="password"
-              className="flex-1 w-40"
-            /><Button
-              type="submit"
-              variant="outline"
-              onClick={(e) => {
-                e.preventDefault()
-                createMatrixAndStart()
-              }}
-            >
-              Connect
-            </Button>
-          </form> : <p>
-            Looking for available Wifi Network...
-          </p>
-          }
-        </>}
+          <>
+            {wifiList && wifiList.length > 0 ? <form className='w-full flex gap-2'>
+              <Select value={selectedWifi} onValueChange={setSelectedWifi}  >
+                <SelectTrigger className="w-fit min-w-40">
+                  <SelectValue placeholder="Select Wifi" />
+                </SelectTrigger>
+                <SelectContent>
+                  {
+                    wifiList.map((wifi) => {
+                      return (
+                        <SelectItem key={wifi.ssid} value={wifi.ssid}>
+                          {wifi.ssid}
+                        </SelectItem>
+                      )
+                    })
+                  }
+                </SelectContent>
+              </Select>
+              <Input
+                value={wifiPassword}
+                onChange={(e) => setWifiPassword(e.target.value)}
+                placeholder="Password"
+                type="password"
+                className="flex-1 w-40"
+              /><Button
+                type="submit"
+                variant="outline"
+                onClick={(e) => {
+                  e.preventDefault()
+                  createMatrixAndStart()
+                }}
+              >
+                Connect
+              </Button>
+            </form> : <p>
+              Looking for available Wifi Network...
+            </p>
+            }
+          </>}
 
       </DialogContent>
     </Dialog>

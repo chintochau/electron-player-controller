@@ -87,19 +87,6 @@ export const DevicesProvider = ({ children }) => {
     }
   }
 
-  const sortAndSaveDevicesList = (devices) => {
-    // sort by room, and then by name
-    devices.sort((a, b) => {
-      if (a.room < b.room) return -1
-      if (a.room > b.room) return 1
-      if (a.name < b.name) return -1
-      if (a.name > b.name) return 1
-      return 0
-    })
-    setDevices(devices)
-    return devices
-  }
-
   async function initialDiscoverDevices() {
     const discoveredDevices = await window.api.discoverDevices()
     let devicesList = []

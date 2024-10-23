@@ -9,7 +9,7 @@ const PresetsBar = ({ ip }) => {
   const [presets, setPresets] = useState([])
 
   const loadPresets = async () => {
-    const res = await window.api.loadSDUIPage(`http://${ip}:11000/Presets`, ip)
+    const res = await window.api.loadSDUIPage(`http://${ip}:11000/Presets`)
     if (res && res.json && res.json.presets) {
       setPresets(res.json.presets.preset)      
     }

@@ -13,11 +13,6 @@ import {
     ChevronDownIcon,
     ChevronUp,
     CornerDownRight,
-    EllipsisVertical,
-    Loader2,
-    PlusIcon,
-    RefreshCw,
-    SquareArrowOutUpRightIcon
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
@@ -42,7 +37,6 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import { commandList } from '../lib/constants'
 import SyncStatus from './SyncStatus'
 import PlayStatus from './PlayStatus'
 import { useToast } from '../../../hooks/use-toast'
@@ -52,7 +46,6 @@ import { useRefresh } from '../context/refreshContext'
 import CheckUpgrade from './CheckUpgrade'
 import { cn } from '@/lib/utils'
 import { goToIpAddress,  } from './PlayerList'
-import { Progress } from '@/components/ui/progress'
 import AddPlayerToGroup from './AddPlayerToGroup'
 import ApiListDropDown from './ApiListDropDown'
 import { useDevices } from '../context/devicesContext'
