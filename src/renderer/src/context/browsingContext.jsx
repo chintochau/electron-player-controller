@@ -149,7 +149,7 @@ export const BrowsingProvider = ({ children }) => {
     let xmlResult = ''
     let jsonResult = []
     setXmlSearchResult('<Searching.../>')
-    setSearchResult(['Searching...'])
+    setSearchResult([{"$":{"screenTitle":"🎶 Tune Hunt"},"infoPanel":[{"$":{"icon":"","text":"Hold on, we're tracking down the jams!","subText":"Our musical sleuths are hard at work... a killer playlist is just a few beats away!"}}]}])
 
     for (let i = 0; i < searchableServices.length; i++) {
       const res = await loadSDUI(uri + '&service=' + searchableServices[i], ip)
