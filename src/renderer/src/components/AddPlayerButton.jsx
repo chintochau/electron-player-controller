@@ -105,7 +105,7 @@ const AddPlayerButton = () => {
             {bluosDevicesList && bluosDevicesList.length > 0 ?
               bluosDevicesList.map((wifi) => {
                 return (
-                  <div className='w-full p-3 cursor-pointer flex items-center gap-3' key={wifi.ssid} onClick={() => selectDevice(wifi.ssid)}>
+                  <div className='w-full p-3 cursor-pointer flex items-center gap-3' key={wifi.ssid} onClick={() =>isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
                     <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
                     <p className='text-xl'>{wifi.ssid}</p>
                   </div>
@@ -124,7 +124,7 @@ const AddPlayerButton = () => {
           {
             inProgress && setupMatrix && setupMatrix.length > 0 ? setupMatrix.map((device) => {
               return (
-                <div className='flex gap-2 text-xs p-2'>
+                <div className='flex gap-2 text-xs p-2 border border-accent rounded-md'>
                   <h3>{device.name}</h3>
                   <p>{device.ip}</p>
                   <p>{device.version}</p>

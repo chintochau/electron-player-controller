@@ -9,8 +9,6 @@ const SetupContext = createContext()
 export const useSetup = () => useContext(SetupContext)
 
 export const SetupProvider = ({ children }) => {
-    const { } = useStorage()
-    const { } = useDevices()
     const [needSetupDevices, setNeedSetupDevices] = useState([])
     const [selectedWifi, setSelectedWifi] = useState('')
     const [wifiPassword, setWifiPassword] = useState('')
@@ -18,7 +16,6 @@ export const SetupProvider = ({ children }) => {
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
     const [currentDevicesList, setCurrentDevicesList] = useState([])
-    const [latestVersion, setLatestVersion] = useState('')
 
 
     useEffect(() => {
