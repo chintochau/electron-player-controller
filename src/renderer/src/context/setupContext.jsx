@@ -193,6 +193,10 @@ export const SetupProvider = ({ children }) => {
                 device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
+            } else if (thisDevice && thisDevice.ip === "10.1.2.3") {
+                device.curretStatus = `Connecting to ${selectedWifi}`
+                connectDeviceToSelectedWifi()
+                device.isConnecting = true
             }
             return device
         })
