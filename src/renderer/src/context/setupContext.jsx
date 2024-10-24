@@ -43,8 +43,6 @@ export const SetupProvider = ({ children }) => {
             return {
                 name,
                 ip,
-                mac: txt.mac,
-                model: txt.model,
                 version: txt.version,
             }
         })
@@ -119,6 +117,7 @@ export const SetupProvider = ({ children }) => {
             if (device.isRebooted) {
                 device.isFinished = true
                 device.currentStatus = 'Finished'
+                deselectDevice(device.name)
             }
             return device
         })
