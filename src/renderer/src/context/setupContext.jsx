@@ -10,12 +10,12 @@ export const useSetup = () => useContext(SetupContext)
 
 export const SetupProvider = ({ children }) => {
     const [needSetupDevices, setNeedSetupDevices] = useState([])
+    const [additionalDevices, setAdditionalDevices] = useState([])
     const [selectedWifi, setSelectedWifi] = useState('')
     const [wifiPassword, setWifiPassword] = useState('')
     const [setupMatrix, setSetupMatrix] = useState([]) // [{name:"alpha IQ", version:"1.0.0", ip:"237.84.2.178", mac:"00:00:00:00:00:00", isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
-
 
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
@@ -102,8 +102,8 @@ export const SetupProvider = ({ children }) => {
             return device
         }
 
-        // -1: check if all devices are finished
-        const allFinished = setupMatrix.every((device) => device.isFinished)
+        // 0: check if all devices are finished or if all are removed
+        const allFinished = setupMatrix.every((device) => device.isFinished) || setupMatrix.length === 0
         if (allFinished) {
             setInProgress(false)
             return
@@ -122,7 +122,7 @@ export const SetupProvider = ({ children }) => {
             return device
         })
 
-        //0. reboot devices that is already initialized, set finish flag
+        //1. reboot devices that is already initialized, set finish flag
         matrix = matrix.map((device) => {
             if (!device.ip) return device
             const thisDevice = getDeviceFromListByName(device.name)
@@ -136,7 +136,7 @@ export const SetupProvider = ({ children }) => {
             return device
         })
 
-        //1. initialize devices that is connected and already upgraded to the latest version
+        //2. initialize devices that is connected and already upgraded to the latest version
         matrix = matrix.map((device) => {
             if (!device.ip) return device
 
@@ -147,7 +147,7 @@ export const SetupProvider = ({ children }) => {
             }
             return device
         })
-        //2. check upgrade for devices that is not upgraded, send the command and update the flag
+        //3. check upgrade for devices that is not upgraded, send the command and update the flag
 
         matrix = await Promise.all(matrix.map(async (device) => {
             const controller = new AbortController()
@@ -179,7 +179,7 @@ export const SetupProvider = ({ children }) => {
             return device
         }))
 
-        //3. link devices that is not connected to the selected wifi
+        //4. link devices that is not connected to the selected wifi
         matrix = matrix.map((device) => {
             const thisDevice = getDeviceFromListByName(device.name)
             if (thisDevice && thisDevice.ip !== "10.1.2.3") {
@@ -197,37 +197,54 @@ export const SetupProvider = ({ children }) => {
             return device
         })
 
-        // 4. connect to the next device that is not connected
+        // 5. connect to the next device that is not connected
         const device = matrix.find((device) => !device.isConnected && !device.isConnecting)
         if (device) {
             connectToSSID(device.name)
         } else if (!currentConnectedWifi) {
             connectToSSID(selectedWifi, wifiPassword)
         }
+
+        // 6. add additional devices
+        const additionalMatrixItems = additionalDevices.map((device) => createMatrixItem(device))
+        matrix = [...matrix, ...additionalMatrixItems]
         setSetupMatrix(matrix)
+    }
+
+    const addToAdditionalDevices = (device) => {
+        setAdditionalDevices((prev) => {
+            return [...prev, device]
+        })
+    }
+
+
+    const createMatrixItem = (device) => {
+        return {
+            name: device,
+            version: null,
+            ip: null,
+            isConnecting: false,
+            isConnected: false,
+            isInitialized: false,
+            isRebooted: false,
+            isUpgraded: false,
+            isFinished: false,
+            currentStatus: "Waiting for connection",
+        }
     }
 
 
     const createMatrixAndStart = () => {
         setSetupMatrix(
-            needSetupDevices.map((device) => {
-                return (
-                    {
-                        name: device,
-                        version: null,
-                        ip: null,
-                        isConnecting: false,
-                        isConnected: false,
-                        isInitialized: false,
-                        isRebooted: false,
-                        isUpgraded: false,
-                        isFinished: false,
-                        currentStatus: "Waiting for connection",
-                    }
-                )
-            })
+            needSetupDevices.map((device) => createMatrixItem(device))
         )
         setInProgress(true)
+    }
+
+    const removeItemFromMatrix = (deviceSSID) => {
+        setSetupMatrix((prev) => {
+            return prev.filter((item) => item.name !== deviceSSID)
+        })
     }
 
     const selectDevice = (device) => {
@@ -259,7 +276,9 @@ export const SetupProvider = ({ children }) => {
         inProgress,
         setInProgress,
         isDeviceSelected,
-        currentConnectedWifi
+        currentConnectedWifi,
+        addToAdditionalDevices,
+        removeItemFromMatrix
     }
 
     return <SetupContext.Provider value={value}>{children}</SetupContext.Provider>

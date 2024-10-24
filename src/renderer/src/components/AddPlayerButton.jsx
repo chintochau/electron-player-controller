@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { useRefresh } from '../context/refreshContext'
 import { cn } from '@/lib/utils'
-import { CirclePlusIcon, Loader2 } from 'lucide-react'
+import { CirclePlusIcon, Loader2, PlusCircle, XCircle } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
@@ -24,21 +24,18 @@ const AddPlayerButton = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [timer, setTimer] = useState(0)
   const {
-    needSetupDevices,
-    setNeedSetupDevices,
     selectedWifi,
     setSelectedWifi,
     wifiPassword,
     setWifiPassword,
     setupMatrix,
-    setSetupMatrix,
     createMatrixAndStart,
     selectDevice,
     deselectDevice,
     inProgress,
-    setInProgress,
     isDeviceSelected,
-    currentConnectedWifi
+    currentConnectedWifi,
+    addToAdditionalDevices
   } = useSetup()
 
   const getWifi = async () => {
@@ -100,21 +97,25 @@ const AddPlayerButton = () => {
           <p> Currently Connected Wifi: {currentConnectedWifi ? currentConnectedWifi : 'None'}</p>
         </DialogDescription>
 
-        <div className='w-full bg-accent rounded-xl flex flex-col justify-center'>
+        <div className='w-full rounded-xl flex flex-col justify-center gap-1'>
+
           {!inProgress && <>
             {bluosDevicesList && bluosDevicesList.length > 0 ?
               bluosDevicesList.map((wifi) => {
                 return (
-                  <div className='w-full p-3 cursor-pointer flex items-center gap-3' key={wifi.ssid} onClick={() =>isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
+                  <div className='w-full p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
                     <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
                     <p className='text-xl'>{wifi.ssid}</p>
                   </div>
                 )
               }) : (
                 <div className='flex flex-col items-center justify-center py-14'>
-                  <Loader2 className='animate-spin size-14' />
+                  <Loader2 className='animate-spin size-12' />
                   <p className='text-xl'>
-                    Searching For BluOS Device...{timer}
+                    Searching For BluOS Device...  {timer}
+                  </p>
+                  <p className='text-xm text-primary/50'>
+                    *If your device does not show, click on windows wifi button to enable wifi scan
                   </p>
                 </div>
               )
@@ -122,9 +123,24 @@ const AddPlayerButton = () => {
           </>}
 
           {
+            inProgress && <div className='border border-accent rounded-md bg-accent px-2 py-1'>
+              {bluosDevicesList && bluosDevicesList.length > 0 ?
+                bluosDevicesList.map((wifi) => {
+                  return (
+                    <div className='w-full p-3 flex items-center gap-3' key={wifi.ssid}>
+                      <PlusCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-primary' onClick={() => addToAdditionalDevices(wifi.ssid)} />
+                      <p className='text-xl'>{wifi.ssid}</p>
+                    </div>
+                  )
+                }) : <div className='flex items-center gap-2' ><Loader2 className='animate-spin size-6' />Searching for more BluOS Devices...</div>
+              }
+            </div >
+          }
+
+          {
             inProgress && setupMatrix && setupMatrix.length > 0 ? setupMatrix.map((device) => {
               return (
-                <div className='flex gap-2 text-xs p-2 border border-accent rounded-md'>
+                <div className='flex gap-2 text-xs p-2 border border-accent rounded-md  bg-accent '>
                   <h3>{device.name}</h3>
                   <p>{device.ip}</p>
                   <p>{device.version}</p>
@@ -133,6 +149,7 @@ const AddPlayerButton = () => {
                   <p>{device.isInitialized ? 'Initialized' : ''}</p>
                   <p>{device.isRebooted ? 'Rebooted' : ''}</p>
                   <p>{device.currentStatus}</p>
+                  <XCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-red-500 duration-300 ease-in transition-colors' onClick={() => removeFromAdditionalDevices(device.name)} />
                 </div>
               )
             }) : null
@@ -179,7 +196,6 @@ const AddPlayerButton = () => {
             </p>
             }
           </>}
-
       </DialogContent>
     </Dialog>
   )

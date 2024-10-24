@@ -147,95 +147,95 @@ export const columns = [
     }
   },
 
-  // {
-  //   accessorKey: 'room',
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-  //       >
-  //         Room
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     )
-  //   },
-  //   cell: ({ row }) => {
-  //     const { roomList, saveRoomForMac, addRoomToList, removeRoomFromList } = useStorage()
-  //     const { setDevices } = useDevices()
-  //     if (!useDevices || !useStorage) return null
-  //     const device = row.original
-  //     if (!device) return null
-  //     const [newRoomName, setNewRoomName] = useState('')
-  //     return (
-  //       <div className="flex gap-1 items-center">
-  //         <p>{device.room}</p>
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm ">
-  //             <ChevronDownIcon className="h-4 w-4" />
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent>
-  //             <DropdownMenuLabel>Room</DropdownMenuLabel>
-  //             <DropdownMenuSeparator />
-  //             {roomList.map((room) => (
-  //               <div key={room} className="grid gap-1 grid-cols-4">
-  //                 <div className="grid-cols-subgrid col-span-3">
-  //                   <DropdownMenuItem
-  //                     onClick={() => {
-  //                       setDevices((prevDevices) =>
-  //                         prevDevices.map((prevDevice) => {
-  //                           if (prevDevice.ip === device.ip) {
-  //                             return {
-  //                               ...prevDevice,
-  //                               room
-  //                             }
-  //                           }
-  //                           return prevDevice
-  //                         })
-  //                       )
-  //                       saveRoomForMac(device.mac, room)
-  //                     }}
-  //                   >
-  //                     {room}
-  //                   </DropdownMenuItem>
-  //                 </div>
-  //                 <div className="col-span-1 flex items-center justify-center">
-  //                   <button className="h-6 w-6 rounded-sm flex items-center justify-center hover:text-red-500 text-accent">
-  //                     <MinusCircleIcon
-  //                       className="h-4 w-4"
-  //                       onClick={() => removeRoomFromList(room)}
-  //                     />
-  //                   </button>
-  //                 </div>
-  //               </div>
-  //             ))}
-  //             <form className="flex gap-1" onKeyDown={(e) => e.stopPropagation()}>
-  //               <Input
-  //                 placeholder="New Room"
-  //                 className="h-7 w-28"
-  //                 value={newRoomName}
-  //                 onChange={(e) => setNewRoomName(e.target.value)}
-  //               />
-  //               <Button
-  //                 variant="ghost"
-  //                 type="submit"
-  //                 size="icon"
-  //                 className="h-7 w-7"
-  //                 onClick={(e) => {
-  //                   e.preventDefault()
-  //                   addRoomToList(newRoomName)
-  //                   setNewRoomName('')
-  //                 }}
-  //               >
-  //                 <PlusIcon className="h-4 w-4" />
-  //               </Button>
-  //             </form>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       </div>
-  //     )
-  //   }
-  // },
+  {
+    accessorKey: 'room',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Room
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const { roomList, saveRoomForMac, addRoomToList, removeRoomFromList } = useStorage()
+      const { setDevices } = useDevices()
+      if (!useDevices || !useStorage) return null
+      const device = row.original
+      if (!device) return null
+      const [newRoomName, setNewRoomName] = useState('')
+      return (
+        <div className="flex gap-1 items-center">
+          <p>{device.room}</p>
+          <DropdownMenu>
+            <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm ">
+              <ChevronDownIcon className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Room</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {roomList.map((room) => (
+                <div key={room} className="grid gap-1 grid-cols-4">
+                  <div className="grid-cols-subgrid col-span-3">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setDevices((prevDevices) =>
+                          prevDevices.map((prevDevice) => {
+                            if (prevDevice.ip === device.ip) {
+                              return {
+                                ...prevDevice,
+                                room
+                              }
+                            }
+                            return prevDevice
+                          })
+                        )
+                        saveRoomForMac(device.mac, room)
+                      }}
+                    >
+                      {room}
+                    </DropdownMenuItem>
+                  </div>
+                  <div className="col-span-1 flex items-center justify-center">
+                    <button className="h-6 w-6 rounded-sm flex items-center justify-center hover:text-red-500 text-accent">
+                      <MinusCircleIcon
+                        className="h-4 w-4"
+                        onClick={() => removeRoomFromList(room)}
+                      />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <form className="flex gap-1" onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                  placeholder="New Room"
+                  className="h-7 w-28"
+                  value={newRoomName}
+                  onChange={(e) => setNewRoomName(e.target.value)}
+                />
+                <Button
+                  variant="ghost"
+                  type="submit"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    addRoomToList(newRoomName)
+                    setNewRoomName('')
+                  }}
+                >
+                  <PlusIcon className="h-4 w-4" />
+                </Button>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )
+    }
+  },
   {
     id: 'api',
     header: 'API',
