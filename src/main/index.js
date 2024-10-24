@@ -71,7 +71,8 @@ app.whenReady().then(() => {
 })
 
 // Handle discovery in the main process
-ipcMain.handle('discover-devices', async () => {
+ipcMain.handle('discover-devices', async (event,timeOutInSeconds=3) => {
+  
   const bonjourService = bonjour()
   const discoveredDevices = []
 
@@ -96,7 +97,7 @@ ipcMain.handle('discover-devices', async () => {
     setTimeout(() => {
       bonjourService.destroy(); // Stop Bonjour service to prevent memory leaks
       resolve(discoveredDevices) // Resolve with the discovered devices
-    }, 1000) // Adjust the timeout as needed
+    }, timeOutInSeconds*1000) // Adjust the timeout as needed
   })
 })
 

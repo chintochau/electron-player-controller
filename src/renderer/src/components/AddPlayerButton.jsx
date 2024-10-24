@@ -35,24 +35,25 @@ const AddPlayerButton = () => {
     inProgress,
     isDeviceSelected,
     currentConnectedWifi,
-    addToAdditionalDevices
+    addToAdditionalDevices,
+    removeFromAdditionalDevices
   } = useSetup()
 
   const getWifi = async () => {
     const wifiList = await window.api.getWifiList()
     const allWifiList = wifiList.map((wifi) => {
       if (wifi.ssid.length === 0) { return null }
-      return isWifiFormatCorrect(wifi.ssid) ? { ...wifi, correctFormat: true } : { ...wifi, correctFormat: false }
+      return isWifiFormatCorrect(wifi.ssid, wifi.security) ? { ...wifi, correctFormat: true } : { ...wifi, correctFormat: false }
     }).filter((wifi) => wifi !== null)
 
     setBluosDevicesList(allWifiList.map((wifi) => wifi.correctFormat ? wifi : null).filter((wifi) => wifi !== null))
     setWifiList(allWifiList.map((wifi) => wifi.correctFormat ? null : wifi).filter((wifi) => wifi !== null))
   }
 
-  const isWifiFormatCorrect = (ssid) => {
+  const isWifiFormatCorrect = (ssid,security) => {
     if (!ssid || ssid === '') return false
     // * - XXXX
-    if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4) {
+    if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4 && security === 'Open') {
       return true
     } else {
       return false
@@ -103,7 +104,7 @@ const AddPlayerButton = () => {
             {bluosDevicesList && bluosDevicesList.length > 0 ?
               bluosDevicesList.map((wifi) => {
                 return (
-                  <div className='w-full p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
+                  <div className='w-full rounded-md p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
                     <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
                     <p className='text-xl'>{wifi.ssid}</p>
                   </div>
@@ -124,8 +125,8 @@ const AddPlayerButton = () => {
 
           {
             inProgress && <div className='border border-accent rounded-md bg-accent px-2 py-1'>
-              {bluosDevicesList && bluosDevicesList.length > 0 ?
-                bluosDevicesList.map((wifi) => {
+              {bluosDevicesList && bluosDevicesList.filter((wifi) => !isDeviceSelected(wifi.ssid)).length > 0 ?
+                bluosDevicesList.filter((wifi) => !isDeviceSelected(wifi.ssid)).map((wifi) => {
                   return (
                     <div className='w-full p-3 flex items-center gap-3' key={wifi.ssid}>
                       <PlusCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-primary' onClick={() => addToAdditionalDevices(wifi.ssid)} />

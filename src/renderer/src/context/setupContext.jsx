@@ -193,19 +193,19 @@ export const SetupProvider = ({ children }) => {
                     device.currentStatus = `Connected to ${selectedWifi}`
                 }
                 device.isConnected = true
-            } else if ( wifiRef && wifiRef.current && wifiRef.current === device.name && !device.isConnecting) {
+            } else if ( !device.isConnecting && wifiRef && wifiRef.current && wifiRef.current === device.name ) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
-            } else if (thisDevice && thisDevice.ip === "10.1.2.3" && !device.isConnecting) {
+                connectToSSID(selectedWifi, wifiPassword)
+            } else if (!device.isConnecting &&thisDevice && thisDevice.ip === "10.1.2.3" ) {
                 device.curretStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
+                connectToSSID(selectedWifi, wifiPassword)
             }
             return device
         })
-
-        console.log("Connected Wifi", currentConnectedWifi, "Wifi Ref", wifiRef.current);
         
 
         // 5. connect to the next device that is not connected
@@ -213,13 +213,13 @@ export const SetupProvider = ({ children }) => {
         if (device) {
             connectToSSID(device.name)
         } else if (wifiRef && !wifiRef.current) {
-            console.log("currentRef",wifiRef.current);
-            
             connectToSSID(selectedWifi, wifiPassword)
         }
 
         // 6. add additional devices
         const additionalMatrixItems = additionalDevices.map((device) => createMatrixItem(device))
+        console.log("additionalMatrixItems", additionalMatrixItems);
+        
         matrix = [...matrix, ...additionalMatrixItems]
         setSetupMatrix(matrix)
     }

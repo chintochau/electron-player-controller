@@ -88,7 +88,7 @@ export const DevicesProvider = ({ children }) => {
   }
 
   async function initialDiscoverDevices() {
-    const discoveredDevices = await window.api.discoverDevices()
+    const discoveredDevices = await window.api.discoverDevices(1)
     let devicesList = []
     for (const device of discoveredDevices) {
       const { name, txt, addresses, referer } = device
