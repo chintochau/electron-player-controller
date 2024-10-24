@@ -17,6 +17,9 @@ export const SetupProvider = ({ children }) => {
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
 
+    const wifiRef = useRef(null)
+    
+
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
         discoverDevices((devicesList) => {
@@ -53,6 +56,7 @@ export const SetupProvider = ({ children }) => {
     const checkCurrentConnectedWifi = async () => {
         const wifi = await window.api.getCurrentWifi()
         setCurrentConnectedWifi(wifi)
+        wifiRef.current = wifi
     }
 
     useEffect(() => {
@@ -189,11 +193,11 @@ export const SetupProvider = ({ children }) => {
                     device.currentStatus = `Connected to ${selectedWifi}`
                 }
                 device.isConnected = true
-            } else if (currentConnectedWifi && currentConnectedWifi === device.name && !device.isConnecting) {
+            } else if ( wifiRef && wifiRef.current && wifiRef.current === device.name && !device.isConnecting) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
-            } else if (thisDevice && thisDevice.ip === "10.1.2.3") {
+            } else if (thisDevice && thisDevice.ip === "10.1.2.3" && !device.isConnecting) {
                 device.curretStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
@@ -201,11 +205,16 @@ export const SetupProvider = ({ children }) => {
             return device
         })
 
+        console.log("Connected Wifi", currentConnectedWifi, "Wifi Ref", wifiRef.current);
+        
+
         // 5. connect to the next device that is not connected
         const device = matrix.find((device) => !device.isConnected && !device.isConnecting)
         if (device) {
             connectToSSID(device.name)
-        } else if (!currentConnectedWifi) {
+        } else if (wifiRef && !wifiRef.current) {
+            console.log("currentRef",wifiRef.current);
+            
             connectToSSID(selectedWifi, wifiPassword)
         }
 

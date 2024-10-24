@@ -84,9 +84,13 @@ ipcMain.handle('discover-devices', async () => {
   }
 
   // Return a Promise that resolves after some time or when discovery is complete
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // Find services of type 'musc.tcp'
     bonjourService.find({ type: 'musc', protocol: 'tcp' }, addService)
+      .on('error', (error) => {
+        console.error('Bonjour discovery error:', error)
+        reject(error)
+      })
 
     // Stop discovery after a timeout (e.g., 5 seconds)
     setTimeout(() => {
@@ -273,14 +277,20 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       return { success: false }
   }
 
-  if (!res || !res.ok) {
-    console.log('Error response:', res)
+  try {
+    if (!res || !res.ok) {
+      console.log('Error response:', res)
+      return { success: false }
+    }
+  } catch (error) {
+    console.log('Error in player control:', error)
     return { success: false }
   }
 
   console.log('Control command successful:', control)
   return { success: true } // Return success response
 })
+
 
 
 ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GET" }) => {
@@ -348,6 +358,11 @@ ipcMain.handle("connect-to-wifi", async (event, { ssid,password }) => {
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
 });
+
+// handle any uncaughtException
+// process.on('uncaughtException', (err) => {
+//   console.error('Uncaught exception:', err)
+// })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
