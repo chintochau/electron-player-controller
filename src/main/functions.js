@@ -79,9 +79,9 @@ export const loadSDUIPage = async (url, debug) => {
   }
 }
 
-export const connectToDeviceThroughWifi = async (ssid) => {
+export const connectToDeviceThroughWifi = async (ssid,password) => {
   try {
-    wifi.connect({ssid: ssid})
+    wifi.connect({ssid: ssid,password: password})
   } catch (error) {
     console.log(error)
   }

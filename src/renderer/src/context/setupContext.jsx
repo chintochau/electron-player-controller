@@ -15,33 +15,27 @@ export const SetupProvider = ({ children }) => {
     const [setupMatrix, setSetupMatrix] = useState([]) // [{name:"alpha IQ", version:"1.0.0", ip:"237.84.2.178", mac:"00:00:00:00:00:00", isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
-    const [currentDevicesList, setCurrentDevicesList] = useState([])
 
 
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
-        if (inProgress && wifiAndPasswordIsFilled) {
-            runPlayersSetupProcess()
-        } else if (inProgress && !wifiAndPasswordIsFilled) {
-            toast({
-                title: 'Error',
-                description: 'Please fill in the wifi SSID and password',
-                status: 'error'
-            })
-        }
-    }, [inProgress, currentDevicesList])
+        discoverDevices((devicesList) => {
+            console.log('devicesList', devicesList);
+            if (inProgress && wifiAndPasswordIsFilled) {
+                runPlayersSetupProcess(devicesList)
+            } else if (inProgress && !wifiAndPasswordIsFilled) {
+                toast({
+                    title: 'Error',
+                    description: 'Please fill in the wifi SSID and password',
+                    status: 'error'
+                })
+                setInProgress(false)
+            }
+        })
+    }, [inProgress, setupMatrix])
 
-    useEffect(() => {
-        if (inProgress) {
-            // run process every 2 seconds
-            const intervalId = setInterval(() => {
-                discoverDevices()
-            }, 5000)
-            return () => clearInterval(intervalId)
-        }
-    }, [inProgress])
 
-    const discoverDevices = async () => {
+    const discoverDevices = async (callback) => {
         const discoveredDevices = await window.api.discoverDevices()
         const devicesList = discoveredDevices.map((device) => {
             const { name, txt, addresses, referer } = device
@@ -52,12 +46,11 @@ export const SetupProvider = ({ children }) => {
                 mac: txt.mac,
                 model: txt.model,
                 version: txt.version,
-                lastUpdated: new Date()
             }
         })
-        setCurrentDevicesList(devicesList)
+        callback(devicesList)
+        return devicesList
     }
-
 
     const checkCurrentConnectedWifi = async () => {
         const wifi = await window.api.getCurrentWifi()
@@ -73,6 +66,14 @@ export const SetupProvider = ({ children }) => {
         return () => clearInterval(intervalId)
     }, [])
 
+    const isBluOSDevice = (ssid) => {
+        if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     const rebootDevice = (ip) => {
         playerControl(ip, 'reboot', null)
     }
@@ -86,19 +87,22 @@ export const SetupProvider = ({ children }) => {
         runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
     }
 
-    const connectToSSID = (ssid) => {
-        window.api.connectToDeviceThroughWifi(ssid)
+    const connectToSSID = (ssid, password) => {
+        window.api.connectToDeviceThroughWifi(ssid, password)
     }
 
-    const getDeviceFromListByName = (name) => {
-        const device = currentDevicesList.find((device) => {
-            return device.name.replace(" - ", "-") === name
-        })
-        return device
-    }
-    const runPlayersSetupProcess = async () => {
+
+
+    const runPlayersSetupProcess = async (discoveredDevices) => {
         // loop through the matrix
         // [{name:"alpha IQ", version:null, ip:null, mac:"00:00:00:00:00:00", isUpgraded: false, isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
+
+        const getDeviceFromListByName = (name) => {
+            const device = discoveredDevices.find((device) => {
+                return device.name.replace(" - ", "-") === name
+            })
+            return device
+        }
 
         // -1: check if all devices are finished
         const allFinished = setupMatrix.every((device) => device.isFinished)
@@ -178,16 +182,15 @@ export const SetupProvider = ({ children }) => {
 
         //3. link devices that is not connected to the selected wifi
         matrix = matrix.map((device) => {
-            if (device.isConnected) return device
-            const thisDevice = getDeviceFromListByName(device.name)            
-            if (thisDevice) {
+            const thisDevice = getDeviceFromListByName(device.name)
+            if (thisDevice && thisDevice.ip !== "10.1.2.3") {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
                 device.isConnected = true
-                device.currentStatus = `Connected to ${selectedWifi}`
-            } else if (currentConnectedWifi && currentConnectedWifi === device.name && !device.isConnected) {
+            } else if (currentConnectedWifi && currentConnectedWifi === device.name && !device.isConnecting) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
+                device.isConnecting = true
             }
             return device
         })
@@ -196,6 +199,8 @@ export const SetupProvider = ({ children }) => {
         const device = matrix.find((device) => device.isConnected === false)
         if (device) {
             connectToSSID(device.name)
+        } else if (!currentConnectedWifi) {
+            connectToSSID(selectedWifi, wifiPassword)
         }
         setSetupMatrix(matrix)
     }
@@ -209,12 +214,13 @@ export const SetupProvider = ({ children }) => {
                         name: device,
                         version: null,
                         ip: null,
+                        isConnecting: false,
                         isConnected: false,
                         isInitialized: false,
                         isRebooted: false,
                         isUpgraded: false,
                         isFinished: false,
-                        currentStatus:"Waiting for connection",
+                        currentStatus: "Waiting for connection",
                     }
                 )
             })

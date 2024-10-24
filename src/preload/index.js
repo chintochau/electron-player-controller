@@ -13,7 +13,7 @@ const api = {
   getWifiList: () => ipcRenderer.invoke('get-wifi-list'),
   runCommandForDevice: (ip, command, type) => ipcRenderer.invoke('run-command-for-device', {ip, command, type}),
   loadSDUIPage: (url,debug) => ipcRenderer.invoke('load-sd-ui-page', {url, debug}),
-  connectToDeviceThroughWifi: (ssid) => ipcRenderer.invoke('connect-to-wifi', {ssid}),
+  connectToDeviceThroughWifi: (ssid,password) => ipcRenderer.invoke('connect-to-wifi', {ssid,password}),
   getAppVersion: () => ipcRenderer.invoke('get-app-version')
 }
 

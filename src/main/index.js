@@ -340,9 +340,9 @@ ipcMain.handle("load-sd-ui-page", async (event, { url, debug }) => {
   return await loadSDUIPage(url, debug);
 });
 
-ipcMain.handle("connect-to-wifi", async (event, { ssid }) => {
+ipcMain.handle("connect-to-wifi", async (event, { ssid,password }) => {
   console.log('connect-to-wifi', ssid);
-  return await connectToDeviceThroughWifi(ssid)
+  return await connectToDeviceThroughWifi(ssid,password)
 })
 
 ipcMain.handle('get-app-version', () => {
