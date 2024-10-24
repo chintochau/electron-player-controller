@@ -186,6 +186,9 @@ export const SetupProvider = ({ children }) => {
             if (thisDevice && thisDevice.ip !== "10.1.2.3") {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
+                if (!device.isConnected) {
+                    device.currentStatus = `Connected to ${selectedWifi}`
+                }
                 device.isConnected = true
             } else if (currentConnectedWifi && currentConnectedWifi === device.name && !device.isConnecting) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
@@ -196,7 +199,7 @@ export const SetupProvider = ({ children }) => {
         })
 
         // 4. connect to the next device that is not connected
-        const device = matrix.find((device) => device.isConnected === false)
+        const device = matrix.find((device) => !device.isConnected && !device.isConnecting)
         if (device) {
             connectToSSID(device.name)
         } else if (!currentConnectedWifi) {
