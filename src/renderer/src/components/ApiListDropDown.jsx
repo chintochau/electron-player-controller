@@ -54,7 +54,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
             <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
                 <ChevronDownIcon className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="max-h-[600px] overflow-auto">
+            <DropdownMenuContent className="max-h-[50vh] overflow-auto">
                 <DropdownMenuLabel className="flex items-center justify-between">
                     <p> Custom Commands</p>
                     <div className='space-x-1'>

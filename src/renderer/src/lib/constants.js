@@ -17,23 +17,17 @@ export const commandList = [
     command: "/enable?no_upgrade=no"
   },
   {
-    name: '/SyncStatus',
-    command: ':11000/SyncStatus'
-  },
-  {
-    name: '/Status',
-    command: ':11000/Status'
-  },
-  {
-    name: '/ui/Home',
-    command: ':11000/ui/Home?playnum=1'
-  },
-  {
-    name:"/Initialize=true",
+    name:"Initialize=true",
     command:":11000/SetInitialized?init=1"
   },{
-    name:"/Initialize=false",
+    name:"Initialize=false",
     command:":11000/SetInitialized?init=0"
+  },{
+    name:"Hotspot Mode",
+    command:"/apmode?noheader=0"
+  },{
+    name:"Wac Mode",
+    command:"/apmode?wac=1"
   }
 ]
 

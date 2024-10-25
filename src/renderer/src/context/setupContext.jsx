@@ -18,7 +18,7 @@ export const SetupProvider = ({ children }) => {
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
 
     const wifiRef = useRef(null)
-    
+
 
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
@@ -82,6 +82,10 @@ export const SetupProvider = ({ children }) => {
         runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
     }
 
+    const enterWacMode = () => {
+        runCommandForDevice("10.1.2.3", "/apmode?wac=1", 'GET')
+    }
+
     const connectToSSID = (ssid, password) => {
         window.api.connectToDeviceThroughWifi(ssid, password)
     }
@@ -107,7 +111,7 @@ export const SetupProvider = ({ children }) => {
         }
 
         let matrix = setupMatrix.map((device) => {
-            if (!device.ip) return device
+            if (!device.ip || device.ip === '10.1.2.3') return device
             const thisDevice = getDeviceFromListByName(device.name)
             if (!thisDevice) return device
 
@@ -121,7 +125,7 @@ export const SetupProvider = ({ children }) => {
 
         //1. reboot devices that is already initialized, set finish flag
         matrix = matrix.map((device) => {
-            if (!device.ip) return device
+            if (!device.ip || device.ip === '10.1.2.3') return device
             const thisDevice = getDeviceFromListByName(device.name)
             if (!thisDevice) return device
 
@@ -135,7 +139,7 @@ export const SetupProvider = ({ children }) => {
 
         //2. initialize devices that is connected and already upgraded to the latest version
         matrix = matrix.map((device) => {
-            if (!device.ip) return device
+            if (!device.ip || device.ip === '10.1.2.3') return device
 
             if (device.isUpgraded && device.isConnected && !device.isInitialized) {
                 initializeDevice(device.ip)
@@ -149,7 +153,7 @@ export const SetupProvider = ({ children }) => {
         matrix = await Promise.all(matrix.map(async (device) => {
             const controller = new AbortController()
             const timeoutId = setTimeout(() => controller.abort(), 2000)
-            if (device.isUpgraded) return device
+            if (device.isUpgraded || device.ip === '10.1.2.3' || !device.ip) return device
             try {
                 const res = await window.api.checkUpgrade(device.ip, { signal: controller.signal })
                 clearTimeout(timeoutId)
@@ -179,19 +183,26 @@ export const SetupProvider = ({ children }) => {
         //4. link devices that is not connected to the selected wifi
         matrix = matrix.map((device) => {
             const thisDevice = getDeviceFromListByName(device.name)
-            if (thisDevice && thisDevice.ip !== "10.1.2.3") {
+            if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wac) {
+                // make sure it goes into wac mode, and exist ac mode
+                enterWacMode()
+                device.wac = true
+            } else if (!device.wac && wifiRef && wifiRef.current && wifiRef.current === device.name) {
+                enterWacMode()
+                device.wac = true
+            } else if (thisDevice && thisDevice.ip !== "10.1.2.3") {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
                 if (!device.isConnected) {
                     device.currentStatus = `Connected to ${selectedWifi}`
                 }
                 device.isConnected = true
-            } else if ( !device.isConnecting && wifiRef && wifiRef.current && wifiRef.current === device.name ) {
+            } else if (!device.isConnecting && wifiRef && wifiRef.current && wifiRef.current === device.name) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
                 connectToSSID(selectedWifi, wifiPassword)
-            } else if (!device.isConnecting &&thisDevice && thisDevice.ip === "10.1.2.3" ) {
+            } else if (!device.isConnecting && thisDevice && thisDevice.ip === "10.1.2.3") {
                 device.curretStatus = `Connecting to ${selectedWifi}`
                 connectDeviceToSelectedWifi()
                 device.isConnecting = true
@@ -199,7 +210,7 @@ export const SetupProvider = ({ children }) => {
             }
             return device
         })
-        
+
 
         // 5. connect to the next device that is not connected
         const device = matrix.find((device) => !device.isConnected && !device.isConnecting)
@@ -212,7 +223,7 @@ export const SetupProvider = ({ children }) => {
         // 6. add additional devices
         const additionalMatrixItems = additionalDevices.map((device) => createMatrixItem(device))
         console.log("additionalMatrixItems", additionalMatrixItems);
-        
+
         matrix = [...matrix, ...additionalMatrixItems]
         setSetupMatrix(matrix)
     }
@@ -229,6 +240,7 @@ export const SetupProvider = ({ children }) => {
             name: device,
             version: null,
             ip: null,
+            wac: false,
             isConnecting: false,
             isConnected: false,
             isInitialized: false,
