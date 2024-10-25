@@ -105,7 +105,7 @@ const LargeThumbnail = ({
             size === 'small' ? sizes.smallWidth : sizes.largeWidth
           )}
         >
-          {largeThumbnail.$?.title}
+          {$?.title}
         </h3>
         <p
           className={cn(
@@ -113,7 +113,7 @@ const LargeThumbnail = ({
             size === 'small' ? sizes.smallWidth : sizes.largeWidth
           )}
         >
-          {largeThumbnail.$?.subTitle}
+          {$?.subTitle}
         </p>
       </div>
     </div>

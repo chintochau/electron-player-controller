@@ -9,6 +9,7 @@ import SmallThumbnail from './SmallThumbnail'
 import List from './List'
 import MenuAction from './MenuAction'
 import SDUIInput from './SDUIInput'
+import SDUISource from './SDUISource'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
@@ -31,7 +32,7 @@ const Row = ({ row, index }) => {
     viewportRef.current.scrollLeft = newPos
   }, [])
 
-  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action } = row || {}
+  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action, source } = row || {}
   const { title } = $ || {}
   const isArtist = title?.toLowerCase().includes('artist') ?? false
 
@@ -64,10 +65,30 @@ const Row = ({ row, index }) => {
         )}
       </div>
 
+      {
+        source && <ScrollArea
+          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
+          onWheel={onWheel}
+          ref={viewportRef}
+          >
+          <div
+            className={cn('pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2'
+            )}
+          >{source.map((source, index) => {
+            return (
+              <SDUISource source={source} key={'source' + index} />
+            )
+          })}</div>
+          <ScrollBar  orientation="horizontal" />
+        </ScrollArea>
+      }
+
       {input &&
         <ScrollArea
           className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
           onWheel={onWheel}
+          ref={viewportRef}
+
         >
           <div
             className={cn(
@@ -81,6 +102,8 @@ const Row = ({ row, index }) => {
               <SDUIInput input={input} key={'input' + index} />
             )
           })}</div>
+          <ScrollBar  orientation="horizontal" />
+
         </ScrollArea>
       }
 
