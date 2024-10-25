@@ -19,6 +19,7 @@ import { Button } from '../../../../components/ui/button'
 import XMLViewer from 'react-xml-viewer'
 import GUI from '../BrowseView/GUI'
 import SearchView from '../SearchView/SearchView'
+import { enabledFeatures } from '../../lib/constants'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -86,7 +87,7 @@ const BrowsePage = () => {
               })}
           </SelectContent>
         </Select>
-        <form className="flex-auto w-96  flex items-center">
+        {enabledFeatures.urlBar && <form className="flex-auto w-96  flex items-center">
           <Button
             variant="outline"
             type="button"
@@ -114,12 +115,12 @@ const BrowsePage = () => {
           >
             <SendHorizonalIcon className="w-4 h-4" />
           </Button>
-        </form>
-        <form className="flex items-center ml-4 flex-auto w-20 max-w-[400px]">
+        </form>}
+        <form className={`flex items-center ml-4 flex-auto w-20 ${enabledFeatures.urlBar && "max-w-[400px]"}`}>
           <Input className="w-full rounded-l-full border-r-0" placeholder="Search" onChange={(e) => setSearchText(e.target.value)} value={searchText} />
           <Button type="submit" variant="ghost" className="border rounded-r-full bg-background" onClick={handleSearchClick}><SearchIcon className="w-4 h-4" /></Button>
         </form>
-        <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
+        {enabledFeatures.xmlMode && <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
           <SelectTrigger className="w-fit h-8 m-1 border-none rounded-full">
             <SelectValue placeholder="Display Mode" />
           </SelectTrigger>
@@ -134,7 +135,7 @@ const BrowsePage = () => {
               GUI
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select>}
       </div>
       {isSearchMode ?
         <SearchView />

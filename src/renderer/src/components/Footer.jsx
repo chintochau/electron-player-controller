@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { mapCommandByName } from '../lib/constants'
 
 const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
@@ -39,24 +40,30 @@ const Footer = ({ isCollapsed }) => {
 
   const runCommandForDevices = () => {
     for (const IP of selectedDevices) {
-      runCommandForDevice(IP, apiCommand, requestType)
-      updateDeviceStatus(IP, `running ${apiCommand}`)
+      const command = mapCommandByName(apiCommand)
+
+
+      runCommandForDevice(IP, command, requestType)
+      updateDeviceStatus(IP, `running ${command}`)
     }
     toast({
       title: 'Run Command For Devices',
-      description: `Running Command ${apiCommand} on ${selectedDevices.length} Devices`,
+      description: `Running Command ${command} on ${selectedDevices.length} Devices`,
       status: 'success'
     })
   }
 
   const runCommandOnAllDevices = () => {
     for (const device of devices) {
-      runCommandForDevice(device.ip, apiCommand, requestType)
-      updateDeviceStatus(device.ip, `running ${apiCommand}`)
+
+      const command = mapCommandByName(apiCommand)
+
+      runCommandForDevice(device.ip, command, requestType)
+      updateDeviceStatus(device.ip, `running ${command}`)
     }
     toast({
       title: 'Run Command On All Devices',
-      description: `Running Command ${apiCommand} on ${devices.length} Devices`,
+      description: `Running Command ${command} on ${devices.length} Devices`,
       status: 'success'
     })
   }

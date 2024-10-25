@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Badge } from "@/components/ui/badge"
+import { Badge } from '@/components/ui/badge'
 
 import {
   ArrowDownNarrowWide,
@@ -17,7 +17,7 @@ import {
   MinusCircleIcon,
   MoreHorizontal,
   PlusIcon,
-  XCircle,
+  XCircle
 } from 'lucide-react'
 import SettingsMenu from '../SettingsMenu'
 import PlayStatus from '../PlayStatus'
@@ -35,6 +35,7 @@ import { goToIpAddress } from '../PlayerList'
 import { Checkbox } from '@/components/ui/checkbox'
 import CompactPlayer from '../CompactPlayer'
 import AddPlayerToGroup from '../AddPlayerToGroup'
+import { mapCommandByName } from '../../lib/constants'
 
 export const columns = [
   {
@@ -124,24 +125,36 @@ export const columns = [
       const isGrouped = isMaster || isSlave
       return (
         <>
-          <div className='flex items-center'><p>{device.name}</p><AddPlayerToGroup ip={device.ip} /></div>
+          <div className="flex items-center">
+            <p>{device.name}</p>
+            <AddPlayerToGroup ip={device.ip} />
+          </div>
           <a
             className="text-blue-500 hover:underline cursor-pointer"
             onClick={() => goToIpAddress(device.ip)}
           >
             {device.ip}
           </a>
-          {isGrouped && isMaster && <div className='flex items-center'><Badge variant="secondary">Master</Badge></div>}
-          {isGrouped && isSlave && <div className='flex items-center'><Badge variant="outline">Slave</Badge>
-            <XCircle
-              className="ml-1 h-4 w-4 cursor-pointer text-primary/10 hover:text-red-500"
-              onClick={() => { 
-                toast({
-                  title: 'Ungrouping Device',
-                  description: 'Ungrouping Device: ' + device.name + ":" + device.ip
-              })
-                removeFromGroup(device) }} />
-          </div>}
+          {isGrouped && isMaster && (
+            <div className="flex items-center">
+              <Badge variant="secondary">Master</Badge>
+            </div>
+          )}
+          {isGrouped && isSlave && (
+            <div className="flex items-center">
+              <Badge variant="outline">Slave</Badge>
+              <XCircle
+                className="ml-1 h-4 w-4 cursor-pointer text-primary/10 hover:text-red-500"
+                onClick={() => {
+                  toast({
+                    title: 'Ungrouping Device',
+                    description: 'Ungrouping Device: ' + device.name + ':' + device.ip
+                  })
+                  removeFromGroup(device)
+                }}
+              />
+            </div>
+          )}
         </>
       )
     }
@@ -243,13 +256,14 @@ export const columns = [
       const [api, setApi] = useState('')
       const device = row.original
       if (!device) return null
-      const openApiCall = (ip, command) => {
+      const openApiCall = (ip, apiCommand) => {
+        const command = mapCommandByName(apiCommand)
         try {
           window.open(`http://${ip}${command}`, '_blank')
         } catch (error) {
           toast({
             title: 'Error',
-            description: 'Invalid Command:' + command
+            description: 'Invalid Command:' + apiCommand
           })
         }
       }

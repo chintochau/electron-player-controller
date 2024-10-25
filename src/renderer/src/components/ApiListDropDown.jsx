@@ -145,7 +145,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                             <DropdownMenuItem
                                 key={command}
                                 onClick={() =>
-                                    setApi(command.command)
+                                    setApi("API:"+command.name)
                                 }
                             >
                                 <p>{command.name}</p>

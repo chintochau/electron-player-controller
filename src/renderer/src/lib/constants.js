@@ -4,7 +4,16 @@ import { AudioWaveformIcon, Cog, Drill, Headset, Library, Music, Network, Wifi, 
 export const enabledFeatures = {
   browser: true,
   addPlayer: true,
-  darkMode: true
+  darkMode: true,
+  urlBar:false,
+  xmlMode:false,
+}
+
+export const mapCommandByName = (commandName) => {
+  const command = commandName.startsWith("API:") ? 
+  commandList.find((command) => command.name === commandName.split(":")[1]).command:
+  commandName
+  return command
 }
 
 export const commandList = [
@@ -17,10 +26,10 @@ export const commandList = [
     command: "/enable?no_upgrade=no"
   },
   {
-    name:"Initialize=true",
+    name:"Initialize Player",
     command:":11000/SetInitialized?init=1"
   },{
-    name:"Initialize=false",
+    name:"DeInitialize Player",
     command:":11000/SetInitialized?init=0"
   },{
     name:"Hotspot Mode",
