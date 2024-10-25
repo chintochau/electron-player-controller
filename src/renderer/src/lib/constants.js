@@ -1,4 +1,4 @@
-import { AudioWaveformIcon, Drill, Headset, Network, Wifi } from 'lucide-react'
+import { AudioWaveformIcon, Cog, Drill, Headset, Library, Music, Network, Wifi, Wrench } from 'lucide-react'
 
 
 export const enabledFeatures = {
@@ -46,6 +46,25 @@ export const settingsList = [
     name: "Static IP",
     path: "staticip",
     icon: Network
+  },
+  {
+    name:"Customize Sources",
+    path:"settings?page_id=capture",
+    icon:Cog,
+  },
+  {
+    name:"Music Library",
+    path:"settings?page_id=library",
+    icon:Library,
+
+  },{
+    name:"Configure Music Services",
+    path:"services",
+    icon:Music,
+  },{
+    name:"Configure IR Triggers",
+    path:"triggercfg",
+    icon:Wrench,
   },
   {
     name: 'Diagnostics',

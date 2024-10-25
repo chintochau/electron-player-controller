@@ -23,8 +23,6 @@ import {
 } from '@/components/ui/dialog'
 import { playerControl } from '../lib/utils'
 import { useDevices } from '../context/devicesContext'
-import { useBrowsing } from '../context/browsingContext'
-import MenuGroup from './BrowseView/MenuGroup'
 import { toast } from '@/hooks/use-toast'
 
 const SettingsMenu = ({ ip }) => {

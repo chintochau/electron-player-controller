@@ -131,7 +131,7 @@ export const columns = [
           >
             {device.ip}
           </a>
-          {/* {isGrouped && isMaster && <div className='flex items-center'><Badge variant="secondary">Master</Badge></div>}
+          {isGrouped && isMaster && <div className='flex items-center'><Badge variant="secondary">Master</Badge></div>}
           {isGrouped && isSlave && <div className='flex items-center'><Badge variant="outline">Slave</Badge>
             <XCircle
               className="ml-1 h-4 w-4 cursor-pointer text-primary/10 hover:text-red-500"
@@ -141,7 +141,7 @@ export const columns = [
                   description: 'Ungrouping Device: ' + device.name + ":" + device.ip
               })
                 removeFromGroup(device) }} />
-          </div>} */}
+          </div>}
         </>
       )
     }
