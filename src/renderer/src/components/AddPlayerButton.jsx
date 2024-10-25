@@ -36,7 +36,7 @@ const AddPlayerButton = () => {
     isDeviceSelected,
     currentConnectedWifi,
     addToAdditionalDevices,
-    removeFromAdditionalDevices
+    removeItemFromMatrix
   } = useSetup()
 
   const getWifi = async () => {
@@ -100,28 +100,6 @@ const AddPlayerButton = () => {
 
         <div className='w-full rounded-xl flex flex-col justify-center gap-1'>
 
-          {!inProgress && <>
-            {bluosDevicesList && bluosDevicesList.length > 0 ?
-              bluosDevicesList.map((wifi) => {
-                return (
-                  <div className='w-full rounded-md p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
-                    <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
-                    <p className='text-xl'>{wifi.ssid}</p>
-                  </div>
-                )
-              }) : (
-                <div className='flex flex-col items-center justify-center py-14'>
-                  <Loader2 className='animate-spin size-12' />
-                  <p className='text-xl'>
-                    Searching For BluOS Device...  {timer}
-                  </p>
-                  <p className='text-xm text-primary/50'>
-                    *If your device does not show, click on windows wifi button to enable wifi scan
-                  </p>
-                </div>
-              )
-            }
-          </>}
 
           {
             inProgress && <div className='border border-accent rounded-md bg-accent px-2 py-1'>
@@ -150,12 +128,36 @@ const AddPlayerButton = () => {
                   <p>{device.isInitialized ? 'Initialized' : ''}</p>
                   <p>{device.isRebooted ? 'Rebooted' : ''}</p>
                   <p>{device.currentStatus}</p>
-                  <XCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-red-500 duration-300 ease-in transition-colors' onClick={() => removeFromAdditionalDevices(device.name)} />
+                  <XCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-red-500 duration-300 ease-in transition-colors' onClick={() => removeItemFromMatrix(device.name)} />
                 </div>
               )
             }) : null
           }
         </div>
+
+        
+        {!inProgress && <>
+            {bluosDevicesList && bluosDevicesList.length > 0 ?
+              bluosDevicesList.map((wifi) => {
+                return (
+                  <div className='w-full rounded-md p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
+                    <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
+                    <p className='text-xl'>{wifi.ssid}</p>
+                  </div>
+                )
+              }) : (
+                <div className='flex flex-col items-center justify-center py-14'>
+                  <Loader2 className='animate-spin size-12' />
+                  <p className='text-xl'>
+                    Searching For BluOS Device...  {timer}
+                  </p>
+                  <p className='text-xm text-primary/50'>
+                    *If your device does not show, click on windows wifi button to enable wifi scan
+                  </p>
+                </div>
+              )
+            }
+          </>}
 
         {!inProgress &&
           <>
