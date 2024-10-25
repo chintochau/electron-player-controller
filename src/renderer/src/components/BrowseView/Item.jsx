@@ -33,7 +33,7 @@ const playlists = [
   'Playlist 10'
 ]
 
-const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
+const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
   // size = 'small' | 'large'
   const { $, action, contextMenu } = item || {}
   const { image, quality, subTitle, title, duration, track } = $ || {}
@@ -55,8 +55,12 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
         'flex lg:rounded-md gap-2 w-full xl:flex-col group ease-out duration-300 active:scale-110',
         onlyOneListWithHeader
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
-          : ''
+          : '',
+          !onlyOneListWithHeader&&!image
+            ? `${index % 2 === 0 ? 'bg-primary/10' : ' bg-primary/20'} lg:pl-2.5 pb-2.5 pt-5 hover:bg-primary/50 cursor-pointer rounded-md items-end justify-end duration-300 ease-out active:scale-110 transition-all`
+            : ''
       )}
+      onClick={handleClick}
     >
       <ContextMenu onOpenChange={async (e) => {
         if (e && !contextMenuWithItems) {
@@ -119,8 +123,8 @@ const Item = ({ item, isArtist, onlyOneListWithHeader }) => {
             onlyOneListWithHeader ? 'w-full' : ''
           )}
         >
-          <p className=' text-primary/40 text-sm'>{duration}</p>
-          <p className=' text-primary/40'>{quality}</p>
+          {duration && <p className=' text-primary/40 text-sm'>{duration}</p>}
+          {quality && <p className={`text-primary/40 border-accent bg-accent/30 p-0.5 font-bold border ${quality === "hd" ? "rounded-sm" : " rounded-full"}`}>{quality.toUpperCase()}</p>}
         </p>
       </div>
     </div>

@@ -54,13 +54,14 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
   }, [list, nextLink, loadNextLink])
 
     const memoizedItems = useMemo(() => {
-      return list?.item?.map((item) => (
+      return list?.item?.map((item,index) => (
         <Item
           item={item}
           key={item?.$?.id}
           large={onlyOneList}
           onlyOneListWithHeader={onlyOneListWithHeader}
           isArtist={isArtist}
+          index={index}
         />
       ))
     }, [list]) || []

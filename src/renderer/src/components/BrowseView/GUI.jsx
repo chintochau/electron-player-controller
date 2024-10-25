@@ -11,12 +11,12 @@ import { PlayIcon } from '@heroicons/react/24/solid'
 import InfoPanel from './InfoPanel'
 
 const GUI = ({ screen }) => {
-  const { loading } = useBrowsing()
-  const {} = useSdui()
-
   if (!useSdui || !useBrowsing) {
     return <Loader2 className="animate-spin size-20" />
   }
+  const { loading, getImagePath } = useBrowsing()
+  const { } = useSdui()
+
 
   if (loading) {
     return (
@@ -27,7 +27,7 @@ const GUI = ({ screen }) => {
   }
 
   const { $, row, list, playlists, header, infoPanel } = screen || {}
-  const { screenTitle, navigationTitle, service } = $ || {}
+  const { screenTitle, navigationTitle, service, navigationIcon } = $ || {}
   const onlyOneList = screen?.list?.length === 1 && !screen?.row
   const onlyOneListWithHeader = onlyOneList && header
 
@@ -50,14 +50,15 @@ const GUI = ({ screen }) => {
   if (screen) {
     return (
       <div className="pt-4">
-        <h1
+        <div
           className={cn(
-            'text-4xl text-primary font-bold pb-4',
+            'text-4xl text-primary font-bold pb-4 flex items-center gap-3',
             onlyOneListWithHeader ? 'lg:fixed lg:w-[calc(50vw-275px)] text-center' : ''
           )}
         >
-          {renderTitle()}
-        </h1>
+          {navigationIcon && <div className='w-10 h-10 flex items-center'><img src={getImagePath(navigationIcon)} /></div>}
+          <h1>{renderTitle()}</h1>
+        </div>
 
         <div className={cn(onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : 'mb-2')}>
           <div id="headers" className={cn(onlyOneListWithHeader ? 'w-full lg:w-1/2' : 'w-full')}>
