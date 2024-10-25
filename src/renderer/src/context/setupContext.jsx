@@ -68,13 +68,6 @@ export const SetupProvider = ({ children }) => {
         return () => clearInterval(intervalId)
     }, [])
 
-    const isBluOSDevice = (ssid) => {
-        if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4) {
-            return true
-        } else {
-            return false
-        }
-    }
 
     const rebootDevice = (ip) => {
         playerControl(ip, 'reboot', null)

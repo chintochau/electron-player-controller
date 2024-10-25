@@ -56,9 +56,7 @@ export const getCurrentWifi = async () => {
 
 export const getWifiList = async () => {
   try {
-    const wifiList = await wifi.scan()
-    console.log(wifiList);
-    
+    const wifiList = await wifi.scan()    
     return wifiList
   } catch (error) {
     console.log(error)
