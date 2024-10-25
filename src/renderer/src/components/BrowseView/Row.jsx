@@ -8,6 +8,7 @@ import { Button } from '../../../../components/ui/button'
 import SmallThumbnail from './SmallThumbnail'
 import List from './List'
 import MenuAction from './MenuAction'
+import SDUIInput from './SDUIInput'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
@@ -30,7 +31,7 @@ const Row = ({ row, index }) => {
     viewportRef.current.scrollLeft = newPos
   }, [])
 
-  const { $, menuAction, input, list, largeThumbnail, smallThumbnail,action } = row || {}
+  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action } = row || {}
   const { title } = $ || {}
   const isArtist = title?.toLowerCase().includes('artist') ?? false
 
@@ -57,11 +58,31 @@ const Row = ({ row, index }) => {
             })}
         </div>
         {action && action[0].$ && (
-          <div  className='my-1.5 xl:mr-4'>
+          <div className='my-1.5 xl:mr-4'>
             <ChevronRightIcon className="w-4 h-4" />
           </div>
         )}
       </div>
+
+      {input &&
+        <ScrollArea
+          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
+          onWheel={onWheel}
+        >
+          <div
+            className={cn(
+              '',
+              largeThumbnail?.length > 12 && index % 2 !== 0
+                ? 'pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2'
+                : 'flex w-max space-x-4 p-4'
+            )}
+          >{input.map((input, index) => {
+            return (
+              <SDUIInput input={input} key={'input' + index} />
+            )
+          })}</div>
+        </ScrollArea>
+      }
 
       {largeThumbnail && (
         <ScrollArea
