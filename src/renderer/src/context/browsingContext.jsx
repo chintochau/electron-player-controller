@@ -127,7 +127,7 @@ export const BrowsingProvider = ({ children }) => {
     if (devices.length > 0) {
       const ip = selectedPlayer.ip || devices[0].ip
       const res = await loadSDUI(uri)
-      const response = res.json
+      const response = res.json 
       if (response && response.screen) {
         setServiceSubMenus((prev) => ({ ...prev, [musicService]: { screen: response.screen } }))
       }

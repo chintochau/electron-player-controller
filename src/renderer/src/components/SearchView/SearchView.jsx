@@ -21,7 +21,6 @@ const SearchView = () => {
         searchResult,
         setSearchResult,
         xmlSearchResult,
-        setXmlSearchResult,
         displayMode,
         setIsSearchMode,
     } = useBrowsing()
