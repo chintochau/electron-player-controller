@@ -16,7 +16,7 @@ const CompactPlayer = ({ ip }) => {
     <div
       onClick={() => setSelectedPlayer(device)}
       className={cn(
-        'flex flex-col w-68 outline outline-1 outline-accent rounded-md p-2 ',
+        'flex flex-col w-68 outline outline-1 outline-accent rounded-md p-2 shadow-md',
         selectedPlayer?.ip === ip ? 'bg-primary/20' : ''
       )}
     >

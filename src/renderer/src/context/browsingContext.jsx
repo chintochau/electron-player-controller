@@ -90,6 +90,7 @@ export const BrowsingProvider = ({ children }) => {
       addToHistory(url)
     }
     const res = await loadSDUI(uri, null, debug)
+    if (!res) { return }
     const response = res.json
     if (!response) {
       setScreen('No Response')

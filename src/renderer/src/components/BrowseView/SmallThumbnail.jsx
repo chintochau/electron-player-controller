@@ -42,7 +42,7 @@ const SmallThumbnail = ({
   }
 
   return (
-    <div className={cn('space-y-3', className)} {...props}>
+    <div className={cn('space-y-3 ', className)} {...props}>
       <ContextMenu onOpenChange={async (e) => {
         if (e && !contextMenuWithItems) {
           const menuItems = await loadContextMenu(contextMenu?.[0])
@@ -50,7 +50,7 @@ const SmallThumbnail = ({
         }
       }}>
         <ContextMenuTrigger onClick={handleClick}>
-          <div className="relative overflow-hidden rounded-md group transition ease-out duration-300 active:scale-110">
+          <div className="relative overflow-hidden rounded-md group transition ease-out duration-300 active:scale-110 shadow-md">
             <img
               src={getImagePath(smallThumbnail?.$?.icon)}
               className={cn(

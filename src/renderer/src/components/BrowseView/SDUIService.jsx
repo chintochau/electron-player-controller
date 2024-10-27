@@ -50,7 +50,7 @@ const SDUIService = ({ service, isArtist, onlyOneListWithHeader }) => {
   return (
     <div
       className={cn(
-        'flex lg:rounded-lg gap-2 w-ful xl:flex-col group ease-out duration-300 active:scale-110',
+        'flex lg:rounded-lg gap-2 w-ful xl:flex-col group ease-out duration-300 active:scale-110 ',
         onlyOneListWithHeader
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
           : ''
@@ -62,7 +62,7 @@ const SDUIService = ({ service, isArtist, onlyOneListWithHeader }) => {
           {icon && (
             <div
               className={cn(
-                'relative group',
+                'relative group shadow-md',
                 onlyOneListWithHeader
                   ? 'h-20 w-20 overflow-hidden rounded-md'
                   : ' w-20 h-20 rounded-lg xl:rounded-3xl overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',

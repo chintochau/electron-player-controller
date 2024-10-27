@@ -44,7 +44,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
           ? 'flex-row xl:flex-row hover:bg-accent cursor-pointer p-2 rounded-md'
           : '',
           !onlyOneListWithHeader&&!image
-            ? `${index % 2 === 0 ? 'bg-primary/10' : ' bg-primary/20'} lg:pl-2.5 pb-2.5 pt-5 hover:bg-primary/50 cursor-pointer rounded-md items-end justify-end duration-300 ease-out active:scale-110 transition-all`
+            ? `${index % 2 === 0 ? 'bg-primary/10' : ' bg-primary/20'} shadow-md lg:pl-2.5 pb-2.5 pt-5 hover:bg-primary/50 cursor-pointer rounded-md items-end justify-end duration-300 ease-out active:scale-110 transition-all`
             : ''
       )}
       onClick={handleClick}
@@ -59,7 +59,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
           {image && (
             <div
               className={cn(
-                'relative group',
+                'relative group shadow-md',
                 onlyOneListWithHeader
                   ? 'h-20 w-20 overflow-hidden rounded-md'
                   : ' w-20 h-20 rounded-md overflow-hidden object-cover flex-shrink-0 xl:flex-1 items-center justify-center flex  lg:w-20 lg:h-20 xl:w-full xl:h-full',

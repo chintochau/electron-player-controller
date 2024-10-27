@@ -10,7 +10,7 @@ const SDUIInput = ({ input }) => {
     const { getImagePath } = useBrowsing()
     return (
         <div
-            className='size-auto xl:size-40 flex flex-col items-center justify-center bg-primary/10 border border-primary/5 rounded-lg px-3 lg:px-6 lg:py-4 py-2 hover:bg-primary/20 cursor-pointer'
+            className='shadow-md size-auto xl:size-40 flex flex-col items-center justify-center bg-primary/10 border border-primary/5 rounded-lg px-3 lg:px-6 lg:py-4 py-2 hover:bg-primary/20 cursor-pointer'
             onClick={() => performAction(action)}
         >
             <div className='size-12 xl:size-16'>
