@@ -15,8 +15,7 @@ const GUI = ({ screen }) => {
     return <Loader2 className="animate-spin size-20" />
   }
   const { loading, getImagePath } = useBrowsing()
-  const { } = useSdui()
-
+  const {} = useSdui()
 
   if (loading) {
     return (
@@ -56,7 +55,11 @@ const GUI = ({ screen }) => {
             onlyOneListWithHeader ? 'lg:fixed lg:w-[calc(50vw-275px)] text-center' : ''
           )}
         >
-          {navigationIcon && <div className='w-10 h-10 flex items-center'><img src={getImagePath(navigationIcon)} /></div>}
+          {navigationIcon && (
+            <div className="w-14 h-14 flex items-center">
+              <img className="bg-primary/30 rounded-xl p-1" src={getImagePath(navigationIcon)} />
+            </div>
+          )}
           <h1>{renderTitle()}</h1>
         </div>
 
