@@ -78,11 +78,10 @@ export const InfiniteMovingCards = ({
           const quote = $.body
           const title = $.title
           const backgroundImage = $.backgroundImage
-          console.log(item)
 
           return (
             <li
-              className="w-[350px] max-w-full relative rounded-2xl border border-b-0 flex-shrink-0 border-border px-8 py-6 md:w-[450px] bg-gradient-to-b from-primary/70 to-primary/50 shadow-md"
+              className="w-[350px] max-w-full relative rounded-2xl border border-b-0 border-l-0 flex-shrink-0 border-primary/40 px-8 py-6 md:w-[450px] bg-gradient-to-b from-primary/70 to-primary/50 shadow-md"
               style={{
                 backgroundImage: backgroundImage && `url(${getImagePath(backgroundImage)})`
               }}

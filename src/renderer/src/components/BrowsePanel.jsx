@@ -5,11 +5,11 @@ import BrowsePage from './BrowsePage/BrowsePage'
 const BrowsePanel = ({ isCollapsed }) => {
   return (
     <div className="h-screen flex">
-      {isCollapsed ? (
+      {isCollapsed && (
         <>
           <BrowsePage />
         </>
-      ) : null}
+      ) }
     </div>
   )
 }
