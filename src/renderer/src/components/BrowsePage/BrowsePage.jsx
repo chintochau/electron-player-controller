@@ -33,7 +33,8 @@ const BrowsePage = () => {
     screen,
     displayMainScreen,
     xmlScreen,
-    displayMode, setDisplayMode,
+    displayMode,
+    setDisplayMode,
     searchText,
     setSearchText,
     isSearchMode,
@@ -54,7 +55,7 @@ const BrowsePage = () => {
     if (devices && devices.length > 0 && !selectedPlayer) {
       setSelectedPlayer(devices[0])
     }
-  },[])
+  }, [])
 
   const handleSearchClick = (e) => {
     e.preventDefault()
@@ -65,6 +66,19 @@ const BrowsePage = () => {
   return (
     <ScrollArea className="w-full h-full p-4 overflow-x-hidden" ref={containerRef}>
       <div id="urlBar" className="flex items-center justify-between sticky top-0 z-50">
+        {!enabledFeatures.urlBar && (
+          <Button
+            variant="outline"
+            type="button"
+            className="rounded-full mr-2"
+            onClick={(e) => {
+              e.preventDefault()
+              goToPreviousUrl()
+            }}
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+          </Button>
+        )}
         <Select
           value={selectedPlayer && selectedPlayer.mac}
           onValueChange={(value) =>
@@ -87,67 +101,84 @@ const BrowsePage = () => {
               })}
           </SelectContent>
         </Select>
-        {enabledFeatures.urlBar && <form className="flex-auto w-96  flex items-center">
-          <Button
-            variant="outline"
-            type="button"
-            className="rounded-l-full"
-            onClick={(e) => {
-              e.preventDefault()
-              goToPreviousUrl()
-            }}
+        {enabledFeatures.urlBar && (
+          <form className="flex-auto w-96  flex items-center">
+            <Button
+              variant="outline"
+              type="button"
+              className="rounded-l-full"
+              onClick={(e) => {
+                e.preventDefault()
+                goToPreviousUrl()
+              }}
             >
               <ArrowLeftIcon className="w-4 h-4" />
             </Button>
+            <Input
+              className="border-x-0  rounded-none"
+              placeholder="path"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <Button
+              variant="outline"
+              className="rounded-r-full"
+              onClick={(e) => {
+                e.preventDefault()
+                displayMainScreen(url)
+              }}
+            >
+              <SendHorizonalIcon className="w-4 h-4" />
+            </Button>
+          </form>
+        )}
+        <form
+          className={`flex items-center ml-4 flex-auto w-20 ${enabledFeatures.urlBar && 'max-w-[400px]'}`}
+        >
           <Input
-            className="border-x-0  rounded-none"
-            placeholder="path"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            className="w-full rounded-l-full border-r-0"
+            placeholder="Search"
+            onChange={(e) => setSearchText(e.target.value)}
+            value={searchText}
           />
           <Button
-            variant="outline"
-            className="rounded-r-full"
-            onClick={(e) => {
-              e.preventDefault()
-              displayMainScreen(url)
-            }}
+            type="submit"
+            variant="ghost"
+            className="border rounded-r-full bg-background"
+            onClick={handleSearchClick}
           >
-            <SendHorizonalIcon className="w-4 h-4" />
+            <SearchIcon className="w-4 h-4" />
           </Button>
-        </form>}
-        <form className={`flex items-center ml-4 flex-auto w-20 ${enabledFeatures.urlBar && "max-w-[400px]"}`}>
-          <Input className="w-full rounded-l-full border-r-0" placeholder="Search" onChange={(e) => setSearchText(e.target.value)} value={searchText} />
-          <Button type="submit" variant="ghost" className="border rounded-r-full bg-background" onClick={handleSearchClick}><SearchIcon className="w-4 h-4" /></Button>
         </form>
-        {enabledFeatures.xmlMode && <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
-          <SelectTrigger className="w-fit h-8 m-1 border-none rounded-full">
-            <SelectValue placeholder="Display Mode" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="json" onClick={() => setDisplayMode('json')}>
-              JSON
-            </SelectItem>
-            <SelectItem value="xml" onClick={() => setDisplayMode('xml')}>
-              XML
-            </SelectItem>
-            <SelectItem value="gui" onClick={() => setDisplayMode('gui')}>
-              GUI
-            </SelectItem>
-          </SelectContent>
-        </Select>}
+        {enabledFeatures.xmlMode && (
+          <Select value={displayMode} onValueChange={(value) => setDisplayMode(value)}>
+            <SelectTrigger className="w-fit h-8 m-1 border-none rounded-full">
+              <SelectValue placeholder="Display Mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="json" onClick={() => setDisplayMode('json')}>
+                JSON
+              </SelectItem>
+              <SelectItem value="xml" onClick={() => setDisplayMode('xml')}>
+                XML
+              </SelectItem>
+              <SelectItem value="gui" onClick={() => setDisplayMode('gui')}>
+                GUI
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        )}
       </div>
-      {isSearchMode ?
+      {isSearchMode ? (
         <SearchView />
-        :
+      ) : (
         <>
           <ServiceMenuList musicServiceList={serviceList} />
           {displayMode === 'xml' && <XMLViewer xml={xmlScreen} />}
           {displayMode === 'json' && <JsonView src={screen} />}
           {displayMode === 'gui' && <GUI screen={screen} />}
         </>
-      }
-
+      )}
     </ScrollArea>
   )
 }
