@@ -10,6 +10,7 @@ import List from './List'
 import MenuAction from './MenuAction'
 import SDUIInput from './SDUIInput'
 import SDUISource from './SDUISource'
+import { InfiniteMovingCards } from '../../../../components/ui/infinite-moving-cards'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
@@ -32,63 +33,65 @@ const Row = ({ row, index }) => {
     viewportRef.current.scrollLeft = newPos
   }, [])
 
-  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action, source } = row || {}
+  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action, source, teaser } =
+    row || {}
   const { title } = $ || {}
   const isArtist = title?.toLowerCase().includes('artist') ?? false
 
   return (
     <>
-      <div
-        className={cn(
-          'w-full flex justify-between items-center px-2 rounded-lg ',
-          action?.[0]?.$ ? 'cursor-pointer hover:bg-accent/30 ' : ''
-        )}
-        onClick={() => {
-          if (action?.[0]?.$) {
-            performAction(action)
-          }
-        }}
-      >
-        <div className="w-full flex pr-10 xl:pr-0">
-          <h2 className={cn('text-2xl font-medium mx-4 text-primary/90 flex')}>
-            {title}
-          </h2>
-          {menuAction && !action &&
-            menuAction.map((menuActionItem, index) => {
-              return <MenuAction key={'menuAction' + index} menuAction={menuActionItem} />
-            })}
-        </div>
-        {action && action[0].$ && (
-          <div className='my-1.5 xl:mr-4'>
-            <ChevronRightIcon className="w-4 h-4" />
+      {title && (
+        <div
+          className={cn(
+            'w-full flex justify-between items-center px-2 rounded-lg ',
+            action?.[0]?.$ ? 'cursor-pointer hover:bg-accent/30 ' : ''
+          )}
+          onClick={() => {
+            if (action?.[0]?.$) {
+              performAction(action)
+            }
+          }}
+        >
+          <div className="w-full flex pr-10 xl:pr-0">
+            <h2 className={cn('text-2xl font-medium mx-4 text-primary/90 flex')}>{title}</h2>
+            {menuAction &&
+              !action &&
+              menuAction.map((menuActionItem, index) => {
+                return <MenuAction key={'menuAction' + index} menuAction={menuActionItem} />
+              })}
           </div>
-        )}
-      </div>
+          {action && action[0].$ && (
+            <div className="my-1.5 xl:mr-4">
+              <ChevronRightIcon className="w-4 h-4" />
+            </div>
+          )}
+        </div>
+      )}
 
-      {
-        source && <ScrollArea
-          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
-          onWheel={onWheel}
-          ref={viewportRef}
-          >
-          <div
-            className={cn('pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2'
-            )}
-          >{source.map((source, index) => {
-            return (
-              <SDUISource source={source} key={'source' + index} />
-            )
-          })}</div>
-          <ScrollBar  orientation="horizontal" />
-        </ScrollArea>
-      }
+      {teaser && <InfiniteMovingCards items={teaser} direction="left" speed="slow" />}
 
-      {input &&
+      {source && (
         <ScrollArea
           className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
           onWheel={onWheel}
           ref={viewportRef}
+        >
+          <div
+            className={cn('pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2')}
+          >
+            {source.map((source, index) => {
+              return <SDUISource source={source} key={'source' + index} />
+            })}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      )}
 
+      {input && (
+        <ScrollArea
+          className="w-full whitespace-nowrap rounded-md mb scroll-smooth focus:scroll-auto"
+          onWheel={onWheel}
+          ref={viewportRef}
         >
           <div
             className={cn(
@@ -97,15 +100,14 @@ const Row = ({ row, index }) => {
                 ? 'pb-4 px-4 grid auto-cols-min grid-flow-col gap-4 overflow-x-auto pt-2 grid-rows-2'
                 : 'flex w-max space-x-4 p-4'
             )}
-          >{input.map((input, index) => {
-            return (
-              <SDUIInput input={input} key={'input' + index} />
-            )
-          })}</div>
-          <ScrollBar  orientation="horizontal" />
-
+          >
+            {input.map((input, index) => {
+              return <SDUIInput input={input} key={'input' + index} />
+            })}
+          </div>
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      }
+      )}
 
       {largeThumbnail && (
         <ScrollArea
@@ -151,7 +153,11 @@ const Row = ({ row, index }) => {
             {smallThumbnail?.map((smallThumbnailItem) => {
               return (
                 <SmallThumbnail
-                  key={smallThumbnailItem?.$?.title || smallThumbnailItem?.$?.id || smallThumbnailItem?.$?.icon}
+                  key={
+                    smallThumbnailItem?.$?.title ||
+                    smallThumbnailItem?.$?.id ||
+                    smallThumbnailItem?.$?.icon
+                  }
                   smallThumbnail={smallThumbnailItem}
                   isArtist={isArtist}
                 />
