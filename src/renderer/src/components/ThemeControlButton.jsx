@@ -7,7 +7,7 @@ import {
 } from '../../../components/ui/dropdown-menu'
 import { useTheme } from '../context/themeContext'
 import { Button } from '../../../components/ui/button'
-import { Moon, Sun, Droplet, Waves, Flame, Flower, Flower2, Clover } from 'lucide-react'
+import { Moon, Sun, Droplet, Waves, Flame, Flower, Flower2, Clover, Rainbow, Mountain } from 'lucide-react'
 import { DropdownMenuLabel, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 
 const ThemeControlButton = () => {
@@ -42,6 +42,9 @@ const ThemeControlButton = () => {
           <Flower2
             className={`absolute h-6 w-6  scale-0 transition-all ${theme === 'darkLavender' && 'rotate-0 scale-100'}`}
           />
+          <Mountain
+            className={`absolute h-6 w-6  scale-0 transition-all ${theme === 'mountain' && 'rotate-0 scale-100'}`}
+          />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
@@ -55,6 +58,7 @@ const ThemeControlButton = () => {
         <DropdownMenuItem onClick={() => setTheme('darkRose')}>Dark Rose</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('lavender')}>Lavender</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('darkLavender')}>Dark Lavender</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('mountain')}>Mountain</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
