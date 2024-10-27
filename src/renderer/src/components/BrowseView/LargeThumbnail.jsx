@@ -49,8 +49,8 @@ const LargeThumbnail = ({
   
   const { $, action,contextMenu } = largeThumbnail || {}
 
-  const resultType = action?.[0]?.$?.resultType ?? action?.[0]?.$?.type ?? 'defaultType'
-  const actionType = action?.[0]?.$?.type ?? 'defaultType'
+  const resultType = action?.[0]?.$?.resultType || action?.[0]?.$?.type
+  const actionType = action?.[0]?.$?.type
 
   const IconComponent = getIconForType(resultType)
   const [contextMenuWithItems, setContextMenuWithItems] = useState(null)

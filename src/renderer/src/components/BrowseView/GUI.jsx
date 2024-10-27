@@ -60,7 +60,7 @@ const GUI = ({ screen }) => {
               <img className="bg-primary/30 rounded-xl p-1" src={getImagePath(navigationIcon)} />
             </div>
           )}
-          <h1>{renderTitle()}</h1>
+          <h1 id={screen.searchId? screen.searchId : 'screenTitle'}>{renderTitle()}</h1>
         </div>
 
         <div className={cn(onlyOneListWithHeader ? 'flex flex-col lg:flex-row' : 'mb-2')}>

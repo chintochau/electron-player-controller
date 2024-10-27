@@ -25,6 +25,15 @@ export const BrowsingProvider = ({ children }) => {
   const [historyUrl, setHistoryUrl] = useState([])
   const containerRef = useRef(null)
 
+  useEffect(() => {
+    if (serviceList.length === 0) {
+      // initially load service list
+      loadServiceList()
+      displayMainScreen('/ui/Home?playnum=1')
+      loadSearchableServices()
+    }
+  }, [selectedPlayer])
+
   const addToHistory = (url, url2) => {
     // check if previous url is same as current url
     if (historyUrl[historyUrl.length - 1] !== url) {
@@ -36,6 +45,17 @@ export const BrowsingProvider = ({ children }) => {
     }
   }
 
+  const loadSearchableServices = async () => {
+    const res = await loadSDUI('/ui/Search?playnum=1')
+    if (!res) return
+    const data = res?.json?.screen?.selectorMenu?.[0]?.item
+      ?.map((item) => item?.action?.[0]?.$?.URI?.split('service=')[1])
+      .filter((item) => item != null)
+    console.log(data)
+    if (data) {
+      setSearchableServices(data)
+    }
+  }
   const goToPreviousUrl = () => {
     if (historyUrl.length > 0) {
       if (url === 'search') {
@@ -60,6 +80,7 @@ export const BrowsingProvider = ({ children }) => {
     if (debug) {
       console.log(uri)
     }
+    setIsSearchMode(false)
     setScreen('Loading...')
     setXmlScreen('<Loading.../>')
     setLoading(true)
@@ -86,7 +107,6 @@ export const BrowsingProvider = ({ children }) => {
       setXmlScreen(res.xmlText)
       setLoading(false)
     }
-    setIsSearchMode(false)
   }
 
   const getImagePath = (uri) => {
@@ -127,7 +147,7 @@ export const BrowsingProvider = ({ children }) => {
     if (devices.length > 0) {
       const ip = selectedPlayer.ip || devices[0].ip
       const res = await loadSDUI(uri)
-      const response = res.json 
+      const response = res.json
       if (response && response.screen) {
         setServiceSubMenus((prev) => ({ ...prev, [musicService]: { screen: response.screen } }))
       }
@@ -149,14 +169,28 @@ export const BrowsingProvider = ({ children }) => {
     let xmlResult = ''
     let jsonResult = []
     setXmlSearchResult('<Searching.../>')
-    setSearchResult([{"$":{"screenTitle":"🎶 Tune Hunt"},"infoPanel":[{"$":{"icon":"","text":"Hold on, we're tracking down the jams!","subText":"Our musical sleuths are hard at work... a killer playlist is just a few beats away!"}}]}])
+    setSearchResult([
+      {
+        $: { screenTitle: '🎶 Tune Hunt' },
+        infoPanel: [
+          {
+            $: {
+              icon: '',
+              text: "Hold on, we're tracking down the jams!",
+              subText:
+                'Our musical sleuths are hard at work... a killer playlist is just a few beats away!'
+            }
+          }
+        ]
+      }
+    ])
 
     for (let i = 0; i < searchableServices.length; i++) {
       const res = await loadSDUI(uri + '&service=' + searchableServices[i], ip)
       const response = res.json
       if (response && response.screen) {
         xmlResult += `<${searchableServices[i]}>${res.xmlText}</${searchableServices[i]}>`
-        jsonResult.push(response.screen)
+        jsonResult.push({...response.screen, searchId: searchableServices[i]})
         setXmlSearchResult(xmlResult)
         setSearchResult(jsonResult)
       }
@@ -166,8 +200,8 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const loadNextLink = async (nextLink) => {
-    const result = await loadSDUI(":11000" + nextLink)
-    console.log(result);
+    const result = await loadSDUI(':11000' + nextLink)
+    console.log(result)
 
     const { list: newList } = result.json || {}
     const { item: newItems, nextLink: newNextLink } = newList || {}
@@ -193,7 +227,7 @@ export const BrowsingProvider = ({ children }) => {
   const loadContextMenu = async (contextMenu) => {
     const { $ } = contextMenu || {}
     const { URI, type, resultType } = $ || {}
-    const response = await loadSDUI(":11000" + URI)
+    const response = await loadSDUI(':11000' + URI)
     return response?.json?.contextMenu
   }
 

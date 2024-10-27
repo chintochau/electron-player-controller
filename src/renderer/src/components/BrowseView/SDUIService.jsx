@@ -38,8 +38,8 @@ const SDUIService = ({ service, isArtist, onlyOneListWithHeader }) => {
   const { getImagePath } = useBrowsing()
   const { performAction } = useSdui()
 
-  const resultType = action[0]?.$?.resultType || action[0]?.$?.type
-  const actionType = action[0]?.$?.type
+  const resultType = action?.[0]?.$?.resultType || action?.[0]?.$?.type
+  const actionType = action?.[0]?.$?.type
 
   const IconComponent = getIconForType(resultType)
 

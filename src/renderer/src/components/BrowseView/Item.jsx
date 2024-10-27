@@ -20,19 +20,6 @@ import { getIconForType } from '../../lib/utils'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import SDUIContextMenu from './SDUIContextMenu'
 
-const playlists = [
-  'Playlist 1',
-  'Playlist 2',
-  'Playlist 3',
-  'Playlist 4',
-  'Playlist 5',
-  'Playlist 6',
-  'Playlist 7',
-  'Playlist 8',
-  'Playlist 9',
-  'Playlist 10'
-]
-
 const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
   // size = 'small' | 'large'
   const { $, action, contextMenu } = item || {}
@@ -40,8 +27,8 @@ const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
   const { getImagePath,loadContextMenu } = useBrowsing()
   const { performAction } = useSdui()
 
-  const resultType = action[0]?.$?.resultType || action[0]?.$?.type
-  const actionType = action[0]?.$?.type
+  const resultType = action?.[0]?.$?.resultType || action?.[0]?.$?.type
+  const actionType = action?.[0]?.$?.type
 
   const IconComponent = getIconForType(resultType)
   const [contextMenuWithItems, setContextMenuWithItems] = useState(null)
