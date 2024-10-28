@@ -95,3 +95,9 @@ export const searchableServicesList = [
   "Qobuz",
   "Tidal",
 ]
+
+export const defaultRoomList = [
+  "Lobby",
+  "Show Room",
+  "Unassigned"
+]

@@ -76,7 +76,7 @@ export function DataTable({ columns, data, isCollapsed }) {
   return (
     <>
       <div className="flex items-center justify-between py-4">
-        <Input
+        {!isGridMode ? <Input
           onChange={(e) => {
             setSearchString(e.target.value)
             table.setGlobalFilter(String(e.target.value))
@@ -84,6 +84,7 @@ export function DataTable({ columns, data, isCollapsed }) {
           placeholder="Search device..."
           className="max-w-sm rounded-full"
         />
+      : <div/>}
 
         {!isCollapsed && (
           <div className="flex">

@@ -9,11 +9,28 @@ export const useDevices = () => useContext(DevicesContext)
 export const DevicesProvider = ({ children }) => {
   const [devices, setDevices] = useState([])
   const [selectedDevices, setSelectedDevices] = useState([]) // ips of selected devices
-  const { checkRoomForMac } = useStorage()
+  const { checkRoomForMac,saveRoomForMac } = useStorage()
 
-//   useEffect(() => {
-//     console.log(devices)
-//   }, [devices])
+  //   useEffect(() => {
+  //     console.log(devices)
+  //   }, [devices])
+
+  const addDeviceToRoom = (ip,mac, room) => {
+    console.log(ip,mac, room);
+    
+    setDevices((prevDevices) =>
+      prevDevices.map((prevDevice) => {
+        if (prevDevice.ip === ip) {
+          return {
+            ...prevDevice,
+            room
+          }
+        }
+        return prevDevice
+      })
+    )
+    saveRoomForMac(mac, room)
+  }
 
   const updateDeviceStatus = (ip, status) => {
     setDevices((prevDevices) => {
@@ -236,7 +253,8 @@ export const DevicesProvider = ({ children }) => {
     selectDeviceByIp,
     removeSelectedDeviceByIp,
     removeAllSelectedDevices,
-    refreshDevices
+    refreshDevices,
+    addDeviceToRoom
   }
 
   return <DevicesContext.Provider value={value}>{children}</DevicesContext.Provider>

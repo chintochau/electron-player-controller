@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { commandList } from "../lib/constants";
+import { commandList, defaultRoomList } from "../lib/constants";
 
 const StorageContext = createContext();
 
@@ -9,7 +9,7 @@ export const useStorage = () => useContext(StorageContext);
 
 export const StorageProvider = ({ children }) => {
   const [savedPlayers, setSavedPlayers] = useState(localStorage.getItem('savedPlayers') ? JSON.parse(localStorage.getItem('savedPlayers')) : {}); // {mac:room, mac:room...} 
-  const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : ["Unassigned", "A", "B"]);
+  const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : defaultRoomList);
   // read custom api list from local storage, if not found, save commandList to the local storage, and return commandList
   const [customApiList, setCustomApiList] = useState(localStorage.getItem('customApiList') ? JSON.parse(localStorage.getItem('customApiList')) : []);
 const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{name: "Home", uri: "/ui/Home?playnum=1"}]);
