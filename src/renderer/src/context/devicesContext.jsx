@@ -16,8 +16,6 @@ export const DevicesProvider = ({ children }) => {
   //   }, [devices])
 
   const addDeviceToRoom = (ip,mac, room) => {
-    console.log(ip,mac, room);
-    
     setDevices((prevDevices) =>
       prevDevices.map((prevDevice) => {
         if (prevDevice.ip === ip) {
