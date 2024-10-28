@@ -51,7 +51,6 @@ export const BrowsingProvider = ({ children }) => {
     const data = res?.json?.screen?.selectorMenu?.[0]?.item
       ?.map((item) => item?.action?.[0]?.$?.URI?.split('service=')[1])
       .filter((item) => item != null)
-    console.log(data)
     if (data) {
       setSearchableServices(data)
     }

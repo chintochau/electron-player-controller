@@ -5,8 +5,8 @@ export const enabledFeatures = {
   browser: true,
   addPlayer: true,
   darkMode: true,
-  urlBar:1,
-  xmlMode:1,
+  urlBar:false,
+  xmlMode:false,
 }
 
 export const mapCommandByName = (commandName) => {

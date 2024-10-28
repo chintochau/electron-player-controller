@@ -22,8 +22,8 @@ export const SetupProvider = ({ children }) => {
 
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
+        if (!inProgress) return 
         discoverDevices((devicesList) => {
-            console.log('devicesList', devicesList);
             if (inProgress && wifiAndPasswordIsFilled) {
                 runPlayersSetupProcess(devicesList)
             } else if (inProgress && !wifiAndPasswordIsFilled) {
