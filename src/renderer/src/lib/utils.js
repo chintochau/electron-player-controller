@@ -9,11 +9,13 @@ export function cn(...inputs) {
 
 export const playerControl = async (ip, control, param) => {
   const res = await window.api.playerControl(ip, control, param)
+  return res
 }
 
 
 export const runCommandForDevice = async (ip, command, type) => {
   const res = await window.api.runCommandForDevice(ip, command, type)
+  return res
 }
 
 

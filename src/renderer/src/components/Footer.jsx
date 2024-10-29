@@ -39,8 +39,9 @@ const Footer = ({ isCollapsed }) => {
   const { toast } = useToast()
 
   const runCommandForDevices = () => {
+    const command = mapCommandByName(apiCommand)
+
     for (const IP of selectedDevices) {
-      const command = mapCommandByName(apiCommand)
 
 
       runCommandForDevice(IP, command, requestType)
@@ -48,22 +49,22 @@ const Footer = ({ isCollapsed }) => {
     }
     toast({
       title: 'Run Command For Devices',
-      description: `Running Command ${command} on ${selectedDevices.length} Devices`,
+      description: `Running Command ${apiCommand} on ${selectedDevices.length} Devices`,
       status: 'success'
     })
   }
 
   const runCommandOnAllDevices = () => {
-    for (const device of devices) {
+    const command = mapCommandByName(apiCommand)
 
-      const command = mapCommandByName(apiCommand)
+    for (const device of devices) {
 
       runCommandForDevice(device.ip, command, requestType)
       updateDeviceStatus(device.ip, `running ${command}`)
     }
     toast({
       title: 'Run Command On All Devices',
-      description: `Running Command ${command} on ${devices.length} Devices`,
+      description: `Running Command ${apiCommand} on ${devices.length} Devices`,
       status: 'success'
     })
   }

@@ -22,19 +22,26 @@ export const SetupProvider = ({ children }) => {
 
     useEffect(() => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
-        if (!inProgress) return 
-        discoverDevices((devicesList) => {
-            if (inProgress && wifiAndPasswordIsFilled) {
-                runPlayersSetupProcess(devicesList)
-            } else if (inProgress && !wifiAndPasswordIsFilled) {
-                toast({
-                    title: 'Error',
-                    description: 'Please fill in the wifi SSID and password',
-                    status: 'error'
-                })
-                setInProgress(false)
-            }
-        })
+        if (!inProgress) return
+        setTimeout(() => {
+            console.log("starting to discover devices");
+            
+            discoverDevices((devicesList) => {
+                if (inProgress && wifiAndPasswordIsFilled) {
+                    runPlayersSetupProcess(devicesList)
+                } else if (inProgress && !wifiAndPasswordIsFilled) {
+                    toast({
+                        title: 'Error',
+                        description: 'Please fill in the wifi SSID and password',
+                        status: 'error'
+                    })
+                    setInProgress(false)
+                }
+
+
+            })
+
+        }, 2000)
     }, [inProgress, setupMatrix])
 
 
@@ -82,8 +89,10 @@ export const SetupProvider = ({ children }) => {
         runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
     }
 
-    const enterWacMode = () => {
+    const enterWacMode = (device) => {
         runCommandForDevice("10.1.2.3", "/apmode?wac=1", 'GET')
+        device.wac = true
+        device.shouldRefreshTime = new Date().getTime() + 15000
     }
 
     const connectToSSID = (ssid, password) => {
@@ -182,14 +191,14 @@ export const SetupProvider = ({ children }) => {
 
         //4. link devices that is not connected to the selected wifi
         matrix = matrix.map((device) => {
+            if (device.shouldRefreshTime && device.shouldRefreshTime > new Date().getTime()) return device
+
             const thisDevice = getDeviceFromListByName(device.name)
             if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wac) {
                 // make sure it goes into wac mode, and exist ac mode
-                enterWacMode()
-                device.wac = true
+                enterWacMode(device)
             } else if (!device.wac && wifiRef && wifiRef.current && wifiRef.current === device.name) {
-                enterWacMode()
-                device.wac = true
+                enterWacMode(device)
             } else if (thisDevice && thisDevice.ip !== "10.1.2.3") {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
@@ -239,6 +248,7 @@ export const SetupProvider = ({ children }) => {
         return {
             name: device,
             version: null,
+            shouldRefreshTime: null,
             ip: null,
             wac: false,
             isConnecting: false,

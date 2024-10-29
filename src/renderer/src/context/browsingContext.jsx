@@ -201,8 +201,6 @@ export const BrowsingProvider = ({ children }) => {
 
   const loadNextLink = async (nextLink) => {
     const result = await loadSDUI(':11000' + nextLink)
-    console.log(result)
-
     const { list: newList } = result.json || {}
     const { item: newItems, nextLink: newNextLink } = newList || {}
 

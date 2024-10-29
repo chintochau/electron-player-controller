@@ -116,11 +116,11 @@ export function DataTable({ columns, data, isCollapsed }) {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <Button variant="outline" size="icon" className="rounded-xl ml-2">
+            <Button variant="outline" size="icon" className="rounded-xl ml-2" onClick={() => setIsGridMode(!isGridMode)}>
               {!isGridMode ? (
-                <Grid2X2 onClick={() => setIsGridMode(!isGridMode)} className="w-6 h-6" />
+                <Grid2X2  className="w-6 h-6" />
               ) : (
-                <List onClick={() => setIsGridMode(!isGridMode)} className="w-6 h-6" />
+                <List className="w-6 h-6" />
               )}
             </Button>
           </div>
