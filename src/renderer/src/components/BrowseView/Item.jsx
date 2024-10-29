@@ -93,7 +93,7 @@ const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
               {track && `${track}. `} {title}
             </h3>
             <p
-              className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4"
+              className="text-xs text-muted-foreground leading-none overflow-hidden line-clamp-4 pb-0.5"
               title={subTitle}
             >
               {subTitle}
