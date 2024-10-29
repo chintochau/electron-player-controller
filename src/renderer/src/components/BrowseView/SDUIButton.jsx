@@ -10,7 +10,7 @@ const SDUIButton = ({ button, index, className }) => {
         <Button
             variant={index % 2 !== 0 ? "outline" : ""}
             size="lg"
-            className={className}
+            className={className + " active:scale-110 duration-300 transition-all ease-out"}
             onClick={() => performAction(action)} >
             {text}
         </Button>

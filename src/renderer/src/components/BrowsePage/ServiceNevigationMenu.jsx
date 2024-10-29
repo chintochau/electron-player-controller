@@ -11,9 +11,12 @@ import {
 } from '@/components/ui/navigation-menu'
 import { useEffect } from 'react'
 import { useBrowsing } from '../../context/browsingContext'
+import { useSdui } from '../../context/sduiContext'
+import { Label } from '@/components/ui/label'
 
 const ServiceNevigationMenu = ({ service }) => {
-  const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen } = useBrowsing()
+  const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen, getImagePath } = useBrowsing()
+  const { performAction } = useSdui()
   const submenu = serviceSubMenus[service.id]
   const handleTriggerHover = () => {
     loadSubmenuForService(service.id)
@@ -23,6 +26,9 @@ const ServiceNevigationMenu = ({ service }) => {
     setUrl(uri)
     displayMainScreen(uri)
   }
+
+  const itemClassName = "text-foreground/60 group inline-flex h-10 items-center justify-start rounded-xl bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer text-nowrap"
+
 
   return (
     <NavigationMenuItem key={service.name}>
@@ -34,11 +40,11 @@ const ServiceNevigationMenu = ({ service }) => {
         className="px-1 h-6 xl:px-2 xl:h-10 rounded-xl"
       >
         <div className="flex items-center">
-          <img src={service.iconSrc} className="w-4 h-4 mr-2" />
+          <img src={service.iconSrc} className="size-4 xl:size-5 mr-2" />
           {service.name}
         </div>
       </NavigationMenuTrigger>
-      <NavigationMenuContent className="flex flex-col z-10 px-4 py-2">
+      <NavigationMenuContent className="flex flex-col z-10 px-2 py-2 rounded-xl">
         {submenu && submenu.screen && submenu.screen.row && (
           <>
             {submenu.screen.row.map((row) => {
@@ -46,7 +52,7 @@ const ServiceNevigationMenu = ({ service }) => {
                 <NavigationMenuLink
                   onClick={() => handleLinkClick(row.action[0].$.URI + '&playnum=1')}
                   key={row.$.title}
-                  className={navigationMenuTriggerStyle()}
+                  className={itemClassName}
                 >
                   {row.$.title}
                 </NavigationMenuLink>
@@ -58,16 +64,24 @@ const ServiceNevigationMenu = ({ service }) => {
           <>
             {submenu.screen.list.map((list, listIndex) => (
               <React.Fragment key={`list-${listIndex}`}>
+                {list?.$?.title && (
+                  <Label className="px-2 py-1.5 text-sm font-semibold text-foreground/50">{list.$.title}</Label>
+                )}
                 {list?.item?.map((item, itemIndex) => (
                   <NavigationMenuLink
                     key={`item-${item.$.title}-${itemIndex}`} // Combines title and index for uniqueness
                     variant="outline"
                     size="sm"
-                    className={navigationMenuTriggerStyle()  }
+                    className={itemClassName}
                     onClick={() => {
-                      handleLinkClick(item.action[0].$.URI + '&playnum=1')
+                      performAction(item.action)
                     }}
-                  >{item.$.title}
+                  >
+                    {item.$.image && <div className='flex w-9 h-9 mr-2 rounded-md overflow-hidden'>
+                      {item.$.iamge}
+                      <img src={getImagePath(item.$.image)} />
+                    </div>}
+                    <p className='truncate'>{item.$.title}</p>
                   </NavigationMenuLink>
                 ))}
               </React.Fragment>

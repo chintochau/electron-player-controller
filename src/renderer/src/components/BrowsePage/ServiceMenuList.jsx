@@ -8,9 +8,9 @@ import {
 } from '@/components/ui/navigation-menu'
 
 const appMenuList = [
-  { name: 'Home', uri: '/ui/Home?playnum=1' },
-  { name: 'Favourites', uri: '/ui/Favourites?service=Tunein&sort=alpha&playnum=1' },
-  { name: 'Sources', uri: '/ui/Sources?playnum=1' }
+  { name: 'Home', uri: '/ui/Home?playnum=1', icon: Home },
+  { name: 'Favourites', uri: '/ui/Favourites?service=Tunein&sort=alpha&playnum=1', icon: Star },
+  { name: 'Sources', uri: '/ui/Sources?playnum=1',icon:Music }
 ]
 
 import {
@@ -30,7 +30,7 @@ import {
 import ServiceNevigationMenu from './ServiceNevigationMenu'
 import { useBrowsing } from '../../context/browsingContext'
 import { useStorage } from '../../context/localStorageContext'
-import { BookmarkIcon } from 'lucide-react'
+import { BookmarkIcon, Home, Music, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 const ServiceMenuList = ({ musicServiceList }) => {
@@ -42,6 +42,7 @@ const ServiceMenuList = ({ musicServiceList }) => {
       <NavigationMenu>
         <NavigationMenuList className="w-full flex justify-start flex-wrap gap-0 xl:gap-3 ">
           {appMenuList.map((app) => {
+            const IconComponent = app.icon
             return (
               <NavigationMenuItem key={app.name}>
                 <NavigationMenuLink
@@ -51,6 +52,9 @@ const ServiceMenuList = ({ musicServiceList }) => {
                     displayMainScreen(app.uri)
                   }}
                 >
+                  {
+                    app.icon && <IconComponent className="size-5 mr-2 text-primary/90" /> 
+                  }
                   {app.name}
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -66,16 +70,16 @@ const ServiceMenuList = ({ musicServiceList }) => {
               <ContextMenu key={bookmark.name + index}>
                 <ContextMenuTrigger>
                   <NavigationMenuItem key={bookmark.name + index}>
-                  <NavigationMenuLink
-                    className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2 '}
-                    onClick={() => {
-                      setUrl(bookmark.uri)
-                      displayMainScreen(bookmark.uri)
-                    }}
-                  >
-                    <BookmarkIcon className="w-4 h-4 mr-1" /> {bookmark.name}
-                  </NavigationMenuLink>
-                </NavigationMenuItem></ContextMenuTrigger>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle() + ' cursor-pointer h-6 px-1 xl:h-10 xl:px-2 '}
+                      onClick={() => {
+                        setUrl(bookmark.uri)
+                        displayMainScreen(bookmark.uri)
+                      }}
+                    >
+                      <BookmarkIcon className="w-4 h-4 mr-1" /> {bookmark.name}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem></ContextMenuTrigger>
                 <ContextMenuContent>
                   <ContextMenuItem onClick={() => removeFromBookmarks(index)} className=" text-red-500">Delete</ContextMenuItem>
                 </ContextMenuContent>
