@@ -239,6 +239,19 @@ export const DevicesProvider = ({ children }) => {
     return () => clearInterval(intervalId)
   }, [])
 
+
+  const changeDeviceName = async (ip, newName) => {
+    setDevices((prevDevices) => {
+      const index = prevDevices.findIndex((device) => device.ip === ip)
+      if (index !== -1) {
+        const newDevices = [...prevDevices]
+        newDevices[index].name = newName
+        return newDevices
+      }
+      return prevDevices
+    })
+  }
+
   const value = {
     devices,
     setDevices,
@@ -252,7 +265,8 @@ export const DevicesProvider = ({ children }) => {
     removeSelectedDeviceByIp,
     removeAllSelectedDevices,
     refreshDevices,
-    addDeviceToRoom
+    addDeviceToRoom,
+    changeDeviceName
   }
 
   return <DevicesContext.Provider value={value}>{children}</DevicesContext.Provider>

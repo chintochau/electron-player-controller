@@ -11,12 +11,16 @@ import {
 import { Badge } from '@/components/ui/badge'
 
 import {
+  AppWindow,
   ArrowDownNarrowWide,
   ArrowUpDown,
+  CheckIcon,
   ChevronDownIcon,
   MinusCircleIcon,
   MoreHorizontal,
+  PencilLineIcon,
   PlusIcon,
+  Send,
   XCircle
 } from 'lucide-react'
 import SettingsMenu from '../SettingsMenu'
@@ -29,13 +33,14 @@ import { useEffect, useState } from 'react'
 import ApiListDropDown from '../ApiListDropDown'
 import { useTable } from '../../context/tableContext'
 import CheckUpgrade from '../CheckUpgrade'
-import { playerControl, removeFromGroup } from '../../lib/utils'
+import { playerControl, removeFromGroup, runCommandForDevice } from '../../lib/utils'
 import { toast, useToast } from '@/hooks/use-toast'
 import { goToIpAddress } from '../PlayerList'
 import { Checkbox } from '@/components/ui/checkbox'
 import CompactPlayer from '../CompactPlayer'
 import AddPlayerToGroup from '../AddPlayerToGroup'
 import { mapCommandByName } from '../../lib/constants'
+import { Label } from '@/components/ui/label'
 
 export const columns = [
   {
@@ -110,7 +115,7 @@ export const columns = [
     cell: ({ row }) => {
       const device = row.original
       if (!device) return null
-      const { devices } = useDevices() || []
+      const { devices, changeDeviceName } = useDevices() || []
 
       //TODO: show master/slave
 
@@ -120,13 +125,45 @@ export const columns = [
         return d.mac === device.mac
       })
 
-      const { isMaster, isSlave } = matchingDevice || {}
+      const { isMaster, isSlave, name } = matchingDevice || {}
+      const [newName, setNewName] = useState(name)
+      const [menuOpen, setMenuOpen] = useState(false)
 
       const isGrouped = isMaster || isSlave
       return (
         <>
-          <div className="flex items-center">
-            <p>{device.name}</p>
+          <div className="flex items-center ">
+            <div className='flex items-center'>
+              <p>{name}</p>
+              <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownMenuTrigger className="ml-2 h-4 w-4 mr-2">
+                  <PencilLineIcon className="h-4 w-4  text-foreground/20 hover:text-foreground duration-300 transition " />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="p-3">
+                  <form onSubmit={(e) => {
+                    e.preventDefault()
+                    setMenuOpen(false)
+                    runCommandForDevice(device.ip, `/settings?id=nodename&value=${newName}&playnum=1`, 'POST')
+                    changeDeviceName(device.ip, newName)
+                  }}>
+                    <Label htmlFor="name">Change Name:</Label>
+                    <div className='flex items-center gap-1 py-1'>
+                      <Input
+                        type="text"
+                        className="h-7 w-40"
+                        value={newName}
+                        onChange={(e) => {
+                          setNewName(e.target.value)
+                        }}
+                      />
+                      <Button variant="outline" size="sm" className="h-7">
+                        <CheckIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </form>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <AddPlayerToGroup ip={device.ip} />
           </div>
           <a
@@ -277,17 +314,34 @@ export const columns = [
           />
 
           <ApiListDropDown ip={device.ip} openApiCall={openApiCall} setApi={setApi} />
-
           <Button
             type="submit"
             variant="outline"
+            size="icon"
+            className="h-7"
+            onClick={(e) => {
+              e.preventDefault()
+              const command = mapCommandByName(api)
+              runCommandForDevice(device.ip, command, 'GET')
+              toast({
+                title: 'Success',
+                description: `Command sent successfully: ${api}`
+              })
+            }}
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+          <Button
+            type="submit"
+            variant="outline"
+            size="icon"
             className="h-7"
             onClick={(e) => {
               e.preventDefault()
               openApiCall(device.ip, api)
             }}
           >
-            Go
+            <AppWindow className="h-4 w-4" />
           </Button>
         </form>
       )
