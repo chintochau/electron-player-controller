@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { ArrowLeftIcon, SearchIcon, SendHorizonalIcon } from 'lucide-react'
+import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, SendHorizonalIcon } from 'lucide-react'
 import { Input } from '../../../../components/ui/input'
 import ServiceMenuList from './ServiceMenuList'
 import { useBrowsing } from '../../context/browsingContext'
@@ -20,6 +20,8 @@ import XMLViewer from 'react-xml-viewer'
 import GUI from '../BrowseView/GUI'
 import SearchView from '../SearchView/SearchView'
 import { enabledFeatures } from '../../lib/constants'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -41,7 +43,8 @@ const BrowsePage = () => {
     setIsSearchMode,
     performSearching,
     goToPreviousUrl,
-    containerRef
+    containerRef,
+    searchableServices
   } = useBrowsing()
 
   useEffect(() => {
@@ -135,12 +138,43 @@ const BrowsePage = () => {
         <form
           className={`flex items-center ml-4 flex-auto w-20 ${enabledFeatures.urlBar && 'max-w-[400px]'}`}
         >
-          <Input
-            className="w-full rounded-l-full border-r-0"
-            placeholder="Search"
-            onChange={(e) => setSearchText(e.target.value)}
-            value={searchText}
-          />
+          <div className="relative w-full">
+            <Input
+              className="w-full rounded-l-full border-r-0"
+              placeholder="Search"
+              onChange={(e) => setSearchText(e.target.value)}
+              value={searchText}
+            />
+            <div className='absolute top-0 right-0 h-full w-10 flex items-center justify-center'>
+              <DropdownMenu >
+                <DropdownMenuTrigger className=" outline outline-1 outline-offset-2 outline-accent mx-1 rounded-sm">
+                  <ChevronDownIcon className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={(e) => {
+                    e.preventDefault()
+                  }}>
+                    <Checkbox checked />
+                    <p className='ml-2 text-base'>All</p>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {searchableServices && searchableServices.length > 0 && searchableServices.map((service) => {
+                    return (
+                      <DropdownMenuItem
+                        key={service}
+                        onClick={(e) => {
+                          e.preventDefault()
+                        }}
+                      >
+                        <Checkbox checked />
+                        <p className='ml-2 text-base'>{service}</p>
+                      </DropdownMenuItem>
+                    )
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
           <Button
             type="submit"
             variant="ghost"
