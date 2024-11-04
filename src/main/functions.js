@@ -80,8 +80,20 @@ export const loadSDUIPage = async (url, debug) => {
 
 export const connectToDeviceThroughWifi = async (ssid,password) => {
   try {
-    wifi.connect({ssid: ssid,password: password})
+    await new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => reject(new Error('timeout')), 10000)
+      wifi.connect({ssid: ssid,password: password}, (error) => {
+        clearTimeout(timeoutId)
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      })
+    })
+    return true
   } catch (error) {
-    console.log(error)
+    console.log("Wifi connection error")
+    return false
   }
 }

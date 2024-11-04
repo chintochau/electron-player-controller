@@ -19,7 +19,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 
 const AddPlayerButton = () => {
   const { setShouldRefresh } = useRefresh()
-  const [bluosDevicesList, setBluosDevicesList] = useState([])
   const [wifiList, setWifiList] = useState([])
   const [isOpen, setIsOpen] = useState(false)
   const [timer, setTimer] = useState(0)
@@ -36,7 +35,8 @@ const AddPlayerButton = () => {
     isDeviceSelected,
     currentConnectedWifi,
     addToAdditionalDevices,
-    removeItemFromMatrix
+    removeItemFromMatrix,
+    bluosDevicesList, setBluosDevicesList
   } = useSetup()
 
   const getWifi = async () => {

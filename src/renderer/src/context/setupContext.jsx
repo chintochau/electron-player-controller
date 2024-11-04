@@ -16,6 +16,8 @@ export const SetupProvider = ({ children }) => {
     const [setupMatrix, setSetupMatrix] = useState([]) // [{name:"alpha IQ", version:"1.0.0", ip:"237.84.2.178", mac:"00:00:00:00:00:00", isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
+    const [bluosDevicesList, setBluosDevicesList] = useState([])
+
 
     const wifiRef = useRef(null)
 
@@ -24,9 +26,8 @@ export const SetupProvider = ({ children }) => {
         const wifiAndPasswordIsFilled = selectedWifi && wifiPassword && selectedWifi.length > 0 && wifiPassword.length > 0
         if (!inProgress) return
         setTimeout(() => {
-            console.log("starting to discover devices");
-            
             discoverDevices((devicesList) => {
+                console.log(devicesList);
                 if (inProgress && wifiAndPasswordIsFilled) {
                     runPlayersSetupProcess(devicesList)
                 } else if (inProgress && !wifiAndPasswordIsFilled) {
@@ -54,6 +55,7 @@ export const SetupProvider = ({ children }) => {
                 name,
                 ip,
                 version: txt.version,
+                mac: txt.mac,
             }
         })
         callback(devicesList)
@@ -84,19 +86,41 @@ export const SetupProvider = ({ children }) => {
         runCommandForDevice(ip, ":11000/SetInitialized?init=1", 'GET')
     }
 
-    const connectDeviceToSelectedWifi = () => {
+    const connectDeviceToSelectedWifi = async () => {
         //http://10.0.0.107/wifiapi?ssid=Jason&type=WPA2&key=00012345
-        runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
+        try {
+            const res = await runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
+            const parser = new DOMParser()
+            const document = parser.parseFromString(res.data, "text/html")
+            console.log(document);
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
-    const enterWacMode = (device) => {
-        runCommandForDevice("10.1.2.3", "/apmode?wac=1", 'GET')
-        device.wac = true
-        device.shouldRefreshTime = new Date().getTime() + 15000
-    }
 
     const connectToSSID = (ssid, password) => {
         window.api.connectToDeviceThroughWifi(ssid, password)
+    }
+
+    const checkWifiAvailableOnPlayer = async () => {
+        try {
+            const res = await runCommandForDevice("10.1.2.3", "/wificfg", 'GET')
+            const parser = new DOMParser()
+            const xml = parser.parseFromString(res.data, "text/html")
+            const noNetworksOption = xml.querySelector('option');
+            if (noNetworksOption && noNetworksOption.textContent === "No networks found.") {
+                console.log("No networks found.");
+                return false
+            } else {
+                console.log("Networks found.");
+                return true
+            }
+        } catch (error) {
+            console.error(error);
+            return false
+        }
     }
 
 
@@ -104,6 +128,10 @@ export const SetupProvider = ({ children }) => {
     const runPlayersSetupProcess = async (discoveredDevices) => {
         // loop through the matrix
         // [{name:"alpha IQ", version:null, ip:null, mac:"00:00:00:00:00:00", isUpgraded: false, isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
+
+        // TODO: handle apmode, no wifi available
+        // TODO: handle wifi setup faile response
+        // TODO: idenfity device by mac instead of name
 
         const getDeviceFromListByName = (name) => {
             const device = discoveredDevices.find((device) => {
@@ -190,15 +218,26 @@ export const SetupProvider = ({ children }) => {
         }))
 
         //4. link devices that is not connected to the selected wifi
-        matrix = matrix.map((device) => {
+        matrix = await Promise.all(matrix.map(async (device) => {
             if (device.shouldRefreshTime && device.shouldRefreshTime > new Date().getTime()) return device
 
             const thisDevice = getDeviceFromListByName(device.name)
-            if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wac) {
-                // make sure it goes into wac mode, and exist ac mode
-                enterWacMode(device)
-            } else if (!device.wac && wifiRef && wifiRef.current && wifiRef.current === device.name) {
-                enterWacMode(device)
+            console.log("thisDevice", thisDevice);
+            
+            if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wifiAvailable) {
+                const res = await checkWifiAvailableOnPlayer()
+                device.wifiAvailable = res
+                console.log("res", res);
+                if (!res) {
+                    playerControl("10.1.2.3", 'reboot', null)
+                }
+            } else if (!device.wifiAvailable && wifiRef && wifiRef.current && wifiRef.current === device.name) {
+                const res = await checkWifiAvailableOnPlayer()
+                device.wifiAvailable = res
+                console.log("res", res);
+                if (!res) {
+                    playerControl("10.1.2.3", 'reboot', null)
+                }
             } else if (thisDevice && thisDevice.ip !== "10.1.2.3") {
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
@@ -208,17 +247,26 @@ export const SetupProvider = ({ children }) => {
                 device.isConnected = true
             } else if (!device.isConnecting && wifiRef && wifiRef.current && wifiRef.current === device.name) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
-                connectDeviceToSelectedWifi()
-                device.isConnecting = true
-                connectToSSID(selectedWifi, wifiPassword)
+                const res = await connectDeviceToSelectedWifi()
+                if (!res) {
+                    return device
+                } else {
+                    device.isConnecting = true
+                    connectToSSID(selectedWifi, wifiPassword)
+
+                }
             } else if (!device.isConnecting && thisDevice && thisDevice.ip === "10.1.2.3") {
                 device.curretStatus = `Connecting to ${selectedWifi}`
-                connectDeviceToSelectedWifi()
-                device.isConnecting = true
-                connectToSSID(selectedWifi, wifiPassword)
+                const res = await connectDeviceToSelectedWifi()
+                if (!res) {
+                    return device
+                } else {
+                    device.isConnecting = true
+                    connectToSSID(selectedWifi, wifiPassword)
+                }
             }
             return device
-        })
+        }))
 
 
         // 5. connect to the next device that is not connected
@@ -247,10 +295,11 @@ export const SetupProvider = ({ children }) => {
     const createMatrixItem = (device) => {
         return {
             name: device,
+            mac: null,
             version: null,
             shouldRefreshTime: null,
             ip: null,
-            wac: false,
+            wifiAvailable: false,
             isConnecting: false,
             isConnected: false,
             isInitialized: false,
@@ -306,7 +355,8 @@ export const SetupProvider = ({ children }) => {
         isDeviceSelected,
         currentConnectedWifi,
         addToAdditionalDevices,
-        removeItemFromMatrix
+        removeItemFromMatrix,
+        bluosDevicesList, setBluosDevicesList
     }
 
     return <SetupContext.Provider value={value}>{children}</SetupContext.Provider>

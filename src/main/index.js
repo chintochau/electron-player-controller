@@ -71,8 +71,8 @@ app.whenReady().then(() => {
 })
 
 // Handle discovery in the main process
-ipcMain.handle('discover-devices', async (event,timeOutInSeconds=3) => {
-  
+ipcMain.handle('discover-devices', async (event, timeOutInSeconds = 3) => {
+
   const bonjourService = bonjour()
   const discoveredDevices = []
 
@@ -97,7 +97,7 @@ ipcMain.handle('discover-devices', async (event,timeOutInSeconds=3) => {
     setTimeout(() => {
       bonjourService.destroy(); // Stop Bonjour service to prevent memory leaks
       resolve(discoveredDevices) // Resolve with the discovered devices
-    }, timeOutInSeconds*1000) // Adjust the timeout as needed
+    }, timeOutInSeconds * 1000) // Adjust the timeout as needed
   })
 })
 
@@ -204,8 +204,8 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
       const upgrade = UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3
 
       console.log('upgrade', upgrade);
-      
-      const {step,total,percent,git} = upgrade
+
+      const { step, total, percent, git } = upgrade
 
       response = {
         success: true,
@@ -304,9 +304,9 @@ ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GE
     return { success: false }
   }
   console.log('Control command successful:', command)
-  return { success: true }
+  const data = await res.text()
+  return { success: true, data }
 })
-
 
 ipcMain.handle('open-overlay', (event, url) => {
   let overlayWindow = new BrowserWindow({
@@ -351,9 +351,9 @@ ipcMain.handle("load-sd-ui-page", async (event, { url, debug }) => {
   return await loadSDUIPage(url, debug);
 });
 
-ipcMain.handle("connect-to-wifi", async (event, { ssid,password }) => {
+ipcMain.handle("connect-to-wifi", async (event, { ssid, password }) => {
   console.log('connect-to-wifi', ssid);
-  return await connectToDeviceThroughWifi(ssid,password)
+  return await connectToDeviceThroughWifi(ssid, password)
 })
 
 ipcMain.handle('get-app-version', () => {
