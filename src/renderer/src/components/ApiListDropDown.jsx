@@ -14,7 +14,8 @@ import {
     MinusIcon,
     InfoIcon,
     ArrowUp,
-    Send
+    Send,
+    Download
 } from 'lucide-react'
 import { commandList } from '../lib/constants'
 import { Button } from '@/components/ui/button'
@@ -44,13 +45,32 @@ import { runCommandForDevice } from '../lib/utils'
 import { toast } from '@/hooks/use-toast'
 
 
-const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
+const ApiListDropDown = ({ ip, openApiCall, setApi, footer }) => {
 
     const [isEditMode, setIsEditMode] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const { customApiList, addToCustomApiList, removeFromCustomApiList } = useStorage()
     const [newCommandName, setNewCommandName] = useState("")
     const [newCommand, setNewCommand] = useState("")
+
+    const handleDownloadButton = async (ip, command) => {
+        const res = await runCommandForDevice(ip, command);
+        const parser = new DOMParser();
+        const document = parser.parseFromString(res.data, "text/html");
+        
+        // Convert document to a string if necessary
+        const htmlString = new XMLSerializer().serializeToString(document);
+    
+        try {
+            // Send the content to Electron to trigger the save dialog
+            const filePath = await window.api.saveFile(htmlString);
+            if (filePath) {
+                console.log(`File saved to: ${filePath}`);
+            }
+        } catch (error) {
+            console.error('Failed to save file:', error);
+        }
+    }
 
     return (
         <DropdownMenu>
@@ -120,7 +140,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                                         </div>
                                     }
                                     <DropdownMenuItem
-                                    className=" w-full"
+                                        className=" w-full"
                                         key={command.command}
                                         onClick={() =>
                                             setApi(command.command)
@@ -128,7 +148,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                                     >
                                         <p>{command.name}</p>
                                     </DropdownMenuItem>
-                                    {!footer &&<Button
+                                    {!footer && <Button
                                         variant="ghost"
                                         className="px-2 ml-1"
                                         onClick={() => {
@@ -147,30 +167,51 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {commandList.map((command) => (
-                        <div className={cn("",footer ? "" : "flex items-center ")} key={command.command}>
+                        <div className={cn("", footer ? "" : "flex items-center ")} key={command.command}>
                             <DropdownMenuItem
                                 key={command}
                                 onClick={() =>
-                                    setApi("API:"+command.name)
+                                    setApi("API:" + command.name)
                                 }
                                 className=" w-full"
                             >
                                 <p>{command.name}</p>
                             </DropdownMenuItem>
-                            {!footer &&<Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                    runCommandForDevice(ip, command.command)
-                                    toast({
-                                        title: 'Running Command',
-                                        description: `Running Command ${command.name} on ${ip}`,
-                                        status: 'success'
-                                    })
-                                }}
-                            >
-                                <Send className="h-4 w-4" />
-                            </Button>}
+
+                            {!footer &&
+                                <>
+                                    {command.download ? <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="ml-1"
+                                        onClick={() => {
+                                            handleDownloadButton(ip,command.command)
+                                            toast({
+                                                title: 'Downloading Result',
+                                                description: `Downloading ${command.name} on ${ip}, it may take a few seconds...`,
+                                                status: 'success'
+                                            })
+                                        }}
+                                    >
+                                        <Download className="h-4 w-4" />
+                                    </Button> : null}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => {
+                                            runCommandForDevice(ip, command.command)
+                                            toast({
+                                                title: 'Running Command',
+                                                description: `Running Command ${command.name} on ${ip}`,
+                                                status: 'success'
+                                            })
+                                        }}
+                                    >
+                                        <Send className="h-4 w-4" />
+                                    </Button>
+
+                                </>
+                            }
                         </div>
                     ))}
                 </>

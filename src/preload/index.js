@@ -14,7 +14,8 @@ const api = {
   runCommandForDevice: (ip, command, type) => ipcRenderer.invoke('run-command-for-device', {ip, command, type}),
   loadSDUIPage: (url,debug) => ipcRenderer.invoke('load-sd-ui-page', {url, debug}),
   connectToDeviceThroughWifi: (ssid,password) => ipcRenderer.invoke('connect-to-wifi', {ssid,password}),
-  getAppVersion: () => ipcRenderer.invoke('get-app-version')
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  saveFile: (data) => ipcRenderer.invoke('save-file', data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

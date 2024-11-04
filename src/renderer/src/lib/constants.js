@@ -37,6 +37,10 @@ export const commandList = [
   },{
     name:"Wac Mode",
     command:"/apmode?wac=1"
+  },{
+    name:"Diagnostics log",
+    command:"/diag?print=1",
+    download:true
   }
 ]
 

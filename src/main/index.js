@@ -1,10 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain,dialog  } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
 import { checkUpgrade, connectToDeviceThroughWifi, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
+import fs from 'fs'
 
 let masterWindow
 function createWindow() {
@@ -361,6 +362,20 @@ ipcMain.handle("connect-to-wifi", async (event, { ssid, password }) => {
 
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
+});
+
+ipcMain.handle('save-file', async (event, data) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Save File As',
+      defaultPath: 'downloaded_file.txt',  // Default filename
+      filters: [{ name: 'Text Files', extensions: ['txt'] }]
+  });
+
+  if (canceled || !filePath) return; // User canceled the dialog
+
+  fs.writeFileSync(filePath, data, 'utf-8'); // Write the file content to the selected path
+
+  return filePath; // Send the path back to the front end, if needed
 });
 
 // handle any uncaughtException
