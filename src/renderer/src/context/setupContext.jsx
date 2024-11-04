@@ -17,6 +17,7 @@ export const SetupProvider = ({ children }) => {
     const [inProgress, setInProgress] = useState(false)
     const [currentConnectedWifi, setCurrentConnectedWifi] = useState(null)
     const [bluosDevicesList, setBluosDevicesList] = useState([])
+    const [connectingStartTime, setConnectingStartTime] = useState(null)
 
 
     const wifiRef = useRef(null)
@@ -102,6 +103,7 @@ export const SetupProvider = ({ children }) => {
 
     const connectToSSID = (ssid, password) => {
         window.api.connectToDeviceThroughWifi(ssid, password)
+        setConnectingStartTime(new Date())
     }
 
     const checkWifiAvailableOnPlayer = async () => {
@@ -222,8 +224,6 @@ export const SetupProvider = ({ children }) => {
             if (device.shouldRefreshTime && device.shouldRefreshTime > new Date().getTime()) return device
 
             const thisDevice = getDeviceFromListByName(device.name)
-            console.log("thisDevice", thisDevice);
-            
             if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wifiAvailable) {
                 const res = await checkWifiAvailableOnPlayer()
                 device.wifiAvailable = res
@@ -270,11 +270,15 @@ export const SetupProvider = ({ children }) => {
 
 
         // 5. connect to the next device that is not connected
-        const device = matrix.find((device) => !device.isConnected && !device.isConnecting)
-        if (device) {
-            connectToSSID(device.name)
+        const targetDevice = matrix.find((device) => !device.isConnected && !device.isConnecting)
+        if (targetDevice) {
+            if (!connectingStartTime || new Date().getTime() - connectingStartTime >= 10000) {
+                connectToSSID(targetDevice.name);
+            }
         } else if (wifiRef && !wifiRef.current) {
-            connectToSSID(selectedWifi, wifiPassword)
+            if (!connectingStartTime || new Date().getTime() - connectingStartTime >= 10000) {
+                connectToSSID(selectedWifi, wifiPassword);
+            }
         }
 
         // 6. add additional devices
