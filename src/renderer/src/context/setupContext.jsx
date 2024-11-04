@@ -122,11 +122,8 @@ export const SetupProvider = ({ children }) => {
             const xml = parser.parseFromString(res.data, "text/html")
             const noNetworksOption = xml.querySelector('option');
             if (noNetworksOption && noNetworksOption.textContent === "No networks found.") {
-                console.log(noNetworksOption);
                 return false
             } else {
-                console.log(noNetworksOption);
-                console.log("networks found");
                 return true
             }
         } catch (error) {
@@ -315,7 +312,10 @@ export const SetupProvider = ({ children }) => {
         }
 
         // 6. add additional devices
-        const additionalMatrixItems = additionalDevices.map((device) => createMatrixItem(device))
+        const additionalMatrixItems = additionalDevices.map((device) => {
+            if (matrix.find((item) => item.name === device)) return null
+            return createMatrixItem(device)
+        }).filter((item) => item !== null)
         matrix = [...matrix, ...additionalMatrixItems]
         setSetupMatrix(matrix)
     }
@@ -390,7 +390,8 @@ export const SetupProvider = ({ children }) => {
         currentConnectedWifi,
         addToAdditionalDevices,
         removeItemFromMatrix,
-        bluosDevicesList, setBluosDevicesList
+        bluosDevicesList, setBluosDevicesList,
+        additionalDevices
     }
 
     return <SetupContext.Provider value={value}>{children}</SetupContext.Provider>

@@ -36,7 +36,8 @@ const AddPlayerButton = () => {
     currentConnectedWifi,
     addToAdditionalDevices,
     removeItemFromMatrix,
-    bluosDevicesList, setBluosDevicesList
+    bluosDevicesList, setBluosDevicesList,
+    additionalDevices
   } = useSetup()
 
   const getWifi = async () => {
@@ -50,7 +51,7 @@ const AddPlayerButton = () => {
     setWifiList(allWifiList.map((wifi) => wifi.correctFormat ? null : wifi).filter((wifi) => wifi !== null))
   }
 
-  const isWifiFormatCorrect = (ssid,security) => {
+  const isWifiFormatCorrect = (ssid, security) => {
     if (!ssid || ssid === '') return false
     // * - XXXX
     if (ssid.split('-').length > 1 && ssid.split('-').length < 3 && ssid.split('-')[1].length === 4 && security === 'Open') {
@@ -104,10 +105,13 @@ const AddPlayerButton = () => {
           {
             inProgress && <div className='border border-accent rounded-md bg-accent px-2 py-1'>
               {bluosDevicesList && bluosDevicesList.filter((wifi) => !isDeviceSelected(wifi.ssid)).length > 0 ?
-                bluosDevicesList.filter((wifi) => !isDeviceSelected(wifi.ssid)).map((wifi) => {
+                bluosDevicesList.filter((wifi) => { 
+                  // return device is not selected, and not in additional devices
+                  return !isDeviceSelected(wifi.ssid) && !additionalDevices.includes(wifi.ssid)
+                }).map((wifi) => {
                   return (
                     <div className='w-full p-3 flex items-center gap-3' key={wifi.ssid}>
-                      <PlusCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-primary' onClick={() => addToAdditionalDevices(wifi.ssid)} />
+                      <PlusCircle className='w-4 h-4 cursor-pointer  text-primary/50 hover:text-primary' onClick={() => { addToAdditionalDevices(wifi.ssid) }} />
                       <p className='text-xl'>{wifi.ssid}</p>
                     </div>
                   )
@@ -135,29 +139,29 @@ const AddPlayerButton = () => {
           }
         </div>
 
-        
+
         {!inProgress && <>
-            {bluosDevicesList && bluosDevicesList.length > 0 ?
-              bluosDevicesList.map((wifi) => {
-                return (
-                  <div className='w-full rounded-md p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
-                    <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
-                    <p className='text-xl'>{wifi.ssid}</p>
-                  </div>
-                )
-              }) : (
-                <div className='flex flex-col items-center justify-center py-14'>
-                  <Loader2 className='animate-spin size-12' />
-                  <p className='text-xl'>
-                    Searching For BluOS Device...  {timer}
-                  </p>
-                  <p className='text-xm text-primary/50'>
-                    *If your device does not show, click on windows wifi button to enable wifi scan
-                  </p>
+          {bluosDevicesList && bluosDevicesList.length > 0 ?
+            bluosDevicesList.map((wifi) => {
+              return (
+                <div className='w-full rounded-md p-3 cursor-pointer flex items-center gap-3 bg-accent ' key={wifi.ssid} onClick={() => isDeviceSelected(wifi.ssid) ? deselectDevice(wifi.ssid) : selectDevice(wifi.ssid)}>
+                  <Checkbox checked={isDeviceSelected(wifi.ssid)} onCheckedChange={(e) => e ? selectDevice(wifi.ssid) : deselectDevice(wifi.ssid)} />
+                  <p className='text-xl'>{wifi.ssid}</p>
                 </div>
               )
-            }
-          </>}
+            }) : (
+              <div className='flex flex-col items-center justify-center py-14'>
+                <Loader2 className='animate-spin size-12' />
+                <p className='text-xl'>
+                  Searching For BluOS Device...  {timer}
+                </p>
+                <p className='text-xm text-primary/50'>
+                  *If your device does not show, click on windows wifi button to enable wifi scan
+                </p>
+              </div>
+            )
+          }
+        </>}
 
         {!inProgress &&
           <>
