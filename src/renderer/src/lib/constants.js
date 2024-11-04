@@ -1,4 +1,4 @@
-import { AudioWaveformIcon, Cog, Drill, Headset, Library, Music, Network, Wifi, Wrench } from 'lucide-react'
+import { AudioWaveformIcon, Bolt, Cog, Drill, Headset, Library, Music, Network, Wifi, Wrench } from 'lucide-react'
 
 
 export const enabledFeatures = {
@@ -74,6 +74,10 @@ export const settingsList = [
     name:"Configure IR Triggers",
     path:"triggercfg",
     icon:Wrench,
+  },{
+    name:"Configure Active Zones",
+    path:"zones",
+    icon:Bolt,
   },
   {
     name: 'Diagnostics',

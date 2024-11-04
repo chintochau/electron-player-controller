@@ -112,10 +112,12 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                             customApiList.map((command, index) => (
                                 <div className="flex items-center " key={command.command}>
                                     {isEditMode &&
-                                        <MinusIcon
-                                            onClick={() => {
-                                                removeFromCustomApiList(index)
-                                            }} className="h-4 w-4 dark:bg-red-800 bg-red-500 hover:bg-red-700 dark:hover:bg-red-700 rounded-full  text-white mx-1 cursor-pointer" />
+                                        <div className='w-5 h-5  flex items-center justify-center'>
+                                            <MinusIcon
+                                                onClick={() => {
+                                                    removeFromCustomApiList(index)
+                                                }} className="h-4 w-4 dark:bg-red-800 bg-red-500 hover:bg-red-700 dark:hover:bg-red-700 rounded-full  text-white cursor-pointer" />
+                                        </div>
                                     }
                                     <DropdownMenuItem
                                     className=" w-full"
