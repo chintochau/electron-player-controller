@@ -24,7 +24,11 @@ export const checkUpgrade = async (ip) => {
       parser.parseString(xmlContent, (err, result) => {
         if (err) {
           console.error('Failed to parse XML:', err)
-          return
+          return {
+            inProgress: false,
+            version: null,
+            available: false
+          }
         }
 
         // Step 3: Access the JSON data
@@ -38,7 +42,14 @@ export const checkUpgrade = async (ip) => {
     }
 
     return response
-  } catch (error) { }
+  } catch (error) { 
+    return {
+      inProgress: false,
+      version: null,
+      available: false
+    }
+    console.log(error)
+  }
 }
 
 export const getCurrentWifi = async () => {

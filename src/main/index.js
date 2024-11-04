@@ -180,7 +180,9 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
     let response
 
     if (SyncStatus) {
-      const { $, master, slave } = SyncStatus
+      const { $, master, slave } = SyncStatus || {}
+      const {mac} = $ || {}
+      const macAddress = mac ? mac.replace(':', '') : null
       let masterIp, slaveList
       if (master) {
         masterIp = master[0]._
@@ -188,6 +190,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
       response = {
         success: true,
         status: $.initialized === 'true' ? 'normal' : 'Need Setup',
+        mac: macAddress,
         icon: $.icon,
         schemaVersion: $.schemaVersion,
         volume: $.volume,

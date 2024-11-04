@@ -89,6 +89,8 @@ export const SetupProvider = ({ children }) => {
     const connectDeviceToSelectedWifi = async () => {
         //http://10.0.0.107/wifiapi?ssid=Jason&type=WPA2&key=00012345
         try {
+            console.log("connecting player to wifi");
+            
             const res = await runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
             const parser = new DOMParser()
             const document = parser.parseFromString(res.data, "text/html")
@@ -101,7 +103,16 @@ export const SetupProvider = ({ children }) => {
 
     const connectToSSID = (ssid, password) => {
         window.api.connectToDeviceThroughWifi(ssid, password)
+        console.log("connectToSSID", ssid);
         setConnectingStartTime(new Date())
+    }
+
+    const getMacAddress = async (ip) => {
+        const syncStatus = await window.api.checkSyncStatus(ip)
+        const {mac} = syncStatus || {}
+        console.log("mac address for ip", ip, mac);
+        
+        return mac
     }
 
     const checkWifiAvailableOnPlayer = async () => {
@@ -111,8 +122,11 @@ export const SetupProvider = ({ children }) => {
             const xml = parser.parseFromString(res.data, "text/html")
             const noNetworksOption = xml.querySelector('option');
             if (noNetworksOption && noNetworksOption.textContent === "No networks found.") {
+                console.log(noNetworksOption);
                 return false
             } else {
+                console.log(noNetworksOption);
+                console.log("networks found");
                 return true
             }
         } catch (error) {
@@ -124,6 +138,8 @@ export const SetupProvider = ({ children }) => {
 
 
     const runPlayersSetupProcess = async (discoveredDevices) => {
+        console.log("discoveredDevices", discoveredDevices);
+        console.log("setupMatrix", setupMatrix);
         // loop through the matrix
         // [{name:"alpha IQ", version:null, ip:null, mac:"00:00:00:00:00:00", isUpgraded: false, isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
 
@@ -190,7 +206,11 @@ export const SetupProvider = ({ children }) => {
             const timeoutId = setTimeout(() => controller.abort(), 2000)
             if (device.isUpgraded || device.ip === '10.1.2.3' || !device.ip) return device
             try {
+
+                
                 const res = await window.api.checkUpgrade(device.ip, { signal: controller.signal })
+
+                
                 clearTimeout(timeoutId)
                 if (res) {
                     if (!res.version && res.available === "false") {
@@ -220,19 +240,22 @@ export const SetupProvider = ({ children }) => {
             if (device.shouldRefreshTime && device.shouldRefreshTime > new Date().getTime()) return device
 
             const thisDevice = getDeviceFromListByName(device.name)
-            if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wifiAvailable) {
+            if (thisDevice && thisDevice.ip === "10.1.2.3" && !device.wifiAvailable) {
+                // device.mac = await getMacAddress("10.1.2.3")
                 const res = await checkWifiAvailableOnPlayer()
                 device.wifiAvailable = res
                 if (!res) {
                     playerControl("10.1.2.3", 'reboot', null)
                 }
             } else if (!device.wifiAvailable && wifiRef && wifiRef.current && wifiRef.current === device.name) {
+                // device.mac = await getMacAddress("10.1.2.3")
                 const res = await checkWifiAvailableOnPlayer()
                 device.wifiAvailable = res
                 if (!res) {
                     playerControl("10.1.2.3", 'reboot', null)
                 }
             } else if (thisDevice && thisDevice.ip !== "10.1.2.3") {
+                // device.mac = await getMacAddress(thisDevice.ip)
                 device.version = thisDevice.version
                 device.ip = thisDevice.ip
                 if (!device.isConnected) {
@@ -241,6 +264,7 @@ export const SetupProvider = ({ children }) => {
                 device.isConnected = true
             } else if (!device.isConnecting && wifiRef && wifiRef.current && wifiRef.current === device.name) {
                 device.currentStatus = `Connecting to ${selectedWifi}`
+                // device.mac = await getMacAddress("10.1.2.3")
                 const res = await connectDeviceToSelectedWifi()
                 if (!res) {
                     return device
@@ -250,7 +274,8 @@ export const SetupProvider = ({ children }) => {
 
                 }
             } else if (!device.isConnecting && thisDevice && thisDevice.ip === "10.1.2.3") {
-                device.curretStatus = `Connecting to ${selectedWifi}`
+                device.currentStatus = `Connecting to ${selectedWifi}`
+                // device.mac = await getMacAddress("10.1.2.3")
                 const res = await connectDeviceToSelectedWifi()
                 if (!res) {
                     return device
