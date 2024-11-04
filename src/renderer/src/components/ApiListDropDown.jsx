@@ -13,7 +13,8 @@ import {
     PlusIcon,
     MinusIcon,
     InfoIcon,
-    ArrowUp
+    ArrowUp,
+    Send
 } from 'lucide-react'
 import { commandList } from '../lib/constants'
 import { Button } from '@/components/ui/button'
@@ -39,6 +40,8 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 import { useStorage } from '../context/localStorageContext'
+import { runCommandForDevice } from '../lib/utils'
+import { toast } from '@/hooks/use-toast'
 
 
 const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
@@ -115,6 +118,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                                             }} className="h-4 w-4 dark:bg-red-800 bg-red-500 hover:bg-red-700 dark:hover:bg-red-700 rounded-full  text-white mx-1 cursor-pointer" />
                                     }
                                     <DropdownMenuItem
+                                    className=" w-full"
                                         key={command.command}
                                         onClick={() =>
                                             setApi(command.command)
@@ -129,7 +133,7 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                                             openApiCall(ip, command.command)
                                         }}
                                     >
-                                        <SquareArrowOutUpRightIcon className="h-4 w-4" />
+                                        <Send className="h-4 w-4" />
                                     </Button>}
                                 </div>
                             ))
@@ -147,17 +151,23 @@ const ApiListDropDown = ({ ip, openApiCall, setApi ,footer}) => {
                                 onClick={() =>
                                     setApi("API:"+command.name)
                                 }
+                                className=" w-full"
                             >
                                 <p>{command.name}</p>
                             </DropdownMenuItem>
                             {!footer &&<Button
                                 variant="ghost"
-                                className="px-2 ml-1"
+                                size="icon"
                                 onClick={() => {
-                                    openApiCall(ip, command.command)
+                                    runCommandForDevice(ip, command.command)
+                                    toast({
+                                        title: 'Running Command',
+                                        description: `Running Command ${command.name} on ${ip}`,
+                                        status: 'success'
+                                    })
                                 }}
                             >
-                                <SquareArrowOutUpRightIcon className="h-4 w-4" />
+                                <Send className="h-4 w-4" />
                             </Button>}
                         </div>
                     ))}

@@ -13,7 +13,7 @@ export const playerControl = async (ip, control, param) => {
 }
 
 
-export const runCommandForDevice = async (ip, command, type) => {
+export const runCommandForDevice = async (ip, command, type="GET") => {
   const res = await window.api.runCommandForDevice(ip, command, type)
   return res
 }
