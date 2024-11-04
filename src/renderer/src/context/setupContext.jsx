@@ -28,7 +28,6 @@ export const SetupProvider = ({ children }) => {
         if (!inProgress) return
         setTimeout(() => {
             discoverDevices((devicesList) => {
-                console.log(devicesList);
                 if (inProgress && wifiAndPasswordIsFilled) {
                     runPlayersSetupProcess(devicesList)
                 } else if (inProgress && !wifiAndPasswordIsFilled) {
@@ -93,7 +92,6 @@ export const SetupProvider = ({ children }) => {
             const res = await runCommandForDevice("10.1.2.3", `/wifiapi?ssid=${selectedWifi}&type=WPA2&key=${wifiPassword}`, 'GET')
             const parser = new DOMParser()
             const document = parser.parseFromString(res.data, "text/html")
-            console.log(document);
             return true
         } catch (error) {
             return false
@@ -113,10 +111,8 @@ export const SetupProvider = ({ children }) => {
             const xml = parser.parseFromString(res.data, "text/html")
             const noNetworksOption = xml.querySelector('option');
             if (noNetworksOption && noNetworksOption.textContent === "No networks found.") {
-                console.log("No networks found.");
                 return false
             } else {
-                console.log("Networks found.");
                 return true
             }
         } catch (error) {
@@ -227,14 +223,12 @@ export const SetupProvider = ({ children }) => {
             if (thisDevice && thisDevice.ip == "10.1.2.3" && !device.wifiAvailable) {
                 const res = await checkWifiAvailableOnPlayer()
                 device.wifiAvailable = res
-                console.log("res", res);
                 if (!res) {
                     playerControl("10.1.2.3", 'reboot', null)
                 }
             } else if (!device.wifiAvailable && wifiRef && wifiRef.current && wifiRef.current === device.name) {
                 const res = await checkWifiAvailableOnPlayer()
                 device.wifiAvailable = res
-                console.log("res", res);
                 if (!res) {
                     playerControl("10.1.2.3", 'reboot', null)
                 }
@@ -283,8 +277,6 @@ export const SetupProvider = ({ children }) => {
 
         // 6. add additional devices
         const additionalMatrixItems = additionalDevices.map((device) => createMatrixItem(device))
-        console.log("additionalMatrixItems", additionalMatrixItems);
-
         matrix = [...matrix, ...additionalMatrixItems]
         setSetupMatrix(matrix)
     }
