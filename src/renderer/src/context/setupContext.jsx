@@ -110,8 +110,6 @@ export const SetupProvider = ({ children }) => {
     const getMacAddress = async (ip) => {
         const syncStatus = await window.api.checkSyncStatus(ip)
         const { mac } = syncStatus || {}
-        console.log("mac address for ip", ip, mac);
-
         return mac
     }
 
@@ -135,8 +133,6 @@ export const SetupProvider = ({ children }) => {
 
 
     const runPlayersSetupProcess = async (discoveredDevices) => {
-        console.log("discoveredDevices", discoveredDevices);
-        console.log("setupMatrix", setupMatrix);
         // loop through the matrix
         // [{name:"alpha IQ", version:null, ip:null, mac:"00:00:00:00:00:00", isUpgraded: false, isConnected: true, isInitialized: true, isRebooted: false, isFinished: false}, ]
 
