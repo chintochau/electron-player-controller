@@ -8,6 +8,7 @@ import AddPlayerButton from './AddPlayerButton'
 import { enabledFeatures } from '../lib/constants'
 
 const SettingBar = () => {
+  const isMacOS = window.electron.process.platform === 'darwin'
   const { isCollapsed, setIsCollapsed,showPreset,setShowPreset } = useTable()
   return (
     <div className="h-screen flex flex-col justify-start mx-auto  bgred gap-y-2 w-10">
@@ -22,7 +23,7 @@ const SettingBar = () => {
       {enabledFeatures.darkMode && <Button variant="ghost" className="p-1 hover:bg-accent rounded-md">
         <ThemeControlButton />
       </Button>}
-      {enabledFeatures.addPlayer && <AddPlayerButton />}
+      {enabledFeatures.addPlayer && !isMacOS && <AddPlayerButton />}
       <Button variant="ghost" size="icon" className={cn("text-2xl", showPreset ? '' : 'line-through')} onClick={() => setShowPreset(!showPreset)}>P</Button>
 
     </div>
