@@ -134,6 +134,8 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
+    const {sleep} = statusXml || {}
+
     if (
       statusXml &&
       statusXml.service &&
@@ -155,7 +157,8 @@ ipcMain.handle('check-status', async (event, ip) => {
         volume: statusXml.volume[0],
         title1: statusXml.title1[0],
         image: statusXml.image[0],
-        progress: progress
+        progress: progress,
+        sleep: sleep?.[0] || false
       }
     } else {
       return { success: false, state: 'nothing' }

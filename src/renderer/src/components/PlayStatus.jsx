@@ -7,7 +7,8 @@ import {
   PlayCircleIcon,
   PlusIcon,
   SkipBackIcon,
-  SkipForwardIcon
+  SkipForwardIcon,
+  Timer
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Slider } from '@/components/ui/slider'
@@ -15,6 +16,7 @@ import { Button } from '../../../components/ui/button'
 import { useRefresh } from '../context/refreshContext'
 import PresetsBar from './PresetsBar'
 import { useTable } from '../context/tableContext'
+import { runCommandForDevice } from '../lib/utils'
 
 const PlayStatus = ({ ip }) => {
   const [status, setStatus] = useState(null)
@@ -140,7 +142,19 @@ const PlayStatus = ({ ip }) => {
   return (
     <div className='flex flex-col'>
       <div className="flex items-center gap-2 justify-end px-2">
-        <div className="flex items-center justify-center w-16 h-16">
+        <div className="flex items-center justify-center w-16 h-16 relative">
+          <div className={cn("absolute -bottom-5 left-1 w-full flex items-center justify-start  hover:text-primary cursor-pointer",
+            status?.sleep ? 'text-primary/50' : "text-background"
+          )} onClick={async () => {
+            await runCommandForDevice(ip, ':11000/Sleep')
+            fetchStatus()
+          }
+          } >
+            <Timer className="w-4 h-4" />
+            <p className='text-xs'>
+              {status?.sleep && status?.sleep + " min"}
+            </p>
+          </div>
           {status?.image && (
             <img
               className="w-full rounded-sm aspect-auto"
