@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDevices } from './devicesContext'
 import { searchableServicesList } from '../lib/constants'
+import { useStorage } from './localStorageContext'
 
 const BrowsingContext = createContext()
 
@@ -20,10 +21,15 @@ export const BrowsingProvider = ({ children }) => {
   const [searchResult, setSearchResult] = useState([])
   const [xmlSearchResult, setXmlSearchResult] = useState('')
   const [displayMode, setDisplayMode] = useState('gui')
-  const [searchableServices, setSearchableServices] = useState(searchableServicesList)
   const [isSearchMode, setIsSearchMode] = useState(false)
   const [historyUrl, setHistoryUrl] = useState([])
   const containerRef = useRef(null)
+
+  const {  enabledSearchServices } = useStorage()
+
+  const [searchableServices, setSearchableServices] = useState(searchableServicesList.map(service => (
+    { service: service, selected: enabledSearchServices.includes(service) }
+  )))
 
   useEffect(() => {
     if (serviceList.length === 0) {
@@ -33,6 +39,11 @@ export const BrowsingProvider = ({ children }) => {
       loadSearchableServices()
     }
   }, [selectedPlayer])
+
+  useEffect(() => {
+    // when enabled search services changes, update searchable services
+    setSearchableServices(prevState => prevState.map(item => ({ ...item, selected: enabledSearchServices.includes(item.service) })))
+  }, [enabledSearchServices, searchableServicesList])
 
   const addToHistory = (url, url2) => {
     // check if previous url is same as current url
@@ -52,7 +63,7 @@ export const BrowsingProvider = ({ children }) => {
       ?.map((item) => item?.action?.[0]?.$?.URI?.split('service=')[1])
       .filter((item) => item != null)
     if (data) {
-      setSearchableServices(data)
+      setSearchableServices(data.map(service => ({ service: service, selected: enabledSearchServices.includes(service) })))
     }
   }
   const goToPreviousUrl = () => {
@@ -186,11 +197,15 @@ export const BrowsingProvider = ({ children }) => {
     ])
 
     for (let i = 0; i < searchableServices.length; i++) {
-      const res = await loadSDUI(uri + '&service=' + searchableServices[i], ip)
+      if (searchableServices[i].selected === false) {
+        // if service is not selected, skip it
+        continue
+      }
+      const res = await loadSDUI(uri + '&service=' + searchableServices[i].service, ip)
       const response = res.json
       if (response && response.screen) {
-        xmlResult += `<${searchableServices[i]}>${res.xmlText}</${searchableServices[i]}>`
-        jsonResult.push({...response.screen, searchId: searchableServices[i]})
+        xmlResult += `<${searchableServices[i].service}>${res.xmlText}</${searchableServices[i].service}>`
+        jsonResult.push({ ...response.screen, searchId: searchableServices[i].service })
         setXmlSearchResult(xmlResult)
         setSearchResult(jsonResult)
       }

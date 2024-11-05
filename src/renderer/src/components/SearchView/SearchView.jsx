@@ -17,8 +17,7 @@ const SearchView = () => {
     setSearchResult,
     xmlSearchResult,
     displayMode,
-    setIsSearchMode,
-    searchableServices
+    setIsSearchMode
   } = useBrowsing()
 
   const exitSearch = () => {

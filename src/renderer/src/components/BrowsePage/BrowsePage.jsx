@@ -22,6 +22,7 @@ import SearchView from '../SearchView/SearchView'
 import { enabledFeatures } from '../../lib/constants'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useStorage } from '../../context/localStorageContext'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -46,6 +47,14 @@ const BrowsePage = () => {
     containerRef,
     searchableServices
   } = useBrowsing()
+
+  const {
+    addServiceToSearchList,
+    removeServiceFromSearchList,
+    selectAllServicesFromSearchList,
+    removeAllServicesFromSearchList,
+    enabledSearchServices
+  } = useStorage()
 
   useEffect(() => {
     if (serviceList.length === 0) {
@@ -153,21 +162,49 @@ const BrowsePage = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={(e) => {
                     e.preventDefault()
+                    if (searchableServices && searchableServices.length === enabledSearchServices.length) {
+                      removeAllServicesFromSearchList()
+                    } else {
+                      selectAllServicesFromSearchList(searchableServices.map((service) => service.service))
+                    }
                   }}>
-                    <Checkbox checked />
+                    <Checkbox checked={searchableServices && searchableServices.length === enabledSearchServices.length}
+                      onCheckedChange={(e) => {
+                        if (e) {
+                          selectAllServicesFromSearchList(searchableServices.map((service) => service.service))
+                        } else {
+                          removeAllServicesFromSearchList()
+                        }
+                      }} />
                     <p className='ml-2 text-base'>All</p>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {searchableServices && searchableServices.length > 0 && searchableServices.map((service) => {
                     return (
                       <DropdownMenuItem
-                        key={service}
+                        key={service.service}
                         onClick={(e) => {
                           e.preventDefault()
+                          if (service.selected) {
+                            removeServiceFromSearchList(service.service)
+                          } else {
+                            addServiceToSearchList(service.service)
+                          }
                         }}
                       >
-                        <Checkbox checked />
-                        <p className='ml-2 text-base'>{service}</p>
+                        <Checkbox checked={service.selected} onCheckedChange={(e) => {
+                          console.log(e, service.service);
+
+                          if (e) {
+                            console.log("added", service.service);
+                            addServiceToSearchList(service.service)
+                          } else {
+                            console.log("removed", service.service);
+
+                            removeServiceFromSearchList(service.service)
+                          }
+                        }} />
+                        <p className='ml-2 text-base'>{service.service}</p>
                       </DropdownMenuItem>
                     )
                   })}

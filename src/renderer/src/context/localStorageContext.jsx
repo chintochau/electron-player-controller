@@ -12,9 +12,30 @@ export const StorageProvider = ({ children }) => {
   const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : defaultRoomList);
   // read custom api list from local storage, if not found, save commandList to the local storage, and return commandList
   const [customApiList, setCustomApiList] = useState(localStorage.getItem('customApiList') ? JSON.parse(localStorage.getItem('customApiList')) : []);
-const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{name: "Home", uri: "/ui/Home?playnum=1"}]);
-const [isPresetVisible, setIsPresetVisible] = useState(localStorage.getItem('isPresetVisible') ? JSON.parse(localStorage.getItem('isPresetVisible')) : false);
+  const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{ name: "Home", uri: "/ui/Home?playnum=1" }]);
+  const [isPresetVisible, setIsPresetVisible] = useState(localStorage.getItem('isPresetVisible') ? JSON.parse(localStorage.getItem('isPresetVisible')) : false);
+  const [enabledSearchServices, setEnabledSearchServices] = useState(localStorage.getItem('enableSearchServices') ? JSON.parse(localStorage.getItem('enableSearchServices')) : ["Qobuz", "Tidal"]);
 
+
+  const addServiceToSearchList = (service) => {
+    setEnabledSearchServices(enableSearchServices => [...enableSearchServices, service]);
+    localStorage.setItem('enableSearchServices', JSON.stringify([...enabledSearchServices, service]));
+  }
+
+  const removeServiceFromSearchList = (service) => {
+    setEnabledSearchServices(enableSearchServices => enableSearchServices.filter(item => item !== service));
+    localStorage.setItem('enableSearchServices', JSON.stringify(enabledSearchServices.filter(item => item !== service)));
+  }
+
+  const selectAllServicesFromSearchList = (searchableServicesList) => {
+    setEnabledSearchServices(searchableServicesList);
+    localStorage.setItem('enableSearchServices', JSON.stringify(searchableServicesList));
+  }
+
+  const removeAllServicesFromSearchList = () => {
+    setEnabledSearchServices([]);
+    localStorage.setItem('enableSearchServices', JSON.stringify([]));
+  }
   const addRoomToList = (room) => {
     // make sure the room is not already in the list
     if (!roomList.includes(room)) {
@@ -83,7 +104,12 @@ const [isPresetVisible, setIsPresetVisible] = useState(localStorage.getItem('isP
     removeFromBookmarks,
     bookmarks,
     isPresetVisible,
-    togglePresetVisibility
+    togglePresetVisibility,
+    addServiceToSearchList,
+    removeServiceFromSearchList,
+    selectAllServicesFromSearchList,
+    removeAllServicesFromSearchList,
+    enabledSearchServices
   };
 
   return (
