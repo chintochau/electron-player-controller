@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain,dialog  } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -6,6 +6,11 @@ import bonjour from 'bonjour'
 import xml2js from 'xml2js'
 import { checkUpgrade, connectToDeviceThroughWifi, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
 import fs from 'fs'
+const { autoUpdater } = require('electron-updater');
+
+autoUpdater.logger = require('electron-log');
+autoUpdater.logger.transports.file.level = 'info'; // Log to file
+autoUpdater.logger.transports.console.level = 'info'; // Log to console
 
 let masterWindow
 function createWindow() {
@@ -182,7 +187,7 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
 
     if (SyncStatus) {
       const { $, master, slave } = SyncStatus || {}
-      const {mac} = $ || {}
+      const { mac } = $ || {}
       const macAddress = mac ? mac.replace(':', '') : null
       let masterIp, slaveList
       if (master) {
@@ -366,9 +371,9 @@ ipcMain.handle('get-app-version', () => {
 
 ipcMain.handle('save-file', async (event, data) => {
   const { canceled, filePath } = await dialog.showSaveDialog({
-      title: 'Save File As',
-      defaultPath: 'downloaded_file.txt',  // Default filename
-      filters: [{ name: 'Text Files', extensions: ['txt'] }]
+    title: 'Save File As',
+    defaultPath: 'downloaded_file.txt',  // Default filename
+    filters: [{ name: 'Text Files', extensions: ['txt'] }]
   });
 
   if (canceled || !filePath) return; // User canceled the dialog
@@ -376,6 +381,53 @@ ipcMain.handle('save-file', async (event, data) => {
   fs.writeFileSync(filePath, data, 'utf-8'); // Write the file content to the selected path
 
   return filePath; // Send the path back to the front end, if needed
+});
+
+
+ipcMain.handle("check-for-app-update", async (event) => {
+  try {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    if (isDevelopment) {
+      console.log('Update check skipped in development mode');
+      return null;
+    }
+    // Check for updates without notifying the user
+    const updateInfo = await autoUpdater.checkForUpdates();
+    if (updateInfo.updateInfo.version !== app.getVersion()) {
+      return "v" + updateInfo.updateInfo.version + " is available.";
+    } else {
+      // No update is available
+      return null;
+    }
+  } catch (error) {
+    console.error('Update error:', error);
+    throw new Error('Failed to initiate update: ' + error.message);
+  }
+})
+
+// Handle app update trigger
+ipcMain.handle('perform-app-update', async (event) => {
+  try {
+    // Check for updates without notifying the user
+    const updateInfo = await autoUpdater.checkForUpdates();
+    if (updateInfo.updateInfo.version !== app.getVersion()) {
+      // An update is available
+      autoUpdater.downloadUpdate(); // Start downloading the update
+      return "Update available. Downloading...";
+    } else {
+      // No update is available
+      return "No update available.";
+    }
+  } catch (error) {
+    console.error('Update error:', error);
+    throw new Error('Failed to initiate update: ' + error.message);
+  }
+});
+
+// Ensure your autoUpdater is set up properly to handle events
+autoUpdater.on('update-downloaded', (info) => {
+  // You can prompt the user or automatically quit and install here
+  autoUpdater.quitAndInstall();
 });
 
 // handle any uncaughtException

@@ -18,11 +18,25 @@ import {
 } from '@/components/ui/select'
 import { mapCommandByName } from '../lib/constants'
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
   const [apiCommand, setApiCommand] = useState('')
   const { devices, selectedDevices, refreshDevices, updateDeviceStatus } = useDevices()
   const [appVersion, setAppVersion] = useState()
+
+  const [upgradeMessage, setUpgradeMessage] = useState(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [downloadingUpdate, setDownloadingUpdate] = useState(false)
 
   const getAppVersion = async () => {
     const version = await window.api.getAppVersion()
@@ -32,7 +46,19 @@ const Footer = ({ isCollapsed }) => {
 
   useEffect(() => {
     getAppVersion()
+    checkForAppUpdate()
   }, [])
+
+  const checkForAppUpdate = async () => {
+    const message = await window.api.checkForAppUpdate()
+    setUpgradeMessage(message)
+  }
+
+  const performAppUpdate = async () => {
+    setUpgradeMessage("Downloading Update...")
+    setDownloadingUpdate(true)
+    const messaage = await window.api.performAppUpdate()
+  }
 
 
   const [requestType, setRequestType] = useState('GET')
@@ -140,6 +166,31 @@ const Footer = ({ isCollapsed }) => {
             <p className='text-xs text-muted-foreground'>
               v{appVersion}
             </p>
+            {upgradeMessage && <div className='flex gap-2'>
+              <p>
+                {upgradeMessage}
+              </p>
+              {!downloadingUpdate && <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger
+                  className='text-left w-fit hover:underline hover:text-primary text-primary/40'
+                >Update Now</DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>App  Update</DialogTitle>
+                    <DialogDescription>
+                      Do you want to update now?<br /> This will automatically download and install the latest version.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={performAppUpdate}
+                    >Update Now</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>}
+            </div>}
           </div>
           <div className="flex justify-end gap-x-4">
             <div className="flex">
