@@ -166,13 +166,13 @@ const Footer = ({ isCollapsed }) => {
             <p className='text-xs text-muted-foreground'>
               v{appVersion}
             </p>
-            {upgradeMessage && <div className='flex gap-2'>
-              <p>
+            {upgradeMessage && <div className='flex gap-2 items-center pt-1'>
+              <p className='text-xs text-muted-foreground'>
                 {upgradeMessage}
               </p>
               {!downloadingUpdate && <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger
-                  className='text-left w-fit hover:underline hover:text-primary text-primary/40'
+                  className='text-left w-fit hover:underline hover:text-primary text-primary/40 text-xs'
                 >Update Now</DialogTrigger>
                 <DialogContent>
                   <DialogHeader>

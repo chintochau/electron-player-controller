@@ -12,6 +12,9 @@ autoUpdater.logger = require('electron-log');
 autoUpdater.logger.transports.file.level = 'info'; // Log to file
 autoUpdater.logger.transports.console.level = 'info'; // Log to console
 
+// Set autoDownload to false
+autoUpdater.autoDownload = false;
+
 let masterWindow
 function createWindow() {
   // Create the browser window.
