@@ -134,7 +134,7 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
-    const {sleep} = statusXml || {}
+    const { sleep } = statusXml || {}
 
     if (
       statusXml &&
@@ -308,20 +308,24 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
 })
 
 
+ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GET", body = null }) => {
+  console.log('run-command-for-device', ip, command, type, body);
 
-ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GET" }) => {
-  // send fetch request to device
-  console.log('run-command-for-device', ip, command, type);
-
-  const res = await fetch(`http://${ip}${command}`, { method: type })
-  if (!res || !res.ok) {
-    console.log(`Failed Command: ${command}`)
-    return { success: false }
+  const options = { method: type };
+  if (body && type.toUpperCase() === "POST") {
+    options.body = JSON.stringify(body);
+    options.headers = { 'Content-Type': 'application/json' };
   }
-  console.log('Control command successful:', command)
-  const data = await res.text()
-  return { success: true, data }
-})
+
+  const res = await fetch(`http://${ip}${command}`, options);
+  if (!res || !res.ok) {
+    console.log(`Failed Command: ${command}`);
+    return { success: false };
+  }
+  console.log('Control command successful:', command);
+  const data = await res.text();
+  return { success: true, data };
+});
 
 ipcMain.handle('open-overlay', (event, url) => {
   let overlayWindow = new BrowserWindow({

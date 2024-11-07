@@ -143,7 +143,7 @@ export const columns = [
                   <form onSubmit={(e) => {
                     e.preventDefault()
                     setMenuOpen(false)
-                    runCommandForDevice(device.ip, `/settings?id=nodename&value=${newName}&playnum=1`, 'POST')
+                    runCommandForDevice(device.ip, `:11000/Name`, 'POST',{nodename: newName})
                     changeDeviceName(device.ip, newName)
                   }}>
                     <Label htmlFor="name">Change Name:</Label>
