@@ -13,6 +13,7 @@ export const mapValueToKey = (value) => {
 
 export const SDUIProvider = ({ children }) => {
   const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
+  const [isAddpresetPageShown, setIsAddpresetPageShown] = useState(false)
 
   const mapToURL = ({ URI, resultType, title, service }) => {
     // Map the given parameters to the new format
@@ -71,6 +72,10 @@ export const SDUIProvider = ({ children }) => {
               setUrl(url)
               displayMainScreen(url)
               break
+            case "add-preset":
+              // TODO show add preset page
+              setIsAddpresetPageShown(true)
+              break
             default:
               console.log('not supported url type', url)
               break
@@ -96,7 +101,9 @@ export const SDUIProvider = ({ children }) => {
 
   const value = {
     performAction,
-    browseContext
+    browseContext,
+    isAddpresetPageShown,
+    setIsAddpresetPageShown
   }
 
   return <SDUIContext.Provider value={value}>{children}</SDUIContext.Provider>

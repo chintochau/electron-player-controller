@@ -23,6 +23,7 @@ import { enabledFeatures } from '../../lib/constants'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useStorage } from '../../context/localStorageContext'
+import AddPresetPage from '../AddPresetPage'
 
 const BrowsePage = () => {
   const { devices } = useDevices()
@@ -77,6 +78,7 @@ const BrowsePage = () => {
 
   return (
     <ScrollArea className="w-full h-full p-4 overflow-x-hidden" ref={containerRef}>
+      <AddPresetPage />
       <div id="urlBar" className="flex items-center justify-between sticky top-0 z-50">
         {!enabledFeatures.urlBar && (
           <Button

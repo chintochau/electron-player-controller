@@ -45,3 +45,12 @@ export const removeFromGroup = (slaveDevice) => {
   ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
   playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
 }
+
+export const buildUrl = (baseURL, params) => {
+  const queryParams = Object.keys(params)
+    .filter(key => params[key] !== null && params[key] !== undefined)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .join('&');
+
+  return queryParams ? `${baseURL}?${queryParams}` : baseURL;
+}
