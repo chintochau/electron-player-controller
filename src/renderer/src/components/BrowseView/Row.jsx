@@ -150,10 +150,10 @@ const Row = ({ row, index }) => {
               smallThumbnail?.length > 12 ? 'grid-rows-2' : ' '
             )}
           >
-            {smallThumbnail?.map((smallThumbnailItem,index) => {
+            {smallThumbnail?.map((smallThumbnailItem,STindex) => {
               return (
                 <SmallThumbnail
-                  key={ "SmallThumbnail" + index
+                  key={ "SmallThumbnail" + STindex
                   }
                   smallThumbnail={smallThumbnailItem}
                   isArtist={isArtist}
