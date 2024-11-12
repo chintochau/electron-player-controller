@@ -27,6 +27,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import Markdown from 'markdown-to-jsx'
+import { ScrollArea } from '@/components/ui/scroll-area'
+
 
 const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
@@ -37,6 +40,7 @@ const Footer = ({ isCollapsed }) => {
   const [upgradeMessage, setUpgradeMessage] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [downloadingUpdate, setDownloadingUpdate] = useState(false)
+  const [releaseNotes, setReleaseNotes] = useState(null)
 
   const getAppVersion = async () => {
     const version = await window.api.getAppVersion()
@@ -51,7 +55,8 @@ const Footer = ({ isCollapsed }) => {
 
   const checkForAppUpdate = async () => {
     const message = await window.api.checkForAppUpdate()
-    setUpgradeMessage(message)
+    setUpgradeMessage(message?.message)
+    setReleaseNotes(message?.releaseNotes)
   }
 
   const performAppUpdate = async () => {
@@ -179,6 +184,13 @@ const Footer = ({ isCollapsed }) => {
                     <DialogTitle>App  Update</DialogTitle>
                     <DialogDescription>
                       Do you want to update now?<br /> This will automatically download and install the latest version.
+                      {releaseNotes &&
+                        <ScrollArea className="h-96 pt-4 rounded-md bg-gray-800/70 p-2 mt-2">
+                          <Markdown
+                          className="prose prose-invert"
+                          >{releaseNotes}</Markdown>
+                        </ScrollArea>
+                     }
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>

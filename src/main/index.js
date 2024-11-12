@@ -404,7 +404,10 @@ ipcMain.handle("check-for-app-update", async (event) => {
     // Check for updates without notifying the user
     const updateInfo = await autoUpdater.checkForUpdates();
     if (updateInfo.updateInfo.version !== app.getVersion()) {
-      return "v" + updateInfo.updateInfo.version + " is available.";
+      return {
+        message: "v" + updateInfo.updateInfo.version + " is available.",
+        releaseNotes: updateInfo.updateInfo?.releaseNotes || "No release notes available."
+      };
     } else {
       // No update is available
       return null;
