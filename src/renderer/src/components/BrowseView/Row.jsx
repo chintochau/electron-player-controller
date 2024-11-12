@@ -123,10 +123,10 @@ const Row = ({ row, index }) => {
                 : 'flex w-max space-x-4 p-4'
             )}
           >
-            {largeThumbnail?.map((largeThumbnailItem) => {
+            {largeThumbnail?.map((largeThumbnailItem,LTindex) => {
               return (
                 <LargeThumbnail
-                  key={largeThumbnailItem?.$?.title}
+                  key={ "LargeThumbnail" + LTindex}
                   largeThumbnail={largeThumbnailItem}
                   size={index % 2 === 0 ? 'large' : 'small'}
                   isArtist={isArtist}
@@ -150,13 +150,10 @@ const Row = ({ row, index }) => {
               smallThumbnail?.length > 12 ? 'grid-rows-2' : ' '
             )}
           >
-            {smallThumbnail?.map((smallThumbnailItem) => {
+            {smallThumbnail?.map((smallThumbnailItem,index) => {
               return (
                 <SmallThumbnail
-                  key={
-                    smallThumbnailItem?.$?.title ||
-                    smallThumbnailItem?.$?.id ||
-                    smallThumbnailItem?.$?.icon
+                  key={ "SmallThumbnail" + index
                   }
                   smallThumbnail={smallThumbnailItem}
                   isArtist={isArtist}
