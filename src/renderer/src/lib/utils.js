@@ -13,8 +13,8 @@ export const playerControl = async (ip, control, param) => {
 }
 
 
-export const runCommandForDevice = async (ip, command, type="GET",body) => {
-  const res = await window.api.runCommandForDevice(ip, command, type,body)
+export const runCommandForDevice = async (ip, command, type = "GET", body) => {
+  const res = await window.api.runCommandForDevice(ip, command, type, body)
   return res
 }
 
@@ -53,4 +53,12 @@ export const buildUrl = (baseURL, params) => {
     .join('&');
 
   return queryParams ? `${baseURL}?${queryParams}` : baseURL;
+}
+
+export const encodeUrl = (url) => {
+  // Decode the overly-encoded URL
+  let decoded_url = decodeURIComponent(url);
+  // Replace re-encoding where necessary (use encodeURIComponent on parts)
+  let reencoded_url = decoded_url.replace(/,/g, '%2C');
+  return reencoded_url
 }

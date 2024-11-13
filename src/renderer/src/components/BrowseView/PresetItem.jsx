@@ -34,18 +34,19 @@ const PresetItem = ({ item, selector, selectItem }) => {
     return (
         <div
             className={cn(
-                'flex  items-center gap-2 w-full',
+                'flex  items-center gap-2 w-full hover:bg-accent  cursor-pointer rounded-md',
+                selector ? '' : 'px-1.5 py-0.5'
             )}
             onClick={handleClick}
         >
-            <div className={cn(selector ? 'w-8 h-8' : 'size-16')}>
+            <div className={cn(selector ? 'w-8 h-8' : 'size-14')}>
                 <img className=' object-contain size-full' src={getImagePath(image) || getImagePath("/Sources/images/Default/" + service + "Icon.png")} onError={(e) => e.target.src = noartwork} />
             </div>
 
             <div className="space-y-1 text-sm pt-1 min-w-20 w-[calc(100%-3.5rem)] xl:w-full">
                 <div className="flex justify-between items-center w-full">
                     <div
-                        className={cn(image ? '' : 'underline hover:text-primary cursor-pointer')}
+                        className={cn(image ? '' : '')}
                         onClick={handleClick}
                     >
                         <h3

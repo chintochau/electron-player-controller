@@ -12,25 +12,33 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { buildUrl } from '../lib/utils'
+import { buildUrl, encodeUrl, runCommandForDevice } from '../lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { useDevices } from '../context/devicesContext'
 
 
 const AddPresetPage = () => {
     const { isAddpresetPageShown, setIsAddpresetPageShown } = useSdui()
-    const { loadSDUI } = useBrowsing()
+    const { loadSDUI, selectedPlayer } = useBrowsing()
+    const { devices } = useDevices()
     const [serviceList, setServiceList] = useState([])
     const [breadcrumbItems, setBreadcrumbItems] = useState([])
     const [radiotime, setRadiotime] = useState([])
     const [selectedService, setSelectedService] = useState(null)
+    const [selectedPreset, setSelectedPreset] = useState(null)
+    const [presetNumber, setPresetNumber] = useState(1)
+    const [presetName, setPresetName] = useState('')
+    const [isApplyToAllPlayers, setIsApplyToAllPlayers] = useState(false)
 
     useEffect(() => {
         const browsePresetServices = async () => {
             const res = await loadSDUI(":11000/RadioBrowse?service=Presets")
             console.log(res.json.radiotime)
-
             setServiceList(res.json.radiotime)
         }
 
@@ -59,7 +67,7 @@ const AddPresetPage = () => {
         }
     }, [selectedService])
 
-    const selectItem = (item) => {
+    const selectItem = (item, index) => {
         console.log(item);
         const { $ } = item || {}
         const { type } = $ || {}
@@ -67,49 +75,71 @@ const AddPresetPage = () => {
 
         if (type && type === 'audio') {
             console.log('audio');
+            console.log(item);
+            setSelectedPreset(item)
+            setPresetName(item.$.text)
             return
         }
 
         const params = { url: $?.URL, service: selectedService, key: $?.key }
+
+        if (index || index === 0 && item.$.text) {
+            setBreadcrumbItems([...breadcrumbItems.slice(0, index + 1)])
+            performRadioBrowse(params)
+            return
+        }
+
         if (item.$.text) {
-            setBreadcrumbItems([...breadcrumbItems, item.$.text])
+            setBreadcrumbItems([...breadcrumbItems, item])
             performRadioBrowse(params)
         }
+
     }
 
     const performRadioBrowse = async (params) => {
-        console.log(params);
-
         const path = buildUrl(":11000/RadioBrowse", params)
-        const res = await loadSDUI(path)
-        console.log(res.json.radiotime);
+        const encodedPath = encodeUrl(path)
+        const res = await loadSDUI(encodedPath)
+        console.log("radiotime", res.json.radiotime);
         setRadiotime(res.json.radiotime)
     }
 
     const handleSavePreset = async () => {
-        console.log('handleSavePreset');
+        const encoded_url = encodeUrl(selectedPreset.$.URL)
+        const path = buildUrl(":11000/SetPreset", { id: presetNumber, name: presetName.replace(" ", "+"), image: selectedPreset.$.image, encoded_url})
+        if (isApplyToAllPlayers) {
+            devices.forEach(device => {
+                runCommandForDevice(device.ip, path)
+            })
+        } else {
+            runCommandForDevice(selectedPlayer.ip, path)
+        }
+    }
+
+    const resetPreset = () => {
+        setSelectedPreset(null)
     }
 
     return (
         <>
             <Dialog open={isAddpresetPageShown} onOpenChange={setIsAddpresetPageShown}>
                 <DialogContent className="w-full max-w-xl xl:max-w-4xl">
-
                     <DialogHeader>
                         <DialogTitle>Add Preset</DialogTitle>
                     </DialogHeader>
 
                     <Select
                         onValueChange={(e) => {
-                            console.log(e);
                             setSelectedService(e)
-                            setBreadcrumbItems([e])
+                            resetPreset()
+                            const service = serviceList.item?.find(item => item.$.service ? item.$.service === e : e === item.$.URL)
+                            setBreadcrumbItems([service])
                         }}
                     >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select a preset" />
+                        <SelectTrigger>
+                            <SelectValue placeholder="Choose a service" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-background">
                             {
                                 serviceList && serviceList.item?.map((item, index) => (
                                     <SelectItem key={index} value={item.$.service || item.$.URL}>
@@ -120,48 +150,92 @@ const AddPresetPage = () => {
                         </SelectContent>
                     </Select>
 
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            {
-                                breadcrumbItems.map((item, index) => (
-                                    <Fragment key={"breadcrumb" + index}>
-                                        <BreadcrumbItem>
-                                            <BreadcrumbLink>{item}</BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                        {
-                                            index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator />
-                                        }
-                                    </Fragment>
-                                ))
-                            }
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                    {!selectedPreset && selectedService &&
+                        <>
+                            <Breadcrumb >
+                                <BreadcrumbList>
+                                    {
+                                        breadcrumbItems.map((item, index) => (
+                                            <Fragment key={"breadcrumb" + index}>
+                                                <BreadcrumbItem
+                                                    className={cn(index === breadcrumbItems.length - 1 ? "pointer-events-none" : " cursor-pointer text-muted-foreground/50", " duration-300 transition-all ease-in-out")}
 
-                    <ScrollArea className="w-full h-[50vh]  rounded-md bg-primary/10 p-2">
-                        <div>
-                            {
-                                radiotime && radiotime.item?.map((item, index) => (
-                                    <PresetItem item={item} key={"item" + index} selectItem={() => selectItem(item)} />
-                                ))
-                            }
-                            {
-                                radiotime && radiotime.category?.map((item, ctindex) => (
-                                    <Fragment key={"category" + ctindex}>
-                                        <div className="text-lg font-semibold">{item.$.text}</div>
-                                        {
-                                            item.item?.map((subItem, index) => (
-                                                <PresetItem item={subItem} key={"subItem" + index} selectItem={() => selectItem(subItem)} />
-                                            ))
-                                        }
-                                    </Fragment>))
-                            }
+                                                    onClick={() => {
+                                                        selectItem(item, index)
+                                                    }}>
+                                                    <BreadcrumbLink>{item.$.text}</BreadcrumbLink>
+                                                </BreadcrumbItem>
+                                                {
+                                                    index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator />
+                                                }
+                                            </Fragment>
+                                        ))
+                                    }
+                                </BreadcrumbList>
+                            </Breadcrumb>
+
+                            <ScrollArea className="w-full h-[50vh]  rounded-md  bg-primary/30 p-2">
+                                <div className='flex flex-col'>
+                                    {
+                                        radiotime && radiotime.item?.map((item, index) => (
+                                            <PresetItem item={item} key={"item" + index} selectItem={() => selectItem(item)} />
+                                        ))
+                                    }
+                                    {
+                                        radiotime && radiotime.category?.map((item, ctindex) => (
+                                            <Fragment key={"category" + ctindex}>
+                                                <div className="text-lg font-semibold">{item.$.text}</div>
+                                                {
+                                                    item.item?.map((subItem, index) => (
+                                                        <PresetItem item={subItem} key={"subItem" + index} selectItem={() => selectItem(subItem)} />
+                                                    ))
+                                                }
+                                            </Fragment>))
+                                    }
+                                    {(!radiotime ||
+                                        radiotime && !radiotime.category && !radiotime.item) && <div className="w-full flex items-center justify-center text-lg font-semibold py-20">No items found</div>
+                                    }
+
+                                </div>
+                            </ScrollArea>
+                        </>
+                    }
+                    {
+                        selectedPreset && <div>
+                            <p>Selected Preset:</p>
+                            <div className='border rounded-md w-full'><PresetItem item={selectedPreset} selectItem={resetPreset} /></div>
+                            <div className='flex items-center  gap-4 pt-2'>
+                                <div className='flex flex-col flex-1'>
+                                    <p>Name:</p>
+                                    <Input placeholder="Preset Name" value={presetName} onChange={(e) => setPresetName(e.target.value)} />
+                                </div>
+                                <div className='flex flex-col w-fit'>
+                                    <p className=' text-nowrap'>Preset Slot:</p>
+                                    <Select value={presetNumber} onValueChange={(e) => setPresetNumber(e)} >
+                                        <SelectTrigger className="w-32">
+                                            <SelectValue placeholder="Slot" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-background">
+                                            {
+                                                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
+                                                    <SelectItem key={index} value={item}>
+                                                        <p>
+                                                            {item}
+                                                        </p>
+                                                    </SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
                         </div>
-                    </ScrollArea>
+                    }
                     <DialogFooter className="flex justify-between items-center">
-                        <Checkbox/>
-                        <p>
-                            Apply to all devices
-                        </p>
+                        <Checkbox id="save-to-all" onCheckedChange={(e) => setIsApplyToAllPlayers(e)} value={isApplyToAllPlayers} />
+                        <Label htmlFor="save-to-all">
+                            Save to all devices
+                        </Label>
                         <DialogClose asChild>
                             <Button onClick={handleSavePreset}>Save</Button>
                         </DialogClose>
