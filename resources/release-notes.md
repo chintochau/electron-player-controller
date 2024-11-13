@@ -1,7 +1,7 @@
 ## Release Notes
 
 ### v1.3.7
-- support adding preset
+- you can now add preset to a single player / multiple players
 
 ### v1.3.6
 - added sleep timer button under now playing thumbnail
