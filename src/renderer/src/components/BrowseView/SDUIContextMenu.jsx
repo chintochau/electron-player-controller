@@ -23,7 +23,10 @@ const SDUIContextMenu = ({ contextMenu, itemsOnly }) => {
       <ContextMenuContent>
         {
           item?.map((subItem, index) => (
-            <ContextMenuItem key={index} onClick={() => performAction(subItem.action)} className="text-base">
+            <ContextMenuItem key={index} onClick={(event) => {
+              // prevent parent click event
+              event.stopPropagation()
+              performAction(subItem.action)}} className="text-base">
               <img src={getImagePath(subItem?.$?.icon)} className='w-7 aspect-square mr-2' />
               {subItem?.$?.text}
             </ContextMenuItem>
