@@ -134,15 +134,9 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
-    const { sleep } = statusXml || {}
-
+    const { sleep, service, state, volume, title1,title2,title3, image } = statusXml || {}
     if (
-      statusXml &&
-      statusXml.service &&
-      statusXml.state &&
-      statusXml.volume &&
-      statusXml.title1 &&
-      statusXml.image
+      statusXml && service && state && volume && title1 && image
     ) {
       let progress
 
@@ -156,6 +150,8 @@ ipcMain.handle('check-status', async (event, ip) => {
         state: statusXml.state[0],
         volume: statusXml.volume[0],
         title1: statusXml.title1[0],
+        title2: title2?.[0],
+        title3: title3?.[0],
         image: statusXml.image[0],
         progress: progress,
         sleep: sleep?.[0] || false

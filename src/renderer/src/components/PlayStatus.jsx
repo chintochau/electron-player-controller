@@ -29,6 +29,8 @@ const PlayStatus = ({ ip }) => {
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
     const response = res
+    console.log(response);
+    
     setStatus(response)
     setVolume((prev) => {
       if (prev === null) {
@@ -65,6 +67,10 @@ const PlayStatus = ({ ip }) => {
     if (status?.title1 && status?.title1.length > 20) {
       setShouldScroll(true)
     }
+    if (status?.title1 && status?.title2) {
+      setShouldScroll(true)
+    }
+
   }, [status?.title1])
 
   const getImageurl = (imagePath) => {
@@ -172,13 +178,13 @@ const PlayStatus = ({ ip }) => {
             />
           )}
           <div className="overflow-hidden whitespace-nowrap w-52 ">
-            <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
-              <span>{status?.state === 'pause' ? '' : status?.title1}</span>
+          <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
+              <span>{status?.title1} {status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}</span>
               <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-                {status?.state === 'pause' ? '' : status?.title1}
+                {status?.title1}{status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}
               </span>
               <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-                {status?.state === 'pause' ? '' : status?.title1}
+                {status?.title1}{status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}
               </span>
             </div>
           </div>

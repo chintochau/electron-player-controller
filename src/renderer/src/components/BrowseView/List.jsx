@@ -57,7 +57,7 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
       return list?.item?.map((item,index) => (
         <Item
           item={item}
-          key={item?.$?.id}
+          key={item?.$?.id || "Item" + index}
           large={onlyOneList}
           onlyOneListWithHeader={onlyOneListWithHeader}
           isArtist={isArtist}

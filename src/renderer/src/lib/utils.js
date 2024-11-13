@@ -46,10 +46,10 @@ export const removeFromGroup = (slaveDevice) => {
   playerControl(slaveDevice.master, 'removeSlave', slaveDevice.ip)
 }
 
-export const buildUrl = (baseURL, params) => {
+export const buildUrl = (baseURL, params, capture = false) => {
   const queryParams = Object.keys(params)
     .filter(key => params[key] !== null && params[key] !== undefined)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .map(key => `${encodeURIComponent(key)}=${capture ? decodeURIComponent(params[key]) : encodeURIComponent(params[key])}`)
     .join('&');
 
   return queryParams ? `${baseURL}?${queryParams}` : baseURL;
