@@ -1,5 +1,8 @@
 ## Release Notes
 
+### v1.3.7
+- support adding preset
+
 ### v1.3.6
 - added sleep timer button under now playing thumbnail
 
