@@ -106,7 +106,7 @@ const AddPresetPage = () => {
 
     const handleSavePreset = async () => {
         const encoded_url = encodeUrl(selectedPreset.$.URL)
-        const path = buildUrl(":11000/SetPreset", { id: presetNumber, name: presetName.replace(" ", "+"), image: selectedPreset.$.image, encoded_url})
+        const path = buildUrl(":11000/SetPreset", { id: presetNumber, name: presetName, image: selectedPreset.$.image, encoded_url})
         if (isApplyToAllPlayers) {
             devices.forEach(device => {
                 runCommandForDevice(device.ip, path)
