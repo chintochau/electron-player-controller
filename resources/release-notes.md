@@ -1,7 +1,7 @@
 ## Release Notes
 
 ### v1.3.8-Alpha1
-- Fixed a bug that allowed unsupported presets to be incorrectly added to players when applying presets to all players.
+- You can now click on the mini icon in the system tray to quickly open the mini player controller!
 
 ### v1.3.7
 - you can now add preset to a single player / multiple players

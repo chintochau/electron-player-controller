@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join } from 'path'
+import { app, shell, BrowserWindow, ipcMain, dialog, Tray } from 'electron'
+import { join, resolve } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import trayIcon from "../../resources/icon16.png?asset"
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
 import { checkUpgrade, connectToDeviceThroughWifi, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
@@ -16,6 +17,7 @@ autoUpdater.logger.transports.console.level = 'info'; // Log to console
 autoUpdater.autoDownload = false;
 
 let masterWindow
+let masterTrayWindow
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -53,6 +55,74 @@ function createWindow() {
   }
 }
 
+const createTray = () => {
+  const tray = new Tray(trayIcon)
+
+  const trayWindow = new BrowserWindow({
+    width: 400,
+    height: 800,
+    show: false,
+    autoHideMenuBar: true,
+    resizable: true,
+    maximizable: false,
+    minimizable: false,
+    frame: false, // Disable the close, min, max buttons
+    skipTaskbar: true,
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false
+    },
+    focusable: true
+  })
+
+  masterTrayWindow = trayWindow
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    trayWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/trayIndex.html`)
+  } else {
+    trayWindow.loadFile(join(__dirname, '../renderer/trayIndex.html'))
+  }
+
+
+  tray.on('click', () => {
+    console.log('click tray');
+    toggleWindow()
+  })
+
+  trayWindow.on('blur', () => {
+    // Hide the window when it loses focus
+    trayWindow.hide()
+  })
+
+  const toggleWindow = () => {
+    if (trayWindow.isVisible()) {
+      trayWindow.hide()
+    } else {
+      showWindow()
+    }
+  }
+
+  const showWindow = () => {
+    const position = getWindowPosition();
+    trayWindow.setPosition(position.x, position.y, false);
+    trayWindow.show();
+  }
+
+  const getWindowPosition = () => {
+    const windowBounds = trayWindow.getBounds();
+    const trayBounds = tray.getBounds();
+
+    // Center window horizontally below the tray icon
+    const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
+    // Position window 4 pixels vertically below the tray icon
+    const y = Math.round(trayBounds.y + trayBounds.height + 4)
+    return { x: x, y: y }
+  }
+
+
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -71,11 +141,13 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
+  createTray()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) { createWindow() }
+
   })
 })
 
@@ -134,7 +206,7 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
-    const { sleep, service, state, volume, title1,title2,title3, image } = statusXml || {}
+    const { sleep, service, state, volume, title1, title2, title3, image } = statusXml || {}
     if (
       statusXml && service && state && volume && title1 && image
     ) {
@@ -443,6 +515,15 @@ autoUpdater.on('update-downloaded', (info) => {
 // process.on('uncaughtException', (err) => {
 //   console.error('Uncaught exception:', err)
 // })
+
+
+app.on('browser-window-blur', (event, window) => {
+  // Ensure only the tray window is affected
+  if (window === masterTrayWindow) {
+    masterTrayWindow.hide()
+  }
+})
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
