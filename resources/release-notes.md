@@ -8,7 +8,8 @@
   Click the tray icon to instantly open a compact player controller, allowing faster and easier control of your devices without launching the full app.  
 
 ### v1.3.7
-- you can now add preset to a single player / multiple players
+- **Add Presets**  
+  You can now create and apply presets for a single player or multiple players, making it easier to customize your setup.  
 
 ### v1.3.6
 - added sleep timer button under now playing thumbnail
