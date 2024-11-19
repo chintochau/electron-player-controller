@@ -16,7 +16,7 @@ import {
 import { GripHorizontal } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 
-const PlayerGridView = () => {
+const PlayerGridView = ({tray}) => {
   const { isGridMode, isCollapsed } = useTable()
   const { roomList } = useStorage()
   const { devices, addDeviceToRoom } = useDevices()
@@ -43,8 +43,8 @@ const PlayerGridView = () => {
   return (
     <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
       <ScrollArea>
-        {isGridMode && !isCollapsed && (
-          <div className=" max-h-[calc(100vh-265px)] ">
+        {(tray || isGridMode) && !isCollapsed && (
+          <div className={tray ? "max-h-full" :" max-h-[calc(100vh-265px)] "}>
             {roomList.sort().map((room) => (
               <Droppable id={room} key={room}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 auto-cols-min ">
@@ -76,8 +76,6 @@ function Droppable(props) {
       <div className="w-full border-b mb-2 flex items-center justify-between">
         <h3 className={cn('text-xl text-primary italic font-semibold')}>{id}</h3>
         <div className="flex items-center">
-          <Button variant="link">Play All</Button>
-          <Button variant="link">Pause All</Button>
         </div>
       </div>
       {props.children}

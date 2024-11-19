@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, dialog, Tray, screen } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, Tray, screen, Menu } from 'electron'
 import { join, resolve } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -81,6 +81,29 @@ const createTray = () => {
     focusable: true
   })
 
+  // Create the context menu
+  const createTrayContextMenu = () => {
+    return Menu.buildFromTemplate([
+      {
+        label: 'Open App',
+        click: () => {
+          if (!masterWindow) {
+            createWindow();
+          } else if (!masterWindow.isVisible()) {
+            masterWindow.show();
+          }
+        },
+      },
+      {
+        label: 'Quit',
+        click: () => {
+          app.quit(); // Quit the application
+        },
+      },
+    ]);
+  };
+
+
   masterTrayWindow = trayWindow
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -93,6 +116,13 @@ const createTray = () => {
   tray.on('click', () => {
     toggleWindow()
   })
+
+
+  tray.on('right-click', () => {
+    const contextMenu = createTrayContextMenu();
+    tray.popUpContextMenu(contextMenu);
+  })
+
 
   trayWindow.on('blur', () => {
     // Hide the window when it loses focus
@@ -107,49 +137,52 @@ const createTray = () => {
     }
   }
 
-ipcMain.handle('display-main-window', () => {
-  if (!masterWindow) {
-    createWindow(); // Create a new window if none exists
-  } else if (!masterWindow.isVisible()) {
-    masterWindow.show(); // Show the existing window if it's not visible
-  }
+  ipcMain.handle('display-main-window', () => {
+    openMainWindow()
+    trayWindow.hide();
+  });
 
-  trayWindow.hide();
-});
+  const openMainWindow = () => {
+    if (!masterWindow) {
+      createWindow(); // Create a new window if none exists
+    } else if (!masterWindow.isVisible()) {
+      masterWindow.show(); // Show the existing window if it's not visible
+    }
+  };
 
 
   const getWindowPosition = () => {
     const windowBounds = trayWindow.getBounds();
     const trayBounds = tray.getBounds();
-  
+
     // Get the display containing the tray
     const display = screen.getDisplayMatching(trayBounds);
     const displayBounds = display.workArea;
-  
+
     let x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
     let y = Math.round(trayBounds.y + trayBounds.height + 4);
-  
+
     // Ensure the window doesn't go outside the screen horizontally
     if (x < displayBounds.x) x = displayBounds.x;
     if (x + windowBounds.width > displayBounds.x + displayBounds.width) {
       x = displayBounds.x + displayBounds.width - windowBounds.width;
     }
-  
+
     // Ensure the window doesn't go outside the screen vertically
     if (y < displayBounds.y) y = displayBounds.y;
     if (y + windowBounds.height > displayBounds.y + displayBounds.height) {
       y = displayBounds.y + displayBounds.height - windowBounds.height;
     }
-  
+
     return { x, y };
   };
-  
+
   const showWindow = () => {
     const position = getWindowPosition();
     trayWindow.setPosition(position.x, position.y, false);
     trayWindow.show();
   };
-  
+
 
 
 }

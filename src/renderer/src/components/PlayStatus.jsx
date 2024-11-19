@@ -29,7 +29,6 @@ const PlayStatus = ({ ip }) => {
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
     const response = res
-    console.log(response);
     
     setStatus(response)
     setVolume((prev) => {
