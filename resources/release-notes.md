@@ -1,4 +1,9 @@
-## Release Notes
+# Release Notes
+
+## v1.3.10  
+### New Features  
+- **Service Playlists on Home Screen**  
+  You can now access service playlists directly from the home screen, making it easier to discover and play your favorite content.  
 
 ## v1.3.9  
 ### Bug Fixes  
