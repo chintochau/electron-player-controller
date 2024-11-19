@@ -5,12 +5,13 @@ import Item from './Item'
 import SDUIService from './SDUIService'
 import { ChevronRightIcon, Loader2 } from 'lucide-react'
 import { useBrowsing } from '../../context/browsingContext'
+import SDUILink from './SDUILink'
 
 const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
   const { performAction } = useSdui()
   const { loadNextLink, containerRef } = useBrowsing()
 
-  const { $, item, service, action, nextLink } = list || {}
+  const { $, item, service, action, nextLink, link } = list || {}
   const { title } = $ || {}
 
   const isArtist = title?.toLowerCase().includes('artist') ?? false
@@ -30,8 +31,8 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
 
         // Trigger load more when scroll position exceeds 80% (0.8)
         if (scrollPosition >= 0.8 && nextLink && nextLink.length > 0) {
-          console.log('nextLink', nextLink[0]);
-          
+          console.log('nextLink', nextLink[0])
+
           loadNextLink(nextLink[0])
           // only load once, cleanup the event listener
           container.removeEventListener('scroll', handleScroll)
@@ -53,11 +54,12 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
     }
   }, [list, nextLink, loadNextLink])
 
-    const memoizedItems = useMemo(() => {
-      return list?.item?.map((item,index) => (
+  const memoizedItems =
+    useMemo(() => {
+      return list?.item?.map((item, index) => (
         <Item
           item={item}
-          key={item?.$?.id || "Item" + index}
+          key={item?.$?.id || 'Item' + index}
           large={onlyOneList}
           onlyOneListWithHeader={onlyOneListWithHeader}
           isArtist={isArtist}
@@ -116,6 +118,15 @@ const List = ({ list, onlyOneList, onlyOneListWithHeader }) => {
           ))}
         </div>
       )}
+
+      {link && (
+        <div>
+          {link.map((link, index) => {
+            return <SDUILink key={'link' + index} link={link} />
+          })}
+        </div>
+      )}
+
       {nextLink && nextLink.length > 0 ? (
         <div className="w-full items-center justify-center flex">
           <Loader2 className="animate-spin size-10 text-secondary" />

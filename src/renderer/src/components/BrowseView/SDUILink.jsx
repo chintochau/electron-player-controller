@@ -7,7 +7,7 @@ const SDUILink = ({ link }) => {
 
   return (
     <div
-      className="w-full px-6 flex gap-2 underline text-foreground/70 pb-2 cursor-pointer"
+      className="w-full px-6 flex gap-2 underline text-foreground/70 pb-2 cursor-pointer hover:text-primary"
       onClick={() => performAction(action)}
     >
       <h3>{title && title.map((title, index) => <span key={'title' + index}>{title}</span>)}</h3>
