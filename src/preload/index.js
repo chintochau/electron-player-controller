@@ -18,6 +18,7 @@ const api = {
   saveFile: (data) => ipcRenderer.invoke('save-file', data),
   performAppUpdate: () => ipcRenderer.invoke('perform-app-update'),
   checkForAppUpdate: () => ipcRenderer.invoke('check-for-app-update'),
+  displayMainWindow: () => ipcRenderer.invoke('display-main-window'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
