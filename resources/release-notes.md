@@ -1,5 +1,10 @@
 ## Release Notes
 
+## v1.3.9  
+### Bug Fixes  
+- **Fixed Multiple Instance Bug**  
+  Resolved an issue that allowed multiple instances of the app to run. Now, the app ensures that only one instance can be launched at a time, preventing conflicts and improving overall stability. 
+  
 ### v1.3.8
 - **Minimize to System Tray**  
   Closing the app now minimizes it to the system tray (menu bar on macOS), keeping it running in the background for uninterrupted access.  
