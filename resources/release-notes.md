@@ -1,7 +1,11 @@
 ## Release Notes
 
-### v1.3.8-Alpha1
-- You can now click on the mini icon in the system tray to quickly open the mini player controller!
+### v1.3.8
+- **Minimize to System Tray**  
+  Closing the app now minimizes it to the system tray (menu bar on macOS), keeping it running in the background for uninterrupted access.  
+
+- **Quick Access Mini Player**  
+  Click the tray icon to instantly open a compact player controller, allowing faster and easier control of your devices without launching the full app.  
 
 ### v1.3.7
 - you can now add preset to a single player / multiple players
