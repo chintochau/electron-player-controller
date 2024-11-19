@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import PlayQueue from './PlayQueue'
 
 
-const CompactPlayer = ({ ip }) => {
+const CompactPlayer = ({ ip,className }) => {
   const { devices } = useDevices()
   const { selectedPlayer, setSelectedPlayer } = useBrowsing()
   const device = devices.find((device) => device.ip === ip)
@@ -17,7 +17,8 @@ const CompactPlayer = ({ ip }) => {
       onClick={() => setSelectedPlayer(device)}
       className={cn(
         'flex flex-col w-68 outline outline-1 outline-accent rounded-md p-2 shadow-md',
-        selectedPlayer?.ip === ip ? 'bg-primary/20' : ''
+        selectedPlayer?.ip === ip ? 'bg-primary/20' : '',
+        className
       )}
     >
       <div className="flex items-center">

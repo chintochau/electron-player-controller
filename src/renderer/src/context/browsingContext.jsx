@@ -294,7 +294,7 @@ export const BrowsingProvider = ({ children }) => {
         // replace list from list array with new list, identify by list.id
         return {
           ...prev,
-          list: prev.list.map((list) => {
+          list: prev.list?.map((list) => {
             if (list.$.id === listId) {
               return newList
             }
@@ -307,7 +307,7 @@ export const BrowsingProvider = ({ children }) => {
         // replace row from row array with new row, identify by row.id
         return {
           ...prev,
-          row: prev.row.map((row) => {
+          row: prev.row?.map((row) => {
             if (row.$.id === rowId) {
               return newRow
             }

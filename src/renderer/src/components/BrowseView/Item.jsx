@@ -23,7 +23,7 @@ import SDUIContextMenu from './SDUIContextMenu'
 const Item = ({ item, isArtist, onlyOneListWithHeader,index }) => {
   // size = 'small' | 'large'
   const { $, action, contextMenu } = item || {}
-  const { image, quality, subTitle, title, duration, track } = $ || {}
+  const { image, quality, subTitle, title, duration, track,counter } = $ || {}
   const { getImagePath,loadContextMenu } = useBrowsing()
   const { performAction } = useSdui()
 

@@ -17,7 +17,7 @@ const Dashboard = () => {
       <div
         className={cn(
           ' duration-300 ease-in overflow-hidden h-screen',
-          isCollapsed ? ' min-w-fit w-96 px-2' : 'pl-10 w-full'
+          isCollapsed ? ' min-w-fit w-80 pl-2 ' : 'pl-10 w-full'
         )}
       >
         <Header isCollapsed={isCollapsed} />
@@ -27,7 +27,7 @@ const Dashboard = () => {
       <div
         className={cn(
           'duration-300 ease-in',
-          isCollapsed ? 'mx-0 w-[calc(100vw-430px)] overflow-x-hidden' : 'w-0'
+          isCollapsed ? 'mx-0 w-[calc(100vw-410px)] overflow-x-hidden' : 'w-0'
         )}
       >
         <BrowsePanel isCollapsed={isCollapsed} />

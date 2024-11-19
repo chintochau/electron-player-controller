@@ -54,7 +54,7 @@ const PlayQueue = ({ ip }) => {
             </Button>
             <ScrollArea
                 className={cn(
-                    'flex w-80 duration-300 ease-in flex-col bg-background',
+                    'flex w-full duration-300 ease-in flex-col bg-background ',
                     isMenuOpen && isSelectedPlayer ? 'h-[50vh] ' : 'h-0 '
                 )}
             >

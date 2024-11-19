@@ -94,7 +94,11 @@ export const columns = [
     cell: ({ row }) => {
       const device = row.original
       if (!device) return null
-      return <CompactPlayer ip={device.ip} />
+      return (
+        <div className="flex items-center justify-center">
+          <CompactPlayer ip={device.ip} className="w-80" />
+        </div>
+      )
     }
   },
   {
@@ -133,21 +137,23 @@ export const columns = [
       return (
         <>
           <div className="flex items-center ">
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <p>{name}</p>
               <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
                 <DropdownMenuTrigger className="ml-2 h-4 w-4 mr-2">
                   <PencilLineIcon className="h-4 w-4  text-foreground/20 hover:text-foreground duration-300 transition " />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="p-3">
-                  <form onSubmit={(e) => {
-                    e.preventDefault()
-                    setMenuOpen(false)
-                    runCommandForDevice(device.ip, `:11000/Name`, 'POST',{nodename: newName})
-                    changeDeviceName(device.ip, newName)
-                  }}>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      setMenuOpen(false)
+                      runCommandForDevice(device.ip, `:11000/Name`, 'POST', { nodename: newName })
+                      changeDeviceName(device.ip, newName)
+                    }}
+                  >
                     <Label htmlFor="name">Change Name:</Label>
-                    <div className='flex items-center gap-1 py-1'>
+                    <div className="flex items-center gap-1 py-1">
                       <Input
                         type="text"
                         className="h-7 w-40"
