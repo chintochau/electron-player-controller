@@ -11,6 +11,7 @@ import SDUIInput from './SDUIInput'
 import SDUISource from './SDUISource'
 import { InfiniteMovingCards } from '../../../../components/ui/infinite-moving-cards'
 import { useBrowsing } from '../../context/browsingContext'
+import SDUILink from './SDUILink'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
@@ -45,7 +46,8 @@ const Row = ({ row, index }) => {
     source,
     teaser,
     fetch,
-    message
+    message,
+    link
   } = row || {}
   const { title } = $ || {}
   const isArtist = title?.toLowerCase().includes('artist') ?? false
@@ -200,6 +202,16 @@ const Row = ({ row, index }) => {
           })}
         </div>
       )}
+
+      {link && <div>
+        {
+          link.map((link, index) => {
+            return <SDUILink key={'link' + index} link={link} />
+          })
+        }
+      </div>
+
+      }
       {message && <p className="pb-4 px-6 text-foreground/30">{message}</p>}
     </>
   )
