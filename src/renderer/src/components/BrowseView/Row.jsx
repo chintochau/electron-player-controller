@@ -3,17 +3,18 @@ import { useSdui } from '../../context/sduiContext'
 import { cn } from '../../lib/utils'
 import LargeThumbnail from './LargeThumbnail'
 import { ScrollArea, ScrollBar } from '../../../../components/ui/scroll-area'
-import { ArrowLeftIcon, ChevronRightIcon } from 'lucide-react'
-import { Button } from '../../../../components/ui/button'
+import { ArrowLeftIcon, ChevronRightIcon, Loader2 } from 'lucide-react'
 import SmallThumbnail from './SmallThumbnail'
 import List from './List'
 import MenuAction from './MenuAction'
 import SDUIInput from './SDUIInput'
 import SDUISource from './SDUISource'
 import { InfiniteMovingCards } from '../../../../components/ui/infinite-moving-cards'
+import { useBrowsing } from '../../context/browsingContext'
 
 const Row = ({ row, index }) => {
   const { performAction } = useSdui()
+  const { SDUIfetch } = useBrowsing()
 
   const viewportRef = useRef(null)
 
@@ -33,10 +34,27 @@ const Row = ({ row, index }) => {
     viewportRef.current.scrollLeft = newPos
   }, [])
 
-  const { $, menuAction, input, list, largeThumbnail, smallThumbnail, action, source, teaser } =
-    row || {}
+  const {
+    $,
+    menuAction,
+    input,
+    list,
+    largeThumbnail,
+    smallThumbnail,
+    action,
+    source,
+    teaser,
+    fetch,
+    message
+  } = row || {}
   const { title } = $ || {}
   const isArtist = title?.toLowerCase().includes('artist') ?? false
+
+  useEffect(() => {
+    if (fetch && fetch.length > 0) {
+      SDUIfetch(fetch[0], row?.$?.id)
+    }
+  }, [fetch])
 
   return (
     <>
@@ -67,6 +85,10 @@ const Row = ({ row, index }) => {
           )}
         </div>
       )}
+
+      {fetch && fetch.length > 0 && <div className="w-full flex items-center px-6 gap-2 text-foreground/30">
+        <Loader2 className="animate-spin size-8" /> Loading your playlist
+        </div>}
 
       {teaser && <InfiniteMovingCards items={teaser} direction="left" speed="slow" />}
 
@@ -123,10 +145,10 @@ const Row = ({ row, index }) => {
                 : 'flex w-max space-x-4 p-4'
             )}
           >
-            {largeThumbnail?.map((largeThumbnailItem,LTindex) => {
+            {largeThumbnail?.map((largeThumbnailItem, LTindex) => {
               return (
                 <LargeThumbnail
-                  key={ "LargeThumbnail" + LTindex}
+                  key={'LargeThumbnail' + LTindex}
                   largeThumbnail={largeThumbnailItem}
                   size={index % 2 === 0 ? 'large' : 'small'}
                   isArtist={isArtist}
@@ -150,11 +172,10 @@ const Row = ({ row, index }) => {
               smallThumbnail?.length > 12 ? 'grid-rows-2' : ' '
             )}
           >
-            {smallThumbnail?.map((smallThumbnailItem,STindex) => {
+            {smallThumbnail?.map((smallThumbnailItem, STindex) => {
               return (
                 <SmallThumbnail
-                  key={ "SmallThumbnail" + STindex
-                  }
+                  key={'SmallThumbnail' + STindex}
                   smallThumbnail={smallThumbnailItem}
                   isArtist={isArtist}
                 />
@@ -179,6 +200,7 @@ const Row = ({ row, index }) => {
           })}
         </div>
       )}
+      {message && <p className="pb-4 px-6 text-foreground/30">{message}</p>}
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useDevices } from './devicesContext'
-import { searchableServicesList } from '../lib/constants'
+import { sduiSchemaVersion, searchableServicesList } from '../lib/constants'
 import { useStorage } from './localStorageContext'
 
 const BrowsingContext = createContext()
@@ -25,11 +25,14 @@ export const BrowsingProvider = ({ children }) => {
   const [historyUrl, setHistoryUrl] = useState([])
   const containerRef = useRef(null)
 
-  const {  enabledSearchServices } = useStorage()
+  const { enabledSearchServices } = useStorage()
 
-  const [searchableServices, setSearchableServices] = useState(searchableServicesList.map(service => (
-    { service: service, selected: enabledSearchServices.includes(service) }
-  )))
+  const [searchableServices, setSearchableServices] = useState(
+    searchableServicesList.map((service) => ({
+      service: service,
+      selected: enabledSearchServices.includes(service)
+    }))
+  )
 
   useEffect(() => {
     if (serviceList.length === 0) {
@@ -42,7 +45,9 @@ export const BrowsingProvider = ({ children }) => {
 
   useEffect(() => {
     // when enabled search services changes, update searchable services
-    setSearchableServices(prevState => prevState.map(item => ({ ...item, selected: enabledSearchServices.includes(item.service) })))
+    setSearchableServices((prevState) =>
+      prevState.map((item) => ({ ...item, selected: enabledSearchServices.includes(item.service) }))
+    )
   }, [enabledSearchServices, searchableServicesList])
 
   const addToHistory = (url, url2) => {
@@ -63,7 +68,12 @@ export const BrowsingProvider = ({ children }) => {
       ?.map((item) => item?.action?.[0]?.$?.URI?.split('service=')[1])
       .filter((item) => item != null)
     if (data) {
-      setSearchableServices(data.map(service => ({ service: service, selected: enabledSearchServices.includes(service) })))
+      setSearchableServices(
+        data.map((service) => ({
+          service: service,
+          selected: enabledSearchServices.includes(service)
+        }))
+      )
     }
   }
   const goToPreviousUrl = () => {
@@ -99,8 +109,10 @@ export const BrowsingProvider = ({ children }) => {
     } else {
       addToHistory(url)
     }
-    const res = await loadSDUI(uri, null, debug)
-    if (!res) { return }
+    const res = await loadSDUI(uri, null, debug,sduiSchemaVersion)
+    if (!res) {
+      return
+    }
     const response = res.json
     if (!response) {
       setScreen('No Response')
@@ -165,12 +177,14 @@ export const BrowsingProvider = ({ children }) => {
     }
   }
 
-  const loadSDUI = async (uri, deviceIp, debug) => {
+  const loadSDUI = async (uri, deviceIp, debug, schema) => {
+    console.log(uri, deviceIp, debug, schema)
+
     if (devices.length === 0) {
       return
     }
     const ip = deviceIp || selectedPlayer?.ip || devices[0]?.ip
-    return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug)
+    return await window.api.loadSDUIPage(`http://${ip}${uri}`, debug, schema)
   }
 
   const performSearching = async () => {
@@ -244,6 +258,67 @@ export const BrowsingProvider = ({ children }) => {
     return response?.json?.contextMenu
   }
 
+  const SDUIfetch = async (fetch, id) => {
+    const { $ } = fetch || {}
+    const { url, itemType } = $ || {}
+    // schema v6
+    const result = await loadSDUI(':11000' + url + '&playnum=1', null, null, '6')
+
+    const { list: newList, row: newRow } = result.json || {}
+
+    if (!newList && !newRow) {
+      if (!id) return
+
+      return setScreen((prev) => {
+        return {
+          ...prev,
+          row: prev.row?.map((row) => {
+            if (row?.$?.id === id) {
+              return { ...row, fetch: null, message: 'No items found' }
+            }
+            return row
+          }),
+          list: prev.list?.map((list) => {
+            if (list?.$?.id === id) {
+              return { ...list, fetch: null, message: 'No items found' }
+            }
+            return list
+          })
+        }
+      })
+    }
+
+    setScreen((prev) => {
+      if (newList) {
+        const listId = newList?.$?.id
+        // replace list from list array with new list, identify by list.id
+        return {
+          ...prev,
+          list: prev.list.map((list) => {
+            if (list.$.id === listId) {
+              return newList
+            }
+            return list
+          })
+        }
+      }
+      if (newRow) {
+        const rowId = newRow?.$?.id
+        // replace row from row array with new row, identify by row.id
+        return {
+          ...prev,
+          row: prev.row.map((row) => {
+            if (row.$.id === rowId) {
+              return newRow
+            }
+            return row
+          })
+        }
+      }
+      return prev
+    })
+  }
+
   const value = {
     url,
     setUrl,
@@ -279,7 +354,8 @@ export const BrowsingProvider = ({ children }) => {
     historyUrl,
     loadNextLink,
     containerRef,
-    loadContextMenu
+    loadContextMenu,
+    SDUIfetch
   }
 
   return <BrowsingContext.Provider value={value}>{children}</BrowsingContext.Provider>

@@ -517,8 +517,8 @@ ipcMain.handle("get-wifi-list", async () => {
   return await getWifiList();
 });
 
-ipcMain.handle("load-sd-ui-page", async (event, { url, debug }) => {
-  return await loadSDUIPage(url, debug);
+ipcMain.handle("load-sd-ui-page", async (event, { url, debug,schema }) => {
+  return await loadSDUIPage(url, debug,schema);
 });
 
 ipcMain.handle("connect-to-wifi", async (event, { ssid, password }) => {

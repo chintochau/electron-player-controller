@@ -42,7 +42,7 @@ export const checkUpgrade = async (ip) => {
     }
 
     return response
-  } catch (error) { 
+  } catch (error) {
     return {
       inProgress: false,
       version: null,
@@ -67,33 +67,37 @@ export const getCurrentWifi = async () => {
 
 export const getWifiList = async () => {
   try {
-    const wifiList = await wifi.scan()    
+    const wifiList = await wifi.scan()
     return wifiList
   } catch (error) {
     console.log(error)
   }
 }
-export const loadSDUIPage = async (url, debug) => {
+export const loadSDUIPage = async (url, debug,schema) => {
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, 
+      { 
+        method: 'GET', 
+        headers: { 'x-sovi-ui-schema-version': schema} 
+      })
     const xmlText = await res.text()
     const xml = await xml2js.parseStringPromise(xmlText)
     if (debug) {
       console.log(xml);
     }
 
-    return {json:xml, xmlText}
+    return { json: xml, xmlText }
   } catch (error) {
     console.log(error)
-    return {json:null, xmlText:null}
+    return { json: null, xmlText: null }
   }
 }
 
-export const connectToDeviceThroughWifi = async (ssid,password) => {
+export const connectToDeviceThroughWifi = async (ssid, password) => {
   try {
     await new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => reject(new Error('timeout')), 10000)
-      wifi.connect({ssid: ssid,password: password}, (error) => {
+      wifi.connect({ ssid: ssid, password: password }, (error) => {
         clearTimeout(timeoutId)
         if (error) {
           reject(error)
