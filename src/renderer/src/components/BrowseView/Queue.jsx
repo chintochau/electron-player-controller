@@ -7,8 +7,6 @@ const Queue = ({ queue }) => {
     }
 
     const { $, button, item } = queue
-console.log(queue);
-
     return (
         <div className='flex flex-col'>
             {item?.map((subItem , index) => (

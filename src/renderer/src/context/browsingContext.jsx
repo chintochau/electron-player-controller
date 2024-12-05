@@ -109,7 +109,7 @@ export const BrowsingProvider = ({ children }) => {
     } else {
       addToHistory(url)
     }
-    const res = await loadSDUI(uri, null, debug,sduiSchemaVersion)
+    const res = await loadSDUI(uri, null, debug, sduiSchemaVersion)
     if (!res) {
       return
     }
@@ -178,7 +178,9 @@ export const BrowsingProvider = ({ children }) => {
   }
 
   const loadSDUI = async (uri, deviceIp, debug, schema) => {
-    console.log(uri, deviceIp, debug, schema)
+    if (debug) {
+      console.log(uri, deviceIp, debug, schema)
+    }
 
     if (devices.length === 0) {
       return
