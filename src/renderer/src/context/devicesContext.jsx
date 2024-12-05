@@ -9,13 +9,9 @@ export const useDevices = () => useContext(DevicesContext)
 export const DevicesProvider = ({ children }) => {
   const [devices, setDevices] = useState([])
   const [selectedDevices, setSelectedDevices] = useState([]) // ips of selected devices
-  const { checkRoomForMac,saveRoomForMac } = useStorage()
-
-  //   useEffect(() => {
-  //     console.log(devices)
-  //   }, [devices])
-
-  const addDeviceToRoom = (ip,mac, room) => {
+  const { checkRoomForMac, saveRoomForMac } = useStorage()
+  const [devicesStatus, setDevicesStatus] = useState([])
+  const addDeviceToRoom = (ip, mac, room) => {
     setDevices((prevDevices) =>
       prevDevices.map((prevDevice) => {
         if (prevDevice.ip === ip) {
@@ -239,7 +235,6 @@ export const DevicesProvider = ({ children }) => {
     return () => clearInterval(intervalId)
   }, [])
 
-
   const changeDeviceName = async (ip, newName) => {
     setDevices((prevDevices) => {
       const index = prevDevices.findIndex((device) => device.ip === ip)
@@ -250,6 +245,37 @@ export const DevicesProvider = ({ children }) => {
       }
       return prevDevices
     })
+  }
+
+  const setDeviceStatus = (ip, status) => {
+    setDevicesStatus((prevDevicesStatus) => {
+      // find device with the matching ip from the object
+      const device = prevDevicesStatus.find((device) => device.ip === ip)
+      if (device) {
+        return [
+          ...prevDevicesStatus.filter((device) => device.ip !== ip),
+          {
+            ip,
+            status
+          }
+        ]
+      } else {
+        return [
+          ...prevDevicesStatus,
+          {
+            ip,
+            status
+          }
+        ]
+      }
+    })
+  }
+
+  const getDeviceStatus = (ip) => {
+    const device = devicesStatus.find((device) => device.ip === ip)
+    if (device) {
+      return device.status
+    }
   }
 
   const value = {
@@ -266,7 +292,10 @@ export const DevicesProvider = ({ children }) => {
     removeAllSelectedDevices,
     refreshDevices,
     addDeviceToRoom,
-    changeDeviceName
+    changeDeviceName,
+    setDeviceStatus,
+    getDeviceStatus,
+    devicesStatus
   }
 
   return <DevicesContext.Provider value={value}>{children}</DevicesContext.Provider>

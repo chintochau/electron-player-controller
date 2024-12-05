@@ -19,7 +19,9 @@ const PlayQueue = ({ ip }) => {
     }
 
     const loadQueue = async () => {
-        const res = await loadSDUI("/ui/Queue?playnum=1", ip)
+        const res = await loadSDUI("/ui/Queue?playnum=1", ip,null,"5")
+        console.log(res.json.queue);
+        
         setQueue(res.json.queue)
     }
 

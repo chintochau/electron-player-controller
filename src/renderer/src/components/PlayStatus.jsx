@@ -17,11 +17,13 @@ import { useRefresh } from '../context/refreshContext'
 import PresetsBar from './PresetsBar'
 import { useTable } from '../context/tableContext'
 import { runCommandForDevice } from '../lib/utils'
+import { useDevices } from '../context/devicesContext'
 
 const PlayStatus = ({ ip }) => {
   const [status, setStatus] = useState(null)
   const [shouldScroll, setShouldScroll] = useState(false)
   const [volume, setVolume] = useState(null)
+  const { getDeviceStatus, setDeviceStatus,devicesStatus } = useDevices()
 
   const { refreshTime, shouldRefresh } = useRefresh()
   const { showPreset, setShowPreset } = useTable()
@@ -29,8 +31,7 @@ const PlayStatus = ({ ip }) => {
   const fetchStatus = async () => {
     const res = await window.api.checkStatus(ip)
     const response = res
-    
-    setStatus(response)
+    setDeviceStatus(ip, response)
     setVolume((prev) => {
       if (prev === null) {
         return response?.volume || 0
@@ -38,6 +39,14 @@ const PlayStatus = ({ ip }) => {
       return prev
     })
   }
+
+useEffect(() => {
+  const status = getDeviceStatus(ip)
+  if (status) {
+    setStatus(status)
+  }
+}, [devicesStatus])
+
 
   const transportControl = async (control, param) => {
     const res = await window.api.playerControl(ip, control, param)
@@ -69,7 +78,6 @@ const PlayStatus = ({ ip }) => {
     if (status?.title1 && status?.title2) {
       setShouldScroll(true)
     }
-
   }, [status?.title1])
 
   const getImageurl = (imagePath) => {
@@ -145,20 +153,21 @@ const PlayStatus = ({ ip }) => {
   }
 
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <div className="flex items-center gap-2 justify-end px-2">
         <div className="flex items-center justify-center w-16 h-16 relative">
-          <div className={cn("absolute -bottom-5 left-1 w-full flex items-center justify-start  hover:text-primary cursor-pointer",
-            status?.sleep ? 'text-primary/50' : "text-background"
-          )} onClick={async () => {
-            await runCommandForDevice(ip, ':11000/Sleep')
-            fetchStatus()
-          }
-          } >
+          <div
+            className={cn(
+              'absolute -bottom-5 left-1 w-full flex items-center justify-start  hover:text-primary cursor-pointer',
+              status?.sleep ? 'text-primary/50' : 'text-background'
+            )}
+            onClick={async () => {
+              await runCommandForDevice(ip, ':11000/Sleep')
+              fetchStatus()
+            }}
+          >
             <Timer className="w-4 h-4" />
-            <p className='text-xs'>
-              {status?.sleep && status?.sleep + " min"}
-            </p>
+            <p className="text-xs">{status?.sleep && status?.sleep + ' min'}</p>
           </div>
           {status?.image && (
             <img
@@ -171,19 +180,23 @@ const PlayStatus = ({ ip }) => {
         <div className="flex flex-col flex-1 items-center">
           <TransportControlButton status={status} />
           {status?.progress !== null && (
-            <Progress
-              className='h-1  w-44 my-1'
-              value={status?.progress}
-            />
+            <Progress className="h-1  w-44 my-1" value={status?.progress} />
           )}
           <div className="overflow-hidden whitespace-nowrap w-52 ">
-          <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
-              <span>{status?.title1} {status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}</span>
-              <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-                {status?.title1}{status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}
+            <div className={cn('flex space-x-12 w-full', shouldScroll ? 'animate-marquee' : '')}>
+              <span>
+                {status?.title1} {status?.title2 && ' 。 ' + status?.title2}{' '}
+                {status?.title3 && ' 。 ' + status?.title3}
               </span>
               <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
-                {status?.title1}{status?.title2 && " 。 " + status?.title2} {status?.title3 && " 。 " + status?.title3}
+                {status?.title1}
+                {status?.title2 && ' 。 ' + status?.title2}{' '}
+                {status?.title3 && ' 。 ' + status?.title3}
+              </span>
+              <span className={cn(shouldScroll ? 'inline' : 'hidden')}>
+                {status?.title1}
+                {status?.title2 && ' 。 ' + status?.title2}{' '}
+                {status?.title3 && ' 。 ' + status?.title3}
               </span>
             </div>
           </div>

@@ -289,7 +289,7 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
-    const { sleep, service, state, volume, title1, title2, title3, image } = statusXml || {}
+    const { sleep, service, state, volume, title1, title2, title3, image } = statusXml || {}    
     if (
       statusXml && service && state && volume && title1 && image
     ) {
@@ -300,6 +300,7 @@ ipcMain.handle('check-status', async (event, ip) => {
       }
 
       response = {
+        ...statusXml,
         success: true,
         service: statusXml.service[0],
         state: statusXml.state[0],
@@ -309,7 +310,7 @@ ipcMain.handle('check-status', async (event, ip) => {
         title3: title3?.[0],
         image: statusXml.image[0],
         progress: progress,
-        sleep: sleep?.[0] || false
+        sleep: sleep?.[0] || false,
       }
     } else {
       return { success: false, state: 'nothing' }
