@@ -62,3 +62,14 @@ export const encodeUrl = (url) => {
   let reencoded_url = decoded_url.replace(/,/g, '%2C');
   return reencoded_url
 }
+
+export const decomposeUrlIntoParamsObject = (url) => {
+  const params = new URLSearchParams(url)
+  // Get all the parameters as an object
+  const paramsObject = {}
+  params.forEach((value, key) => {
+    paramsObject[key] = value
+  })
+
+  return paramsObject
+}

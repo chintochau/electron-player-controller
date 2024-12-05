@@ -10,6 +10,7 @@ import { BrowsingProvider } from './context/browsingContext'
 import { SDUIProvider } from './context/sduiContext'
 import { SetupProvider } from './context/setupContext'
 import { DndContext } from '@dnd-kit/core'
+import { PresetProvider } from './context/presetContext'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -20,17 +21,19 @@ function App() {
         <RefreshProvider>
           <StorageProvider>
             <DevicesProvider>
-             <SetupProvider>
+              <SetupProvider>
                 <TableProvider>
-                  <BrowsingProvider>
-                    <SDUIProvider>
-                      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-                        <Dashboard />
-                      </ThemeProvider>
-                    </SDUIProvider>
-                  </BrowsingProvider>
+                  <PresetProvider>
+                    <BrowsingProvider>
+                      <SDUIProvider>
+                        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+                          <Dashboard />
+                        </ThemeProvider>
+                      </SDUIProvider>
+                    </BrowsingProvider>
+                  </PresetProvider>
                 </TableProvider>
-             </SetupProvider>
+              </SetupProvider>
             </DevicesProvider>
           </StorageProvider>
         </RefreshProvider>

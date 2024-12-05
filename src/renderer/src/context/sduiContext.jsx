@@ -1,7 +1,13 @@
 import { createContext, useContext, useState } from 'react'
 import { useBrowsing } from './browsingContext'
-import { runCommandForDevice } from '../lib/utils'
+import {
+  buildUrl,
+  decomposeUrlIntoParamsObject,
+  encodeUrl,
+  runCommandForDevice
+} from '../lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { usePreset } from './presetContext'
 
 const SDUIContext = createContext()
 
@@ -14,6 +20,7 @@ export const mapValueToKey = (value) => {
 export const SDUIProvider = ({ children }) => {
   const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
   const [isAddpresetPageShown, setIsAddpresetPageShown] = useState(false)
+  const { setSelectedPreset, setSelectedService, setPresetName } = usePreset()
 
   const mapToURL = ({ URI, resultType, title, service }) => {
     // Map the given parameters to the new format
@@ -52,7 +59,7 @@ export const SDUIProvider = ({ children }) => {
           break
         case 'browse':
           switch (resultType) {
-            case "Info":
+            case 'Info':
               //TODO : handle Info
               break
             default:
@@ -66,15 +73,32 @@ export const SDUIProvider = ({ children }) => {
           // URI = "/music-service/Tidal"
           // split URI by / and get the first part
           url = URI.split('/')[1]
-          switch (url) {
+          const parsedURI = url.split('?')?.[0] || url
+          const parsedParams = url.split('?')?.[1]
+
+          switch (parsedURI) {
             case 'music-service':
               url = '/ui/browseMenuGroup?service=' + service + '&playnum=1'
               setUrl(url)
               displayMainScreen(url)
               break
-            case "add-preset":
+            case 'add-preset':
               // TODO show add preset page
               setIsAddpresetPageShown(true)
+
+              if (parsedParams) {
+                const object = decomposeUrlIntoParamsObject(parsedParams)
+                const { name, URL,image } = object || {}
+                setPresetName(name)
+                setSelectedPreset((prev) => {
+                  return {$:{
+                    ...object,
+                    URL:object.url,
+                    text:name,
+                  }}
+                })
+              }
+
               break
             default:
               console.log('not supported url type', url)
@@ -97,7 +121,6 @@ export const SDUIProvider = ({ children }) => {
       '+'
     )
   }
-
 
   const value = {
     performAction,

@@ -18,7 +18,7 @@ const SDUIContextMenu = ({ contextMenu, itemsOnly }) => {
     const { getImagePath } = useBrowsing()
     const { performAction } = useSdui()
     const { $, item } = contextMenu || {}
-    console.log(contextMenu);
+    
     return (
       <ContextMenuContent>
         {
