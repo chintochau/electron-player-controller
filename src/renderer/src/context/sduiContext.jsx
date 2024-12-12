@@ -20,7 +20,7 @@ export const mapValueToKey = (value) => {
 export const SDUIProvider = ({ children }) => {
   const { displayMainScreen, setUrl, selectedPlayer } = useBrowsing() || {}
   const [isAddpresetPageShown, setIsAddpresetPageShown] = useState(false)
-  const { setSelectedPreset, setSelectedService, setPresetName } = usePreset()
+  const { setSelectedPreset, setPresetName } = usePreset() || {}
 
   const mapToURL = ({ URI, resultType, title, service }) => {
     // Map the given parameters to the new format
