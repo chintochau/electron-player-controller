@@ -4,9 +4,14 @@ import { useSdui } from '../context/sduiContext'
 import { playerControl, runCommandForDevice } from '../lib/utils'
 import noArtwork from '../assets/noartwork.png'
 import { renderComponent } from './BrowseView/GUI'
+import { Plus } from 'lucide-react'
+import { useDevices } from '../context/devicesContext'
 
 const PresetsBar = ({ ip }) => {
   const [presets, setPresets] = useState([])
+  const { setIsAddpresetPageShown, isAddpresetPageShown } = useSdui()
+  const { setSelectedPlayer } = useBrowsing()
+  const { devices } = useDevices()
 
   const loadPresets = async () => {
     const res = await window.api.loadSDUIPage(`http://${ip}:11000/Presets`)
@@ -29,13 +34,18 @@ const PresetsBar = ({ ip }) => {
   useEffect(() => {
     loadPresets()
   }, [])
-
-  if (presets === undefined || presets.length === 0) return null
+  
+  // Reload presets when the add preset dialog is closed
+  useEffect(() => {
+    if (!isAddpresetPageShown) {
+      loadPresets()
+    }
+  }, [isAddpresetPageShown])
 
   return (
     <div className="flex justify-end border-t mt-3 pt-2 ">
       <div className="flex rounded-md ">
-        {presets.slice(0, 5).map((preset) => (
+        {presets && presets.slice(0, 5).map((preset) => (
           <div
             key={preset.$.id}
             className="flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary rounded-md px-1.5 py-1  relative group transition ease-out duration-300 active:scale-110"
@@ -57,6 +67,24 @@ const PresetsBar = ({ ip }) => {
             </div>
           </div>
         ))}
+        
+        {/* Add Preset Button */}
+        <div
+          className="flex flex-col items-start gap-2 cursor-pointer hover:bg-accent hover:text-primary rounded-md px-1.5 py-1 relative group transition ease-out duration-300 active:scale-110"
+          onClick={() => {
+            // Find and set the player that matches this IP
+            const currentDevice = devices.find(device => device.ip === ip)
+            if (currentDevice) {
+              setSelectedPlayer(currentDevice)
+            }
+            setIsAddpresetPageShown(true)
+          }}
+          title="Add Preset"
+        >
+          <div className="size-12 flex items-center justify-center border-2 border-dashed border-muted-foreground/50 rounded-md hover:border-primary">
+            <Plus className="size-6 text-muted-foreground group-hover:text-primary" />
+          </div>
+        </div>
       </div>
     </div>
   )

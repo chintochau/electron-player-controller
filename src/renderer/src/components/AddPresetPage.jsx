@@ -148,13 +148,14 @@ const AddPresetPage = () => {
 
         if (failureCount > 0) {
           // Show detailed results with successes and failures
-          const failedDevices = results
+          const failedDevicesInfo = results
             .filter((r) => !r.success)
-            .map((r) => r.device)
-            .join(', ')
+            .map((r) => `${r.device} (${r.reason})`)
+            .join('; ')
+          
           toast({
             title: 'Preset Applied with Some Failures',
-            description: `Successfully applied to ${successCount} device(s). Failed on ${failureCount} device(s): ${failedDevices}`,
+            description: `Successfully applied to ${successCount} device(s). Failed on ${failureCount} device(s): ${failedDevicesInfo}`,
             variant: 'warning'
           })
         } else if (successCount > 0) {
@@ -203,9 +204,15 @@ const AddPresetPage = () => {
           await runCommandForDevice(device.ip, setPresetPath)
           results.push({ device: device.name, success: true })
         } else {
-          let reason = `Device does not support ${selectedService} service`
+          let reason = `does not support ${selectedService} service`
           if (selectedService === 'Capture' && selectedPreset?.$.inputType) {
-            reason = `Device does not have ${selectedPreset.$.inputType} input`
+            const inputTypeName = selectedPreset.$.inputType === 'analog' ? 'analog input' :
+                                selectedPreset.$.inputType === 'spdif' ? 'optical input' :
+                                selectedPreset.$.inputType === 'arc' ? 'HDMI ARC' :
+                                selectedPreset.$.inputType === 'phono' ? 'phono input' :
+                                selectedPreset.$.inputType === 'bluetooth' ? 'Bluetooth' :
+                                selectedPreset.$.inputType
+            reason = `does not have ${inputTypeName} available`
           }
           results.push({
             device: device.name,
@@ -253,7 +260,7 @@ const AddPresetPage = () => {
       })
 
       if (!hasService) {
-        console.log(`Device ${device.name} does not support service: ${service}`)
+        console.log(`Device ${device.name} does not have ${service} service available`)
         return false
       }
 
@@ -277,7 +284,13 @@ const AddPresetPage = () => {
           })
 
           if (!hasSpecificInput) {
-            console.log(`Device ${device.name} does not have ${selectedPreset.$.inputType} input`)
+            const inputTypeName = selectedPreset.$.inputType === 'analog' ? 'analog input' :
+                                selectedPreset.$.inputType === 'spdif' ? 'optical input' :
+                                selectedPreset.$.inputType === 'arc' ? 'HDMI ARC' :
+                                selectedPreset.$.inputType === 'phono' ? 'phono input' :
+                                selectedPreset.$.inputType === 'bluetooth' ? 'Bluetooth' :
+                                selectedPreset.$.inputType
+            console.log(`Device ${device.name} does not have ${inputTypeName} available`)
             return false
           }
         } catch (error) {
