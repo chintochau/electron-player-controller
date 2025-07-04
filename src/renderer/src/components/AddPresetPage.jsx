@@ -152,7 +152,7 @@ const AddPresetPage = () => {
             .filter((r) => !r.success)
             .map((r) => `${r.device} (${r.reason})`)
             .join('; ')
-          
+
           toast({
             title: 'Preset Applied with Some Failures',
             description: `Successfully applied to ${successCount} device(s). Failed on ${failureCount} device(s): ${failedDevicesInfo}`,
@@ -179,7 +179,7 @@ const AddPresetPage = () => {
           variant: 'success'
         })
       }
-      
+
       // Close the dialog after successful save
       setIsAddpresetPageShown(false)
     } catch (error) {
@@ -209,12 +209,18 @@ const AddPresetPage = () => {
         } else {
           let reason = `does not support ${selectedService} service`
           if (selectedService === 'Capture' && selectedPreset?.$.inputType) {
-            const inputTypeName = selectedPreset.$.inputType === 'analog' ? 'analog input' :
-                                selectedPreset.$.inputType === 'spdif' ? 'optical input' :
-                                selectedPreset.$.inputType === 'arc' ? 'HDMI ARC' :
-                                selectedPreset.$.inputType === 'phono' ? 'phono input' :
-                                selectedPreset.$.inputType === 'bluetooth' ? 'Bluetooth' :
-                                selectedPreset.$.inputType
+            const inputTypeName =
+              selectedPreset.$.inputType === 'analog'
+                ? 'analog input'
+                : selectedPreset.$.inputType === 'spdif'
+                  ? 'optical input'
+                  : selectedPreset.$.inputType === 'arc'
+                    ? 'HDMI ARC'
+                    : selectedPreset.$.inputType === 'phono'
+                      ? 'phono input'
+                      : selectedPreset.$.inputType === 'bluetooth'
+                        ? 'Bluetooth'
+                        : selectedPreset.$.inputType
             reason = `does not have ${inputTypeName} available`
           }
           results.push({
@@ -274,7 +280,7 @@ const AddPresetPage = () => {
           const inputsResponse = await window.api.loadSDUIPage(
             `http://${device.ip}:11000/RadioBrowse?service=Capture&url=presets&key=Music`
           )
-          
+
           if (!inputsResponse || !inputsResponse.json || !inputsResponse.json.radiotime) {
             console.warn(`Device ${device.name} returned invalid inputs response`)
             return false
@@ -287,12 +293,18 @@ const AddPresetPage = () => {
           })
 
           if (!hasSpecificInput) {
-            const inputTypeName = selectedPreset.$.inputType === 'analog' ? 'analog input' :
-                                selectedPreset.$.inputType === 'spdif' ? 'optical input' :
-                                selectedPreset.$.inputType === 'arc' ? 'HDMI ARC' :
-                                selectedPreset.$.inputType === 'phono' ? 'phono input' :
-                                selectedPreset.$.inputType === 'bluetooth' ? 'Bluetooth' :
-                                selectedPreset.$.inputType
+            const inputTypeName =
+              selectedPreset.$.inputType === 'analog'
+                ? 'analog input'
+                : selectedPreset.$.inputType === 'spdif'
+                  ? 'optical input'
+                  : selectedPreset.$.inputType === 'arc'
+                    ? 'HDMI ARC'
+                    : selectedPreset.$.inputType === 'phono'
+                      ? 'phono input'
+                      : selectedPreset.$.inputType === 'bluetooth'
+                        ? 'Bluetooth'
+                        : selectedPreset.$.inputType
             console.log(`Device ${device.name} does not have ${inputTypeName} available`)
             return false
           }
@@ -315,19 +327,22 @@ const AddPresetPage = () => {
 
   return (
     <>
-      <Dialog open={isAddpresetPageShown} onOpenChange={(open) => {
-        setIsAddpresetPageShown(open)
-        // Reset state when dialog closes
-        if (!open) {
-          resetPreset()
-          setSelectedService(null)
-          setBreadcrumbItems([])
-          setRadiotime([])
-          setIsApplyToAllPlayers(false)
-          setPresetNumber(1)
-          setPresetName('')
-        }
-      }}>
+      <Dialog
+        open={isAddpresetPageShown}
+        onOpenChange={(open) => {
+          setIsAddpresetPageShown(open)
+          // Reset state when dialog closes
+          if (!open) {
+            resetPreset()
+            setSelectedService(null)
+            setBreadcrumbItems([])
+            setRadiotime([])
+            setIsApplyToAllPlayers(false)
+            setPresetNumber(1)
+            setPresetName('')
+          }
+        }}
+      >
         <DialogContent className="w-full max-w-xl xl:max-w-4xl">
           <DialogHeader>
             <DialogTitle>Add Preset</DialogTitle>
@@ -432,7 +447,10 @@ const AddPresetPage = () => {
                 </div>
                 <div className="flex flex-col w-fit">
                   <p className=" text-nowrap">Preset Slot:</p>
-                  <Select value={String(presetNumber)} onValueChange={(e) => setPresetNumber(Number(e))}>
+                  <Select
+                    value={String(presetNumber)}
+                    onValueChange={(e) => setPresetNumber(Number(e))}
+                  >
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="Slot" />
                     </SelectTrigger>

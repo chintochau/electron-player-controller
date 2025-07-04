@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from './Header'
-import PlayerList from './PlayerList'
+import PlayerListModern from './PlayerList/PlayerListModern'
 import Footer from './Footer'
 import { useTable } from '../context/tableContext'
 import { cn } from '../lib/utils'
@@ -18,12 +18,14 @@ const Dashboard = () => {
       <div className="flex">
         <div
           className={cn(
-            ' duration-300 ease-in overflow-hidden h-screen',
-            isCollapsed ? ' min-w-fit w-80 pl-2 ' : 'pl-10 w-full'
+            'duration-300 ease-in overflow-hidden h-screen flex flex-col',
+            isCollapsed ? 'min-w-fit w-80 pl-2' : 'pl-10 w-full'
           )}
         >
           <Header isCollapsed={isCollapsed} />
-          <PlayerList isCollapsed={isCollapsed} />
+          <div className="flex-1 overflow-hidden">
+            <PlayerListModern />
+          </div>
         </div>
         <Footer isCollapsed={isCollapsed} />
         <div

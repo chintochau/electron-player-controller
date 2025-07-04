@@ -6,6 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 BluOS Player Controller - An Electron desktop application for discovering and controlling BluOS-compatible music players on the local network.
 
+## Development Guidelines
+
+- New components should be created with TypeScript (.tsx files)
+- Existing .jsx/.js files remain as JavaScript
+- TypeScript is configured with strict mode for better type safety
+- Use proper types for all new TypeScript components
+- **IMPORTANT**: After making code changes, especially to TypeScript files, run `npm run typecheck` to ensure there are no type errors
+- When completing tasks, always run both `npm run lint` and `npm run typecheck` before considering the task complete
+- Do type check after code change
+
 ## Development Commands
 
 ```bash
@@ -26,6 +36,7 @@ npm run start
 
 # Code quality
 npm run lint           # Run ESLint
+npm run typecheck      # Run TypeScript type checking
 npm run format         # Format with Prettier
 
 # Publishing (requires S3 credentials)

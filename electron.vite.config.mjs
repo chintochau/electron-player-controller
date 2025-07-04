@@ -22,8 +22,14 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@': resolve(__dirname, './src')
-      }
+      },
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
     },
-    plugins: [react()]
+    plugins: [react()],
+    esbuild: {
+      loader: 'tsx',
+      include: /\.[jt]sx?$/,
+      exclude: []
+    }
   }
 })
