@@ -42,7 +42,7 @@ const SettingsMenu = ({ ip }) => {
   }
 
   return (
-    <DropdownMenu >
+    <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-accent p-2 rounded-md">
         <EllipsisVertical className="h-4 w-4" />
       </DropdownMenuTrigger>

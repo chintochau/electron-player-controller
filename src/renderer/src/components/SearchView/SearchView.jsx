@@ -12,13 +12,8 @@ import GUI from '../BrowseView/GUI'
 import { XCircleIcon } from 'lucide-react'
 
 const SearchView = () => {
-  const {
-    searchResult,
-    setSearchResult,
-    xmlSearchResult,
-    displayMode,
-    setIsSearchMode
-  } = useBrowsing()
+  const { searchResult, setSearchResult, xmlSearchResult, displayMode, setIsSearchMode } =
+    useBrowsing()
 
   const exitSearch = () => {
     setSearchResult(null)
@@ -35,7 +30,7 @@ const SearchView = () => {
   return (
     <div className="w-full h-full p-4 overflow-x-hidden pt-16">
       <div className="w-[calc(100vw-460px)] h-32 bg-background fixed top-0 z-10 flex items-end pr-20 pb-2">
-        <div className='flex items-center w-full justify-between gap-2'>
+        <div className="flex items-center w-full justify-between gap-2">
           <h3 className="text-2xl font-bold">Search</h3>
           <ScrollArea className="w-full">
             <div className="flex gap-2 w-full py-1">

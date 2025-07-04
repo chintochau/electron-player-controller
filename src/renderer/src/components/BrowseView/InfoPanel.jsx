@@ -9,8 +9,8 @@ const InfoPanel = ({ infoPanel }) => {
   return (
     <div className="w-full h-1/2 flex flex-col justify-center items-center">
       <div className="w-20 h-20">{icon && <img src={getImagePath(icon)} />}</div>
-      <h2 className='text-2xl'>{text}</h2>
-      <p className='text-sm'>{subText}</p>
+      <h2 className="text-2xl">{text}</h2>
+      <p className="text-sm">{subText}</p>
     </div>
   )
 }

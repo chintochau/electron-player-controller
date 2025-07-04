@@ -16,7 +16,7 @@ import {
 import { GripHorizontal } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 
-const PlayerGridView = ({tray}) => {
+const PlayerGridView = ({ tray }) => {
   const { isGridMode, isCollapsed } = useTable()
   const { roomList } = useStorage()
   const { devices, addDeviceToRoom } = useDevices()
@@ -44,7 +44,7 @@ const PlayerGridView = ({tray}) => {
     <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
       <ScrollArea>
         {(tray || isGridMode) && !isCollapsed && (
-          <div className={tray ? "max-h-full" :" max-h-[calc(100vh-265px)] "}>
+          <div className={tray ? 'max-h-full' : ' max-h-[calc(100vh-265px)] '}>
             {roomList.sort().map((room) => (
               <Droppable id={room} key={room}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 auto-cols-min ">
@@ -75,8 +75,7 @@ function Droppable(props) {
     <div ref={setNodeRef} className={cn('px-2 py-4', isOver ? '' : '')}>
       <div className="w-full border-b mb-2 flex items-center justify-between">
         <h3 className={cn('text-xl text-primary italic font-semibold')}>{id}</h3>
-        <div className="flex items-center">
-        </div>
+        <div className="flex items-center"></div>
       </div>
       {props.children}
       {isOver && <div className="w-full h-1.5 bg-accent my-1" />}

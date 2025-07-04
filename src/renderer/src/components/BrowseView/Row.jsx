@@ -88,9 +88,11 @@ const Row = ({ row, index }) => {
         </div>
       )}
 
-      {fetch && fetch.length > 0 && <div className="w-full flex items-center px-6 gap-2 text-foreground/30">
-        <Loader2 className="animate-spin size-8" /> Loading your playlist
-        </div>}
+      {fetch && fetch.length > 0 && (
+        <div className="w-full flex items-center px-6 gap-2 text-foreground/30">
+          <Loader2 className="animate-spin size-8" /> Loading your playlist
+        </div>
+      )}
 
       {teaser && <InfiniteMovingCards items={teaser} direction="left" speed="slow" />}
 
@@ -203,15 +205,13 @@ const Row = ({ row, index }) => {
         </div>
       )}
 
-      {link && <div>
-        {
-          link.map((link, index) => {
+      {link && (
+        <div>
+          {link.map((link, index) => {
             return <SDUILink key={'link' + index} link={link} />
-          })
-        }
-      </div>
-
-      }
+          })}
+        </div>
+      )}
       {message && <p className="pb-4 px-6 text-foreground/30">{message}</p>}
     </>
   )

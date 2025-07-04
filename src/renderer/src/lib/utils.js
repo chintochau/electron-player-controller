@@ -12,34 +12,31 @@ export const playerControl = async (ip, control, param) => {
   return res
 }
 
-
-export const runCommandForDevice = async (ip, command, type = "GET", body) => {
+export const runCommandForDevice = async (ip, command, type = 'GET', body) => {
   const res = await window.api.runCommandForDevice(ip, command, type, body)
   return res
 }
-
 
 export const getIconForType = (type) => {
   if (!type) {
     return null
   }
   switch (type.toLowerCase()) {
-    case "album":
+    case 'album':
       return DiscAlbumIcon
-    case "artist":
-      return ""
-    case "screen":
-    case "playlist":
+    case 'artist':
+      return ''
+    case 'screen':
+    case 'playlist':
       return ListMusicIcon
-    case "song":
+    case 'song':
       return MusicIcon
-    case "deep-link":
+    case 'deep-link':
       return null
     default:
       return null
   }
 }
-
 
 export const removeFromGroup = (slaveDevice) => {
   ///RemoveSlave?slave=secondaryPlayerIP&port=secondaryPlayerPor
@@ -48,18 +45,21 @@ export const removeFromGroup = (slaveDevice) => {
 
 export const buildUrl = (baseURL, params, capture = false) => {
   const queryParams = Object.keys(params)
-    .filter(key => params[key] !== null && params[key] !== undefined)
-    .map(key => `${encodeURIComponent(key)}=${capture ? decodeURIComponent(params[key]) : encodeURIComponent(params[key])}`)
-    .join('&');
+    .filter((key) => params[key] !== null && params[key] !== undefined)
+    .map(
+      (key) =>
+        `${encodeURIComponent(key)}=${capture ? decodeURIComponent(params[key]) : encodeURIComponent(params[key])}`
+    )
+    .join('&')
 
-  return queryParams ? `${baseURL}?${queryParams}` : baseURL;
+  return queryParams ? `${baseURL}?${queryParams}` : baseURL
 }
 
 export const encodeUrl = (url) => {
   // Decode the overly-encoded URL
-  let decoded_url = decodeURIComponent(url);
+  let decoded_url = decodeURIComponent(url)
   // Replace re-encoding where necessary (use encodeURIComponent on parts)
-  let reencoded_url = decoded_url.replace(/,/g, '%2C');
+  let reencoded_url = decoded_url.replace(/,/g, '%2C')
   return reencoded_url
 }
 

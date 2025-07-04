@@ -9,7 +9,7 @@ const BrowsePanel = ({ isCollapsed }) => {
         <>
           <BrowsePage />
         </>
-      ) }
+      )}
     </div>
   )
 }

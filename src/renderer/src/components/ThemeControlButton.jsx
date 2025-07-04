@@ -7,7 +7,18 @@ import {
 } from '../../../components/ui/dropdown-menu'
 import { useTheme } from '../context/themeContext'
 import { Button } from '../../../components/ui/button'
-import { Moon, Sun, Droplet, Waves, Flame, Flower, Flower2, Clover, Rainbow, Mountain } from 'lucide-react'
+import {
+  Moon,
+  Sun,
+  Droplet,
+  Waves,
+  Flame,
+  Flower,
+  Flower2,
+  Clover,
+  Rainbow,
+  Mountain
+} from 'lucide-react'
 import { DropdownMenuLabel, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 
 const ThemeControlButton = () => {
@@ -48,7 +59,7 @@ const ThemeControlButton = () => {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent >
+      <DropdownMenuContent>
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>

@@ -16,7 +16,7 @@ const CheckUpgrade = ({ ip }) => {
   const [upgradeResponse, setUpgradeResponse] = useState({})
   const [checking, setChecking] = useState(false)
   const [open, setOpen] = useState(false)
-  const {updateDeviceStatus } = useDevices()
+  const { updateDeviceStatus } = useDevices()
   const checkUpgrade = async (ip) => {
     setChecking(true)
     const res = await window.api.checkUpgrade(ip)

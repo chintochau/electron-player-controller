@@ -88,14 +88,16 @@ export const SDUIProvider = ({ children }) => {
 
               if (parsedParams) {
                 const object = decomposeUrlIntoParamsObject(parsedParams)
-                const { name, URL,image } = object || {}
+                const { name, URL, image } = object || {}
                 setPresetName(name)
                 setSelectedPreset((prev) => {
-                  return {$:{
-                    ...object,
-                    URL:object.url,
-                    text:name,
-                  }}
+                  return {
+                    $: {
+                      ...object,
+                      URL: object.url,
+                      text: name
+                    }
+                  }
                 })
               }
 

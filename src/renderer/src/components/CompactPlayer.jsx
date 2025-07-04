@@ -6,8 +6,7 @@ import { useBrowsing } from '../context/browsingContext'
 import { cn } from '@/lib/utils'
 import PlayQueue from './PlayQueue'
 
-
-const CompactPlayer = ({ ip,className }) => {
+const CompactPlayer = ({ ip, className }) => {
   const { devices } = useDevices()
   const { selectedPlayer, setSelectedPlayer } = useBrowsing()
   const device = devices.find((device) => device.ip === ip)
@@ -29,7 +28,6 @@ const CompactPlayer = ({ ip,className }) => {
         <PlayStatus ip={ip} />
       </div>
       <PlayQueue ip={ip} />
-
     </div>
   )
 }

@@ -15,7 +15,7 @@ import {
 import { cn, getIconForType } from '../../lib/utils'
 import { PlusCircleIcon } from 'lucide-react'
 import { renderComponent } from './GUI'
-import placeholder from "../../assets/noartwork.png"
+import placeholder from '../../assets/noartwork.png'
 import SDUIContextMenu from './SDUIContextMenu'
 
 const SmallThumbnail = ({
@@ -26,9 +26,9 @@ const SmallThumbnail = ({
   ...props
 }) => {
   const { performAction } = useSdui()
-  const { getImagePath,loadContextMenu } = useBrowsing()
+  const { getImagePath, loadContextMenu } = useBrowsing()
 
-  const { $, action,contextMenu } = smallThumbnail || {}
+  const { $, action, contextMenu } = smallThumbnail || {}
   const { title } = $ || {}
 
   const resultType = action?.[0]?.$?.resultType || action?.[0]?.$?.type
@@ -43,12 +43,14 @@ const SmallThumbnail = ({
 
   return (
     <div className={cn('space-y-3 ', className)} {...props}>
-      <ContextMenu onOpenChange={async (e) => {
-        if (e && !contextMenuWithItems) {
-          const menuItems = await loadContextMenu(contextMenu?.[0])
-          setContextMenuWithItems(menuItems)
-        }
-      }}>
+      <ContextMenu
+        onOpenChange={async (e) => {
+          if (e && !contextMenuWithItems) {
+            const menuItems = await loadContextMenu(contextMenu?.[0])
+            setContextMenuWithItems(menuItems)
+          }
+        }}
+      >
         <ContextMenuTrigger onClick={handleClick}>
           <div className="relative overflow-hidden rounded-md group transition ease-out duration-300 active:scale-110 shadow-md">
             <img
@@ -71,8 +73,7 @@ const SmallThumbnail = ({
             {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>
-        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly/>}
-
+        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly />}
       </ContextMenu>
       <div className="space-y-1 text-sm">
         <h3 className="font-medium leading-none w-40 text-wrap">{smallThumbnail.$?.title}</h3>

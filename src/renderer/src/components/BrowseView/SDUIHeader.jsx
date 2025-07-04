@@ -24,8 +24,9 @@ const SDUIHeader = ({ header, onlyOneListWithHeader }) => {
         )}
       >
         <div
-          className={cn("absolute  translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-150 pointer-events-none ",
-            onlyOneListWithHeader ? "z-10":""
+          className={cn(
+            'absolute  translate-y-[-30%] inset-5 bg-black opacity-20 filter blur-3xl scale-150 pointer-events-none ',
+            onlyOneListWithHeader ? 'z-10' : ''
           )}
           style={{ backgroundImage: `url(${image ? getImagePath(image) : tidalLogo})` }}
         />

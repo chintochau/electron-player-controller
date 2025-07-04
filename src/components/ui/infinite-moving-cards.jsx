@@ -112,7 +112,12 @@ export const InfiniteMovingCards = ({
                   <span className="flex flex-col gap-1">
                     {button &&
                       button.map((btn, btnidx) => (
-                        <SDUIButton button={btn} index={btnidx} key={btnidx+"Button"} className="h-7 w-full" />
+                        <SDUIButton
+                          button={btn}
+                          index={btnidx}
+                          key={btnidx + 'Button'}
+                          className="h-7 w-full"
+                        />
                       ))}
                   </span>
                 </div>

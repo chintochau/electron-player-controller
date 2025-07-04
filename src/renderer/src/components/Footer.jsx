@@ -25,11 +25,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  DialogTrigger
+} from '@/components/ui/dialog'
 import Markdown from 'markdown-to-jsx'
 import { ScrollArea } from '@/components/ui/scroll-area'
-
 
 const Footer = ({ isCollapsed }) => {
   const { version, setVersion } = useTable()
@@ -47,7 +46,6 @@ const Footer = ({ isCollapsed }) => {
     setAppVersion(version)
   }
 
-
   useEffect(() => {
     getAppVersion()
     checkForAppUpdate()
@@ -60,11 +58,10 @@ const Footer = ({ isCollapsed }) => {
   }
 
   const performAppUpdate = async () => {
-    setUpgradeMessage("Downloading Update...")
+    setUpgradeMessage('Downloading Update...')
     setDownloadingUpdate(true)
     const messaage = await window.api.performAppUpdate()
   }
-
 
   const [requestType, setRequestType] = useState('GET')
   const { toast } = useToast()
@@ -73,8 +70,6 @@ const Footer = ({ isCollapsed }) => {
     const command = mapCommandByName(apiCommand)
 
     for (const IP of selectedDevices) {
-
-
       runCommandForDevice(IP, command, requestType)
       updateDeviceStatus(IP, `running ${command}`)
     }
@@ -89,7 +84,6 @@ const Footer = ({ isCollapsed }) => {
     const command = mapCommandByName(apiCommand)
 
     for (const device of devices) {
-
       runCommandForDevice(device.ip, command, requestType)
       updateDeviceStatus(device.ip, `running ${command}`)
     }
@@ -158,7 +152,7 @@ const Footer = ({ isCollapsed }) => {
     >
       <div className="w-full border-foreground h-full px-2 bg-background">
         <div className="flex h-full items-center justify-between">
-          <div className='flex flex-col'>
+          <div className="flex flex-col">
             <div className="flex items-center space-x-2">
               <p className="text-foreground text-xs sm:text-sm md:text-lg">
                 {selectedDevices.length} of {devices.length} Device(s) selected
@@ -168,41 +162,38 @@ const Footer = ({ isCollapsed }) => {
                 onClick={refreshDevices}
               />
             </div>
-            <p className='text-xs text-muted-foreground'>
-              v{appVersion}
-            </p>
-            {upgradeMessage && <div className='flex gap-2 items-center pt-1'>
-              <p className='text-xs text-muted-foreground'>
-                {upgradeMessage}
-              </p>
-              {!downloadingUpdate && <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger
-                  className='text-left w-fit hover:underline hover:text-primary text-primary/40 text-xs'
-                >Update Now</DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>App  Update</DialogTitle>
-                    <DialogDescription>
-                      Do you want to update now?<br /> This will automatically download and install the latest version.
-                      {releaseNotes &&
-                        <ScrollArea className="h-96 pt-4 rounded-md bg-gray-800/70 p-2 mt-2">
-                          <Markdown
-                          className="prose prose-invert"
-                          >{releaseNotes}</Markdown>
-                        </ScrollArea>
-                     }
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={performAppUpdate}
-                    >Update Now</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>}
-            </div>}
+            <p className="text-xs text-muted-foreground">v{appVersion}</p>
+            {upgradeMessage && (
+              <div className="flex gap-2 items-center pt-1">
+                <p className="text-xs text-muted-foreground">{upgradeMessage}</p>
+                {!downloadingUpdate && (
+                  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    <DialogTrigger className="text-left w-fit hover:underline hover:text-primary text-primary/40 text-xs">
+                      Update Now
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>App Update</DialogTitle>
+                        <DialogDescription>
+                          Do you want to update now?
+                          <br /> This will automatically download and install the latest version.
+                          {releaseNotes && (
+                            <ScrollArea className="h-96 pt-4 rounded-md bg-gray-800/70 p-2 mt-2">
+                              <Markdown className="prose prose-invert">{releaseNotes}</Markdown>
+                            </ScrollArea>
+                          )}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button variant="outline" size="sm" onClick={performAppUpdate}>
+                          Update Now
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex justify-end gap-x-4">
             <div className="flex">

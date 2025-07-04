@@ -2,19 +2,25 @@ import { app, shell, BrowserWindow, ipcMain, dialog, Tray, screen, Menu } from '
 import { join, resolve } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from "../../resources/icon16.png?asset"
+import trayIcon from '../../resources/icon16.png?asset'
 import bonjour from 'bonjour'
 import xml2js from 'xml2js'
-import { checkUpgrade, connectToDeviceThroughWifi, getCurrentWifi, getWifiList, loadSDUIPage } from './functions'
+import {
+  checkUpgrade,
+  connectToDeviceThroughWifi,
+  getCurrentWifi,
+  getWifiList,
+  loadSDUIPage
+} from './functions'
 import fs from 'fs'
-const { autoUpdater } = require('electron-updater');
+const { autoUpdater } = require('electron-updater')
 
-autoUpdater.logger = require('electron-log');
-autoUpdater.logger.transports.file.level = 'info'; // Log to file
-autoUpdater.logger.transports.console.level = 'info'; // Log to console
+autoUpdater.logger = require('electron-log')
+autoUpdater.logger.transports.file.level = 'info' // Log to file
+autoUpdater.logger.transports.console.level = 'info' // Log to console
 
 // Set autoDownload to false
-autoUpdater.autoDownload = false;
+autoUpdater.autoDownload = false
 
 let masterWindow
 let masterTrayWindow
@@ -29,52 +35,52 @@ function createWindow() {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
+      sandbox: false
     },
-    focusable: true,
-  });
+    focusable: true
+  })
 
-  masterWindow = mainWindow;
+  masterWindow = mainWindow
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.showInactive();
-  });
+    mainWindow.showInactive()
+  })
 
   mainWindow.on('closed', () => {
-    masterWindow = null; // Clear the reference
-  });
+    masterWindow = null // Clear the reference
+  })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: 'deny' };
-  });
+    shell.openExternal(details.url)
+    return { action: 'deny' }
+  })
 
   // Load the app
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
 
 // Prevent multiple instances
-const gotTheLock = app.requestSingleInstanceLock();
+const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
-  app.quit();
+  app.quit()
 } else {
   app.on('second-instance', () => {
     // Focus the existing window
     if (masterWindow) {
-      if (masterWindow.isMinimized()) masterWindow.restore();
-      masterWindow.focus();
+      if (masterWindow.isMinimized()) masterWindow.restore()
+      masterWindow.focus()
     }
 
     // if masterWindow is closed, create a new one
     if (!masterWindow) {
-      createWindow();
+      createWindow()
     }
-  });
+  })
 
   app.whenReady().then(() => {
     // Set app user model id for windows
@@ -92,16 +98,16 @@ if (!gotTheLock) {
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+        createWindow()
       }
-    });
-  });
+    })
+  })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-      app.quit();
+      app.quit()
     }
-  });
+  })
 }
 const createTray = () => {
   const tray = new Tray(trayIcon)
@@ -132,21 +138,20 @@ const createTray = () => {
         label: 'Open App',
         click: () => {
           if (!masterWindow) {
-            createWindow();
+            createWindow()
           } else if (!masterWindow.isVisible()) {
-            masterWindow.show();
+            masterWindow.show()
           }
-        },
+        }
       },
       {
         label: 'Quit',
         click: () => {
-          app.quit(); // Quit the application
-        },
-      },
-    ]);
-  };
-
+          app.quit() // Quit the application
+        }
+      }
+    ])
+  }
 
   masterTrayWindow = trayWindow
 
@@ -156,17 +161,14 @@ const createTray = () => {
     trayWindow.loadFile(join(__dirname, '../renderer/trayIndex.html'))
   }
 
-
   tray.on('click', () => {
     toggleWindow()
   })
 
-
   tray.on('right-click', () => {
-    const contextMenu = createTrayContextMenu();
-    tray.popUpContextMenu(contextMenu);
+    const contextMenu = createTrayContextMenu()
+    tray.popUpContextMenu(contextMenu)
   })
-
 
   trayWindow.on('blur', () => {
     // Hide the window when it loses focus
@@ -183,60 +185,54 @@ const createTray = () => {
 
   ipcMain.handle('display-main-window', () => {
     openMainWindow()
-    trayWindow.hide();
-  });
+    trayWindow.hide()
+  })
 
   const openMainWindow = () => {
     if (!masterWindow) {
-      createWindow(); // Create a new window if none exists
+      createWindow() // Create a new window if none exists
     } else if (!masterWindow.isVisible()) {
-      masterWindow.show(); // Show the existing window if it's not visible
+      masterWindow.show() // Show the existing window if it's not visible
     }
-  };
-
+  }
 
   const getWindowPosition = () => {
-    const windowBounds = trayWindow.getBounds();
-    const trayBounds = tray.getBounds();
+    const windowBounds = trayWindow.getBounds()
+    const trayBounds = tray.getBounds()
 
     // Get the display containing the tray
-    const display = screen.getDisplayMatching(trayBounds);
-    const displayBounds = display.workArea;
+    const display = screen.getDisplayMatching(trayBounds)
+    const displayBounds = display.workArea
 
-    let x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
-    let y = Math.round(trayBounds.y + trayBounds.height + 4);
+    let x = Math.round(trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2)
+    let y = Math.round(trayBounds.y + trayBounds.height + 4)
 
     // Ensure the window doesn't go outside the screen horizontally
-    if (x < displayBounds.x) x = displayBounds.x;
+    if (x < displayBounds.x) x = displayBounds.x
     if (x + windowBounds.width > displayBounds.x + displayBounds.width) {
-      x = displayBounds.x + displayBounds.width - windowBounds.width;
+      x = displayBounds.x + displayBounds.width - windowBounds.width
     }
 
     // Ensure the window doesn't go outside the screen vertically
-    if (y < displayBounds.y) y = displayBounds.y;
+    if (y < displayBounds.y) y = displayBounds.y
     if (y + windowBounds.height > displayBounds.y + displayBounds.height) {
-      y = displayBounds.y + displayBounds.height - windowBounds.height;
+      y = displayBounds.y + displayBounds.height - windowBounds.height
     }
 
-    return { x, y };
-  };
+    return { x, y }
+  }
 
   const showWindow = () => {
-    const position = getWindowPosition();
-    trayWindow.setPosition(position.x, position.y, false);
-    trayWindow.show();
-  };
-
-
-
+    const position = getWindowPosition()
+    trayWindow.setPosition(position.x, position.y, false)
+    trayWindow.show()
+  }
 }
 
 // This method will be called when Electron has finished
 
-
 // Handle discovery in the main process
 ipcMain.handle('discover-devices', async (event, timeOutInSeconds = 3) => {
-
   const bonjourService = bonjour()
   const discoveredDevices = []
 
@@ -251,15 +247,14 @@ ipcMain.handle('discover-devices', async (event, timeOutInSeconds = 3) => {
   // Return a Promise that resolves after some time or when discovery is complete
   return new Promise((resolve, reject) => {
     // Find services of type 'musc.tcp'
-    bonjourService.find({ type: 'musc', protocol: 'tcp' }, addService)
-      .on('error', (error) => {
-        console.error('Bonjour discovery error:', error)
-        reject(error)
-      })
+    bonjourService.find({ type: 'musc', protocol: 'tcp' }, addService).on('error', (error) => {
+      console.error('Bonjour discovery error:', error)
+      reject(error)
+    })
 
     // Stop discovery after a timeout (e.g., 5 seconds)
     setTimeout(() => {
-      bonjourService.destroy(); // Stop Bonjour service to prevent memory leaks
+      bonjourService.destroy() // Stop Bonjour service to prevent memory leaks
       resolve(discoveredDevices) // Resolve with the discovered devices
     }, timeOutInSeconds * 1000) // Adjust the timeout as needed
   })
@@ -289,10 +284,8 @@ ipcMain.handle('check-status', async (event, ip) => {
 
     let response
 
-    const { sleep, service, state, volume, title1, title2, title3, image } = statusXml || {}    
-    if (
-      statusXml && service && state && volume && title1 && image
-    ) {
+    const { sleep, service, state, volume, title1, title2, title3, image } = statusXml || {}
+    if (statusXml && service && state && volume && title1 && image) {
       let progress
 
       if (statusXml.secs && statusXml.totlen) {
@@ -310,7 +303,7 @@ ipcMain.handle('check-status', async (event, ip) => {
         title3: title3?.[0],
         image: statusXml.image[0],
         progress: progress,
-        sleep: sleep?.[0] || false,
+        sleep: sleep?.[0] || false
       }
     } else {
       return { success: false, state: 'nothing' }
@@ -365,18 +358,16 @@ ipcMain.handle('check-sync-status', async (event, ip) => {
       }
     }
 
-
-
     if (UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3) {
       const upgrade = UpgradeStatusStage1 || UpgradeStatusStage2 || UpgradeStatusStage3
 
-      console.log('upgrade', upgrade);
+      console.log('upgrade', upgrade)
 
       const { step, total, percent, git } = upgrade
 
       response = {
         success: true,
-        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent ? [0] && `(${percent[0]}%)` : ''}`,
+        status: `Upgrading: ${git[0]} - ${step[0]}/${total[0]} ${percent ? [0] && `(${percent[0]}%)` : ''}`
       }
     }
 
@@ -432,11 +423,11 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
       console.log('upgrade', ip, param)
       res = await fetch(`http://${ip}:11000/upgrade?upgrade=this&version=${param}`)
       break
-    case "removeSlave":
+    case 'removeSlave':
       console.log('removeSlave')
       res = await fetch(`http://${ip}:11000/RemoveSlave?slave=${param}&port=11000`)
       break
-    case "addSlave":
+    case 'addSlave':
       console.log('addSlave')
       res = await fetch(`http://${ip}:11000/AddSlave?slaves=${param}&ports=11000`)
       break
@@ -459,25 +450,27 @@ ipcMain.handle('player-control', async (event, { ip, control, param }) => {
   return { success: true } // Return success response
 })
 
+ipcMain.handle(
+  'run-command-for-device',
+  async (event, { ip, command, type = 'GET', body = null }) => {
+    console.log('run-command-for-device', ip, command, type, body)
 
-ipcMain.handle('run-command-for-device', async (event, { ip, command, type = "GET", body = null }) => {
-  console.log('run-command-for-device', ip, command, type, body);
+    const options = { method: type }
+    if (body && type.toUpperCase() === 'POST') {
+      options.body = JSON.stringify(body)
+      options.headers = { 'Content-Type': 'application/json' }
+    }
 
-  const options = { method: type };
-  if (body && type.toUpperCase() === "POST") {
-    options.body = JSON.stringify(body);
-    options.headers = { 'Content-Type': 'application/json' };
+    const res = await fetch(`http://${ip}${command}`, options)
+    if (!res || !res.ok) {
+      console.log(`Failed Command: ${command}`)
+      return { success: false }
+    }
+    console.log('Control command successful:', command)
+    const data = await res.text()
+    return { success: true, data }
   }
-
-  const res = await fetch(`http://${ip}${command}`, options);
-  if (!res || !res.ok) {
-    console.log(`Failed Command: ${command}`);
-    return { success: false };
-  }
-  console.log('Control command successful:', command);
-  const data = await res.text();
-  return { success: true, data };
-});
+)
 
 ipcMain.handle('open-overlay', (event, url) => {
   let overlayWindow = new BrowserWindow({
@@ -510,63 +503,62 @@ ipcMain.handle('check-upgrade', async (event, ip) => {
   return await checkUpgrade(ip)
 })
 
-ipcMain.handle("get-current-wifi", async () => {
-  return await getCurrentWifi();
-});
+ipcMain.handle('get-current-wifi', async () => {
+  return await getCurrentWifi()
+})
 
-ipcMain.handle("get-wifi-list", async () => {
-  return await getWifiList();
-});
+ipcMain.handle('get-wifi-list', async () => {
+  return await getWifiList()
+})
 
-ipcMain.handle("load-sd-ui-page", async (event, { url, debug,schema }) => {
-  return await loadSDUIPage(url, debug,schema);
-});
+ipcMain.handle('load-sd-ui-page', async (event, { url, debug, schema }) => {
+  return await loadSDUIPage(url, debug, schema)
+})
 
-ipcMain.handle("connect-to-wifi", async (event, { ssid, password }) => {
-  console.log('connect-to-wifi', ssid);
+ipcMain.handle('connect-to-wifi', async (event, { ssid, password }) => {
+  console.log('connect-to-wifi', ssid)
   return await connectToDeviceThroughWifi(ssid, password)
 })
 
 ipcMain.handle('get-app-version', () => {
-  return app.getVersion();
-});
+  return app.getVersion()
+})
 
 ipcMain.handle('save-file', async (event, data) => {
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Save File As',
-    defaultPath: 'downloaded_file.txt',  // Default filename
+    defaultPath: 'downloaded_file.txt', // Default filename
     filters: [{ name: 'Text Files', extensions: ['txt'] }]
-  });
+  })
 
-  if (canceled || !filePath) return; // User canceled the dialog
+  if (canceled || !filePath) return // User canceled the dialog
 
-  fs.writeFileSync(filePath, data, 'utf-8'); // Write the file content to the selected path
+  fs.writeFileSync(filePath, data, 'utf-8') // Write the file content to the selected path
 
-  return filePath; // Send the path back to the front end, if needed
-});
+  return filePath // Send the path back to the front end, if needed
+})
 
-
-ipcMain.handle("check-for-app-update", async (event) => {
+ipcMain.handle('check-for-app-update', async (event) => {
   try {
-    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isDevelopment = process.env.NODE_ENV === 'development'
     if (isDevelopment) {
-      console.log('Update check skipped in development mode');
-      return null;
+      console.log('Update check skipped in development mode')
+      return null
     }
     // Check for updates without notifying the user
-    const updateInfo = await autoUpdater.checkForUpdates();
+    const updateInfo = await autoUpdater.checkForUpdates()
     if (updateInfo.updateInfo.version !== app.getVersion()) {
       return {
-        message: "v" + updateInfo.updateInfo.version + " is available.",
-        releaseNotes: updateInfo.updateInfo?.releaseNotes || "No release notes available."
-      };
+        message: 'v' + updateInfo.updateInfo.version + ' is available.',
+        releaseNotes: updateInfo.updateInfo?.releaseNotes || 'No release notes available.'
+      }
     } else {
       // No update is available
-      return null;
+      return null
     }
   } catch (error) {
-    console.error('Update error:', error);
-    throw new Error('Failed to initiate update: ' + error.message);
+    console.error('Update error:', error)
+    throw new Error('Failed to initiate update: ' + error.message)
   }
 })
 
@@ -574,32 +566,31 @@ ipcMain.handle("check-for-app-update", async (event) => {
 ipcMain.handle('perform-app-update', async (event) => {
   try {
     // Check for updates without notifying the user
-    const updateInfo = await autoUpdater.checkForUpdates();
+    const updateInfo = await autoUpdater.checkForUpdates()
     if (updateInfo.updateInfo.version !== app.getVersion()) {
       // An update is available
-      autoUpdater.downloadUpdate(); // Start downloading the update
-      return "Update available. Downloading...";
+      autoUpdater.downloadUpdate() // Start downloading the update
+      return 'Update available. Downloading...'
     } else {
       // No update is available
-      return "No update available.";
+      return 'No update available.'
     }
   } catch (error) {
-    console.error('Update error:', error);
-    throw new Error('Failed to initiate update: ' + error.message);
+    console.error('Update error:', error)
+    throw new Error('Failed to initiate update: ' + error.message)
   }
-});
+})
 
 // Ensure your autoUpdater is set up properly to handle events
 autoUpdater.on('update-downloaded', (info) => {
   // You can prompt the user or automatically quit and install here
-  autoUpdater.quitAndInstall();
-});
+  autoUpdater.quitAndInstall()
+})
 
 // handle any uncaughtException
 // process.on('uncaughtException', (err) => {
 //   console.error('Uncaught exception:', err)
 // })
-
 
 app.on('browser-window-blur', (event, window) => {
   // Ensure only the tray window is affected

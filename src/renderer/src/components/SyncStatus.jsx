@@ -6,7 +6,7 @@ import { useDevices } from '../context/devicesContext'
 const SyncStatus = ({ ip }) => {
   const [deviceSyncStatus, setDeviceSyncStatus] = useState(null)
   const { shouldRefresh } = useRefresh()
-  const { devices, setDevices,updateDeviceStatus,setDeviceGroupingStatus } = useDevices()
+  const { devices, setDevices, updateDeviceStatus, setDeviceGroupingStatus } = useDevices()
   const [tempStatus, setTempStatus] = useState(null)
 
   const fetchSyncStatus = async () => {
@@ -18,7 +18,6 @@ const SyncStatus = ({ ip }) => {
     if (response.status !== null) {
       updateDeviceStatus(ip, null)
     }
-
   }
 
   useEffect(() => {
@@ -55,7 +54,9 @@ const SyncStatus = ({ ip }) => {
           className="h-8 w-8 bg-zinc-800 p-1 rounded-sm mx-1"
         />
       )}
-      <p>{deviceSyncStatus.status === "normal" ? tempStatus : deviceSyncStatus.status || tempStatus}</p>
+      <p>
+        {deviceSyncStatus.status === 'normal' ? tempStatus : deviceSyncStatus.status || tempStatus}
+      </p>
     </div>
   )
 }

@@ -23,7 +23,7 @@ const PlayStatus = ({ ip }) => {
   const [status, setStatus] = useState(null)
   const [shouldScroll, setShouldScroll] = useState(false)
   const [volume, setVolume] = useState(null)
-  const { getDeviceStatus, setDeviceStatus,devicesStatus } = useDevices()
+  const { getDeviceStatus, setDeviceStatus, devicesStatus } = useDevices()
 
   const { refreshTime, shouldRefresh } = useRefresh()
   const { showPreset, setShowPreset } = useTable()
@@ -40,13 +40,12 @@ const PlayStatus = ({ ip }) => {
     })
   }
 
-useEffect(() => {
-  const status = getDeviceStatus(ip)
-  if (status) {
-    setStatus(status)
-  }
-}, [devicesStatus])
-
+  useEffect(() => {
+    const status = getDeviceStatus(ip)
+    if (status) {
+      setStatus(status)
+    }
+  }, [devicesStatus])
 
   const transportControl = async (control, param) => {
     const res = await window.api.playerControl(ip, control, param)

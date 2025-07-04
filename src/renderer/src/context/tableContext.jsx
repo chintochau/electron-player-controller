@@ -9,7 +9,7 @@ export const TableProvider = ({ children }) => {
   const [version, setVersion] = useState('')
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [showPreset, setShowPreset] = useState(false)
-  const {togglePresetVisibility, isPresetVisible} = useStorage()
+  const { togglePresetVisibility, isPresetVisible } = useStorage()
   const [isGridMode, setIsGridMode] = useState()
 
   const value = {
@@ -17,8 +17,8 @@ export const TableProvider = ({ children }) => {
     setVersion,
     isCollapsed,
     setIsCollapsed,
-    showPreset:isPresetVisible || showPreset,
-    setShowPreset:togglePresetVisibility,
+    showPreset: isPresetVisible || showPreset,
+    setShowPreset: togglePresetVisibility,
     togglePresetVisibility,
     isPresetVisible,
     isGridMode,

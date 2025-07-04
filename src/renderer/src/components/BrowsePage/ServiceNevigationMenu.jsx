@@ -15,7 +15,8 @@ import { useSdui } from '../../context/sduiContext'
 import { Label } from '@/components/ui/label'
 
 const ServiceNevigationMenu = ({ service }) => {
-  const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen, getImagePath } = useBrowsing()
+  const { serviceSubMenus, loadSubmenuForService, setUrl, displayMainScreen, getImagePath } =
+    useBrowsing()
   const { performAction } = useSdui()
   const submenu = serviceSubMenus[service.id]
   const handleTriggerHover = () => {
@@ -27,8 +28,8 @@ const ServiceNevigationMenu = ({ service }) => {
     displayMainScreen(uri)
   }
 
-  const itemClassName = "text-foreground/60 group inline-flex h-10 items-center justify-start rounded-xl bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer text-nowrap"
-
+  const itemClassName =
+    'text-foreground/60 group inline-flex h-10 items-center justify-start rounded-xl bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer text-nowrap'
 
   return (
     <NavigationMenuItem key={service.name}>
@@ -65,7 +66,9 @@ const ServiceNevigationMenu = ({ service }) => {
             {submenu.screen.list.map((list, listIndex) => (
               <React.Fragment key={`list-${listIndex}`}>
                 {list?.$?.title && (
-                  <Label className="px-2 py-1.5 text-sm font-semibold text-foreground/50">{list.$.title}</Label>
+                  <Label className="px-2 py-1.5 text-sm font-semibold text-foreground/50">
+                    {list.$.title}
+                  </Label>
                 )}
                 {list?.item?.map((item, itemIndex) => (
                   <NavigationMenuLink
@@ -77,11 +80,13 @@ const ServiceNevigationMenu = ({ service }) => {
                       performAction(item.action)
                     }}
                   >
-                    {item.$.image && <div className='flex w-9 h-9 mr-2 rounded-md overflow-hidden'>
-                      {item.$.iamge}
-                      <img src={getImagePath(item.$.image)} />
-                    </div>}
-                    <p className='truncate'>{item.$.title}</p>
+                    {item.$.image && (
+                      <div className="flex w-9 h-9 mr-2 rounded-md overflow-hidden">
+                        {item.$.iamge}
+                        <img src={getImagePath(item.$.image)} />
+                      </div>
+                    )}
+                    <p className="truncate">{item.$.title}</p>
                   </NavigationMenuLink>
                 ))}
               </React.Fragment>

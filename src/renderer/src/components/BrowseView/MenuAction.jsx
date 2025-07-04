@@ -6,7 +6,7 @@ const MenuAction = ({ menuAction }) => {
   const { $, action } = menuAction || {}
   const { type, text } = $ || {}
 
-  const {performAction} = useSdui()
+  const { performAction } = useSdui()
   return (
     <Button
       variant="link"

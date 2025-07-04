@@ -3,8 +3,7 @@ import wifi from 'node-wifi'
 
 wifi.init({
   iface: null // network interface, choose a specific interface or leave it null for automatic selection
-});
-
+})
 
 export const checkUpgrade = async (ip) => {
   try {
@@ -73,17 +72,16 @@ export const getWifiList = async () => {
     console.log(error)
   }
 }
-export const loadSDUIPage = async (url, debug,schema) => {
+export const loadSDUIPage = async (url, debug, schema) => {
   try {
-    const res = await fetch(url, 
-      { 
-        method: 'GET', 
-        headers: { 'x-sovi-ui-schema-version': schema} 
-      })
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'x-sovi-ui-schema-version': schema }
+    })
     const xmlText = await res.text()
     const xml = await xml2js.parseStringPromise(xmlText)
     if (debug) {
-      console.log(xml);
+      console.log(xml)
     }
 
     return { json: xml, xmlText }
@@ -108,7 +106,7 @@ export const connectToDeviceThroughWifi = async (ssid, password) => {
     })
     return true
   } catch (error) {
-    console.log("Wifi connection error")
+    console.log('Wifi connection error')
     return false
   }
 }

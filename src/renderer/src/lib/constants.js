@@ -1,48 +1,62 @@
-import { AudioWaveformIcon, Bolt, Cog, Drill, Headset, Library, Music, Network, Wifi, Wrench } from 'lucide-react'
-
+import {
+  AudioWaveformIcon,
+  Bolt,
+  Cog,
+  Drill,
+  Headset,
+  Library,
+  Music,
+  Network,
+  Wifi,
+  Wrench
+} from 'lucide-react'
 
 export const enabledFeatures = {
   browser: true,
   addPlayer: true,
   darkMode: true,
-  urlBar:true,
-  xmlMode:true,
+  urlBar: true,
+  xmlMode: true
 }
 
-export const sduiSchemaVersion = "6"
+export const sduiSchemaVersion = '6'
 
 export const mapCommandByName = (commandName) => {
-  const command = commandName.startsWith("API:") ? 
-  commandList.find((command) => command.name === commandName.split(":")[1]).command:
-  commandName
+  const command = commandName.startsWith('API:')
+    ? commandList.find((command) => command.name === commandName.split(':')[1]).command
+    : commandName
   return command
 }
 
 export const commandList = [
   {
-    name: "Disable Upgrade Popup",
-    command: "/enable?no_upgrade=yes"
+    name: 'Disable Upgrade Popup',
+    command: '/enable?no_upgrade=yes'
   },
   {
-    name: "Enable Upgrade Popup",
-    command: "/enable?no_upgrade=no"
+    name: 'Enable Upgrade Popup',
+    command: '/enable?no_upgrade=no'
   },
   {
-    name:"Initialize Player",
-    command:":11000/SetInitialized?init=1"
-  },{
-    name:"DeInitialize Player",
-    command:":11000/SetInitialized?init=0"
-  },{
-    name:"Hotspot Mode",
-    command:"/apmode?noheader=0"
-  },{
-    name:"Wac Mode",
-    command:"/apmode?wac=1"
-  },{
-    name:"Diagnostics log",
-    command:"/diag?print=1",
-    download:true
+    name: 'Initialize Player',
+    command: ':11000/SetInitialized?init=1'
+  },
+  {
+    name: 'DeInitialize Player',
+    command: ':11000/SetInitialized?init=0'
+  },
+  {
+    name: 'Hotspot Mode',
+    command: '/apmode?noheader=0'
+  },
+  {
+    name: 'Wac Mode',
+    command: '/apmode?wac=1'
+  },
+  {
+    name: 'Diagnostics log',
+    command: '/diag?print=1',
+    download: true
   }
 ]
 
@@ -58,32 +72,34 @@ export const settingsList = [
     icon: Wifi
   },
   {
-    name: "Static IP",
-    path: "staticip",
+    name: 'Static IP',
+    path: 'staticip',
     icon: Network
   },
   {
-    name:"Customize Sources",
-    path:"settings?page_id=capture",
-    icon:Cog,
+    name: 'Customize Sources',
+    path: 'settings?page_id=capture',
+    icon: Cog
   },
   {
-    name:"Music Library",
-    path:"settings?page_id=library",
-    icon:Library,
-
-  },{
-    name:"Configure Music Services",
-    path:"services",
-    icon:Music,
-  },{
-    name:"Configure IR Triggers",
-    path:"triggercfg",
-    icon:Wrench,
-  },{
-    name:"Configure Active Zones",
-    path:"zones",
-    icon:Bolt,
+    name: 'Music Library',
+    path: 'settings?page_id=library',
+    icon: Library
+  },
+  {
+    name: 'Configure Music Services',
+    path: 'services',
+    icon: Music
+  },
+  {
+    name: 'Configure IR Triggers',
+    path: 'triggercfg',
+    icon: Wrench
+  },
+  {
+    name: 'Configure Active Zones',
+    path: 'zones',
+    icon: Bolt
   },
   {
     name: 'Diagnostics',
@@ -100,14 +116,6 @@ export const helpList = [
   }
 ]
 
+export const searchableServicesList = ['Qobuz', 'Tidal']
 
-export const searchableServicesList = [
-  "Qobuz",
-  "Tidal",
-]
-
-export const defaultRoomList = [
-  "Lobby",
-  "Show Room",
-  "Unassigned"
-]
+export const defaultRoomList = ['Lobby', 'Show Room', 'Unassigned']

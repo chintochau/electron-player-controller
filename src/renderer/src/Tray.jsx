@@ -19,7 +19,7 @@ const Tray = () => {
         <RefreshProvider>
           <StorageProvider>
             <DevicesProvider>
-             <SetupProvider>
+              <SetupProvider>
                 <TableProvider>
                   <BrowsingProvider>
                     <SDUIProvider>
@@ -29,7 +29,7 @@ const Tray = () => {
                     </SDUIProvider>
                   </BrowsingProvider>
                 </TableProvider>
-             </SetupProvider>
+              </SetupProvider>
             </DevicesProvider>
           </StorageProvider>
         </RefreshProvider>

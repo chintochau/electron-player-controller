@@ -34,8 +34,6 @@ const playlists = [
   'Playlist 10'
 ]
 
-
-
 const LargeThumbnail = ({
   largeThumbnail,
   className,
@@ -45,9 +43,9 @@ const LargeThumbnail = ({
   ...props
 }) => {
   const { performAction } = useSdui()
-  const { getImagePath,loadContextMenu } = useBrowsing()
-  
-  const { $, action,contextMenu } = largeThumbnail || {}
+  const { getImagePath, loadContextMenu } = useBrowsing()
+
+  const { $, action, contextMenu } = largeThumbnail || {}
 
   const resultType = action?.[0]?.$?.resultType || action?.[0]?.$?.type
   const actionType = action?.[0]?.$?.type
@@ -66,15 +64,16 @@ const LargeThumbnail = ({
     largeWidth: 'w-60'
   }
 
-
   return (
     <div className={cn('space-y-3 ', className)} {...props}>
-      <ContextMenu onOpenChange={async (e) => {
-        if (e && !contextMenuWithItems) {
-          const menuItems = await loadContextMenu(contextMenu?.[0])
-          setContextMenuWithItems(menuItems)
-        }
-      }}>
+      <ContextMenu
+        onOpenChange={async (e) => {
+          if (e && !contextMenuWithItems) {
+            const menuItems = await loadContextMenu(contextMenu?.[0])
+            setContextMenuWithItems(menuItems)
+          }
+        }}
+      >
         <ContextMenuTrigger onClick={handleClick} className="">
           <div className="transition ease-out duration-300 active:scale-110 relative overflow-hidden rounded-md group shadow-md">
             <img
@@ -89,14 +88,15 @@ const LargeThumbnail = ({
                 e.target.src = noartwork
               }}
             />
-           {IconComponent &&  <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
-              <IconComponent className="h-6 w-6" />
-            </div>}
+            {IconComponent && (
+              <div className="absolute bottom-0 right-0 p-1 m-2 bg-accent/80 rounded-md">
+                <IconComponent className="h-6 w-6" />
+              </div>
+            )}
             {renderComponent(actionType)}
           </div>
         </ContextMenuTrigger>
-        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly/>}
-
+        {contextMenuWithItems && <SDUIContextMenu contextMenu={contextMenuWithItems} itemsOnly />}
       </ContextMenu>
       <div className="space-y-1 text-sm">
         <h3

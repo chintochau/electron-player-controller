@@ -127,9 +127,7 @@ const SDUIService = ({ service, isArtist, onlyOneListWithHeader }) => {
             className={cn(icon ? '' : 'underline hover:text-primary cursor-pointer')}
             onClick={handleClick}
           >
-            <h3
-              className={cn('font-medium leading-none text-wrap text-lg', icon ? '' : 'text-xl')}
-            >
+            <h3 className={cn('font-medium leading-none text-wrap text-lg', icon ? '' : 'text-xl')}>
               {track && `${track}. `} {title}
             </h3>
             <p
