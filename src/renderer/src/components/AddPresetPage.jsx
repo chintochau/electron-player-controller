@@ -179,6 +179,9 @@ const AddPresetPage = () => {
           variant: 'success'
         })
       }
+      
+      // Close the dialog after successful save
+      setIsAddpresetPageShown(false)
     } catch (error) {
       toast({
         title: 'Error',
@@ -312,7 +315,17 @@ const AddPresetPage = () => {
 
   return (
     <>
-      <Dialog open={isAddpresetPageShown} onOpenChange={setIsAddpresetPageShown}>
+      <Dialog open={isAddpresetPageShown} onOpenChange={(open) => {
+        setIsAddpresetPageShown(open)
+        // Reset state when dialog closes
+        if (!open) {
+          resetPreset()
+          setSelectedService(null)
+          setBreadcrumbItems([])
+          setRadiotime([])
+          setIsApplyToAllPlayers(false)
+        }
+      }}>
         <DialogContent className="w-full max-w-xl xl:max-w-4xl">
           <DialogHeader>
             <DialogTitle>Add Preset</DialogTitle>
@@ -439,11 +452,9 @@ const AddPresetPage = () => {
               value={isApplyToAllPlayers}
             />
             <Label htmlFor="save-to-all">Save to all devices</Label>
-            <DialogClose asChild>
-              <Button onClick={handleSavePreset} disabled={isApplying}>
-                {isApplying ? 'Applying...' : 'Save'}
-              </Button>
-            </DialogClose>
+            <Button onClick={handleSavePreset} disabled={isApplying}>
+              {isApplying ? 'Applying...' : 'Save'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

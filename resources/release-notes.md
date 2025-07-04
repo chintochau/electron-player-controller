@@ -1,5 +1,11 @@
 # Release Notes
 
+## v1.4.0
+### New Features
+- **Add Preset**
+  You can now create and apply presets for a single player or multiple players, making it easier to customize your setup.
+
+
 ## v1.3.10  
 ### New Features  
 - **Service Playlists on Home Screen**  
