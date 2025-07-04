@@ -324,6 +324,8 @@ const AddPresetPage = () => {
           setBreadcrumbItems([])
           setRadiotime([])
           setIsApplyToAllPlayers(false)
+          setPresetNumber(1)
+          setPresetName('')
         }
       }}>
         <DialogContent className="w-full max-w-xl xl:max-w-4xl">
@@ -331,6 +333,7 @@ const AddPresetPage = () => {
             <DialogTitle>Add Preset</DialogTitle>
           </DialogHeader>
           <Select
+            value={selectedService || ''}
             onValueChange={(e) => {
               setSelectedService(e)
               console.log(e)
@@ -429,13 +432,13 @@ const AddPresetPage = () => {
                 </div>
                 <div className="flex flex-col w-fit">
                   <p className=" text-nowrap">Preset Slot:</p>
-                  <Select value={presetNumber} onValueChange={(e) => setPresetNumber(e)}>
+                  <Select value={String(presetNumber)} onValueChange={(e) => setPresetNumber(Number(e))}>
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="Slot" />
                     </SelectTrigger>
                     <SelectContent className="bg-background">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
-                        <SelectItem key={index} value={item}>
+                        <SelectItem key={index} value={String(item)}>
                           <p>{item}</p>
                         </SelectItem>
                       ))}
@@ -448,8 +451,8 @@ const AddPresetPage = () => {
           <DialogFooter className="flex justify-between items-center">
             <Checkbox
               id="save-to-all"
+              checked={isApplyToAllPlayers}
               onCheckedChange={(e) => setIsApplyToAllPlayers(e)}
-              value={isApplyToAllPlayers}
             />
             <Label htmlFor="save-to-all">Save to all devices</Label>
             <Button onClick={handleSavePreset} disabled={isApplying}>
