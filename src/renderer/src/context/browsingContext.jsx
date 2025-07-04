@@ -10,7 +10,7 @@ export const useBrowsing = () => useContext(BrowsingContext)
 export const BrowsingProvider = ({ children }) => {
   if (!useDevices) return null
   const { devices } = useDevices()
-  const [url, setUrl] = useState('/ui/Home?playnum=1')
+  const [url, setUrl] = useState(':11000/ui/Home?playnum=1')
   const [serviceList, setServiceList] = useState([])
   const [serviceSubMenus, setServiceSubMenus] = useState({})
   const [selectedPlayer, setSelectedPlayer] = useState(null)
@@ -38,7 +38,7 @@ export const BrowsingProvider = ({ children }) => {
     if (serviceList.length === 0) {
       // initially load service list
       loadServiceList()
-      displayMainScreen('/ui/Home?playnum=1')
+      displayMainScreen(':11000/ui/Home?playnum=1')
       loadSearchableServices()
     }
   }, [selectedPlayer])

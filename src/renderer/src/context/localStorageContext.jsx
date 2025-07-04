@@ -12,7 +12,7 @@ export const StorageProvider = ({ children }) => {
   const [roomList, setRoomList] = useState(localStorage.getItem('roomList') ? JSON.parse(localStorage.getItem('roomList')) : defaultRoomList);
   // read custom api list from local storage, if not found, save commandList to the local storage, and return commandList
   const [customApiList, setCustomApiList] = useState(localStorage.getItem('customApiList') ? JSON.parse(localStorage.getItem('customApiList')) : []);
-  const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{ name: "Home", uri: "/ui/Home?playnum=1" }]);
+  const [bookmarks, setBookmarks] = useState(localStorage.getItem('bookmarks') ? JSON.parse(localStorage.getItem('bookmarks')) : [{ name: "Home", uri: ":11000/ui/Home?playnum=1" }]);
   const [isPresetVisible, setIsPresetVisible] = useState(localStorage.getItem('isPresetVisible') ? JSON.parse(localStorage.getItem('isPresetVisible')) : false);
   const [enabledSearchServices, setEnabledSearchServices] = useState(localStorage.getItem('enableSearchServices') ? JSON.parse(localStorage.getItem('enableSearchServices')) : ["Qobuz", "Tidal"]);
 

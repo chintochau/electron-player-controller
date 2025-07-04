@@ -60,7 +60,7 @@ const BrowsePage = () => {
   useEffect(() => {
     if (serviceList.length === 0) {
       loadServiceList()
-      displayMainScreen('/ui/Home?playnum=1')
+      displayMainScreen(':11000/ui/Home?playnum=1')
     }
   }, [selectedPlayer])
 

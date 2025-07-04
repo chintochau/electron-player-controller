@@ -8,9 +8,9 @@ import {
 } from '@/components/ui/navigation-menu'
 
 const appMenuList = [
-  { name: 'Home', uri: '/ui/Home?playnum=1', icon: Home },
-  { name: 'Favourites', uri: '/ui/Favourites?service=Tunein&sort=alpha&playnum=1', icon: Star },
-  { name: 'Sources', uri: '/ui/Sources?playnum=1',icon:Music }
+  { name: 'Home', uri: ':11000/ui/Home?playnum=1', icon: Home },
+  { name: 'Favourites', uri: ':11000/ui/Favourites?service=Tunein&sort=alpha&playnum=1', icon: Star },
+  { name: 'Sources', uri: ':11000/ui/Sources?playnum=1',icon:Music }
 ]
 
 import {
