@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Search, Filter, ArrowUpDown, Check } from 'lucide-react'
+import { Search, Filter, ArrowUpDown } from 'lucide-react'
 import ModernPlayerRow from './ModernPlayerRow'
 
 import type { Device } from '../../types'
@@ -135,19 +135,12 @@ const PlayerListModern: React.FC = () => {
             </Select>
           </div>
           
-          {/* Selection indicator */}
-          {selectedDevices.length > 0 && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="h-4 w-4" />
-              <span>{selectedDevices.length} of {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''} selected</span>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Device List - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-6 pb-4">
+      <div className="flex-1 overflow-auto">
+        <div className="px-6 pb-4 min-w-[1000px]">
           {filteredDevices.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <div className="text-lg font-medium mb-1">

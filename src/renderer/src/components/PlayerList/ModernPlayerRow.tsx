@@ -23,8 +23,6 @@ import {
   ChevronDown,
   Send,
   XCircle,
-  Wifi,
-  WifiOff,
   MinusCircle,
   Plus,
   Minus,
@@ -69,6 +67,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   const [newRoomName, setNewRoomName] = useState('')
   const [volume, setVolume] = useState<number | null>(null)
   const [status, setStatus] = useState<DeviceStatus | null>(null)
+  const [syncStatus, setSyncStatus] = useState<any>(null)
   const [upgradeVersion, setUpgradeVersion] = useState(version || '')
   const [checkingUpdate, setCheckingUpdate] = useState(false)
   const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'available' | 'current' | 'error'>('idle')
@@ -94,6 +93,16 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
     }
   }
 
+  // Fetch sync status from API
+  const fetchSyncStatus = async () => {
+    try {
+      const res = await window.api.checkSyncStatus(device.ip)
+      setSyncStatus(res)
+    } catch (error) {
+      console.error('Error fetching sync status:', error)
+    }
+  }
+
   // Get status from context when it updates
   useEffect(() => {
     const deviceStatus = getDeviceStatus(device.ip)
@@ -105,6 +114,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   // Periodic status fetching
   useEffect(() => {
     fetchStatus()
+    fetchSyncStatus()
     
     // Fetch status every 1-2 seconds with some randomization to avoid all devices fetching at once
     const interval = setInterval(
@@ -115,8 +125,21 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
       },
       refreshTime * 1000 + 500 + Math.random() * 2000
     )
+
+    // Fetch sync status less frequently
+    const syncInterval = setInterval(
+      () => {
+        if (shouldRefresh) {
+          fetchSyncStatus()
+        }
+      },
+      5000
+    )
     
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearInterval(syncInterval)
+    }
   }, [device.ip, refreshTime, shouldRefresh])
 
   // Sync upgrade version with context version
@@ -226,7 +249,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   return (
     <div className="group relative bg-background hover:bg-accent/5 transition-all duration-200 py-4">
       {/* Main Row Content */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 min-w-[1000px]">
         {/* Selection Checkbox */}
         <Checkbox
           checked={isSelected}
@@ -240,19 +263,12 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
             <img
               src={getImageUrl(status?.image)}
               alt={status?.title1 || 'Album Art'}
-              className="w-16 h-16 rounded-md object-cover shadow-sm"
+              className="w-16 h-16 min-w-[4rem] rounded-md object-cover shadow-sm"
               onError={(e) => {
                 e.currentTarget.src = noArtwork
               }}
             />
             {/* Overlay Play/Pause Button */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              {isPlaying ? (
-                <Pause className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
-              ) : (
-                <Play className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
-              )}
-            </div>
             <button
               onClick={() => {
                 if (status?.state === 'pause' || status?.state === 'stop' || status?.state === 'nothing') {
@@ -261,8 +277,14 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
                   transportControl('pause')
                 }
               }}
-              className="absolute inset-0 bg-black/0 hover:bg-black/40 rounded-md transition-all duration-200"
-            />
+              className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/50 rounded-md transition-all duration-200 group"
+            >
+              {isPlaying ? (
+                <Pause className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+              ) : (
+                <Play className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+              )}
+            </button>
           </div>
 
           {/* Transport Controls */}
@@ -397,12 +419,18 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
               </DropdownMenuContent>
             </DropdownMenu>
             <span className="flex items-center gap-1">
-              {device.status === 'Online' ? (
-                <Wifi className="h-3 w-3 text-green-500" />
+              {syncStatus?.icon ? (
+                <img
+                  src={`http://${device.ip}:11000${syncStatus.icon}`}
+                  alt={syncStatus.name || 'Device'}
+                  className="h-6 w-6 bg-zinc-800 p-0.5 rounded-sm"
+                />
               ) : (
-                <WifiOff className="h-3 w-3 text-red-500" />
+                <div className="h-6 w-6 bg-zinc-800/50 rounded-sm" />
               )}
-              {device.status}
+              <span className="text-xs">
+                {syncStatus?.status === 'normal' ? device.status : syncStatus?.status || device.status}
+              </span>
             </span>
             <a
               href={`http://${device.ip}/`}
@@ -480,7 +508,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
         <div className="flex items-center gap-1">
           <Input
             placeholder="Version"
-            className="h-8 w-24"
+            className="h-8 w-20"
             value={upgradeVersion}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpgradeVersion(e.target.value)}
           />
