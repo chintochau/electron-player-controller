@@ -56,13 +56,13 @@ const PresetsBar = ({ ip }) => {
             <ContextMenu key={preset.$.id}>
               <ContextMenuTrigger>
                 <div
-                  className="relative group cursor-pointer"
+                  className="relative group/preset cursor-pointer"
                   onClick={() => {
                     runCommandForDevice(ip, `:11000/Preset?id=${preset.$.id}`, 'GET')
                   }}
                   title={preset.$.name}
                 >
-                  <div className="size-8 rounded-full overflow-hidden ring-1 ring-border/50 transition-all duration-200 group-hover:ring-2 group-hover:ring-primary group-hover:scale-110 group-active:scale-95">
+                  <div className="size-8 rounded-full overflow-hidden ring-1 ring-border/50 transition-all duration-200 group-hover/preset:ring-2 group-hover/preset:ring-primary group-hover/preset:scale-110 group-active/preset:scale-95">
                     <img
                       className="w-full h-full object-cover"
                       alt={preset.$.name}
@@ -73,7 +73,7 @@ const PresetsBar = ({ ip }) => {
                       }}
                     />
                   </div>
-                  <div className="absolute -top-1 -right-1 size-3 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                  <div className="absolute -top-1 -right-1 size-3 rounded-full bg-primary opacity-0 group-hover/preset:opacity-100 transition-opacity duration-200" />
                 </div>
               </ContextMenuTrigger>
               <ContextMenuContent>
@@ -139,7 +139,7 @@ const PresetsBar = ({ ip }) => {
 
         {/* Add Preset Button */}
         <div
-          className="relative group cursor-pointer"
+          className="relative group/add cursor-pointer"
           onClick={() => {
             const currentDevice = devices.find((device) => device.ip === ip)
             if (currentDevice) {
@@ -149,8 +149,8 @@ const PresetsBar = ({ ip }) => {
           }}
           title="Add Preset"
         >
-          <div className="size-8 rounded-full flex items-center justify-center bg-background border border-dashed border-muted-foreground/50 transition-all duration-200 group-hover:border-primary group-hover:scale-110 group-active:scale-95">
-            <Plus className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          <div className="size-8 rounded-full flex items-center justify-center bg-background border border-dashed border-muted-foreground/50 transition-all duration-200 group-hover/add:border-primary group-hover/add:scale-110 group-active/add:scale-95">
+            <Plus className="size-4 text-muted-foreground group-hover/add:text-primary transition-colors" />
           </div>
         </div>
       </div>
