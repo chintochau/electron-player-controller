@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDevices } from '../../context/devicesContext'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -10,11 +9,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Search, Filter, Download, Power, Send } from 'lucide-react'
+import { Search, Filter } from 'lucide-react'
 import ModernPlayerRow from './ModernPlayerRow'
-import { runCommandForDevice } from '../../lib/utils'
-import { useToast } from '@/hooks/use-toast'
-import { useTable } from '../../context/tableContext'
 
 import type { Device } from '../../types'
 
@@ -25,12 +21,9 @@ const PlayerListModern: React.FC = () => {
     selectDeviceByIp: (ip: string) => void
     removeSelectedDeviceByIp: (ip: string) => void
   }
-  const { version } = useTable()
-  const { toast } = useToast()
   
   const [searchQuery, setSearchQuery] = useState('')
   const [filterRoom, setFilterRoom] = useState('all')
-  const [apiCommand, setApiCommand] = useState('')
 
   // Get unique rooms
   const deviceRooms = devices
@@ -49,50 +42,6 @@ const PlayerListModern: React.FC = () => {
     
     return matchesSearch && matchesRoom
   })
-
-  // Batch actions
-  const runCommandForSelected = () => {
-    if (!apiCommand || selectedDevices.length === 0) return
-    
-    selectedDevices.forEach((deviceIp: string) => {
-      runCommandForDevice(deviceIp, `:11000/${apiCommand}`, 'GET')
-    })
-    
-    toast({
-      title: 'Commands Sent',
-      description: `Sent "${apiCommand}" to ${selectedDevices.length} device(s)`
-    })
-  }
-
-  const upgradeSelected = () => {
-    if (selectedDevices.length === 0 || !version) return
-    
-    selectedDevices.forEach((deviceIp: string) => {
-      const device = devices.find((d: Device) => d.ip === deviceIp)
-      if (device) {
-        runCommandForDevice(deviceIp, ':11000/Upgrade', 'GET')
-        toast({
-          title: 'Upgrading',
-          description: `Upgrading ${device.name}`
-        })
-      }
-    })
-  }
-
-  const rebootSelected = () => {
-    if (selectedDevices.length === 0) return
-    
-    selectedDevices.forEach((deviceIp: string) => {
-      const device = devices.find((d: Device) => d.ip === deviceIp)
-      if (device) {
-        runCommandForDevice(deviceIp, ':11000/Reboot', 'GET')
-        toast({
-          title: 'Rebooting',
-          description: `Rebooting ${device.name}`
-        })
-      }
-    })
-  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -131,56 +80,6 @@ const PlayerListModern: React.FC = () => {
               </Select>
             </div>
           </div>
-
-          {/* Batch Actions Row */}
-          {selectedDevices.length > 0 && (
-            <div className="border-t border-border/50 pt-4">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  {selectedDevices.length} device{selectedDevices.length !== 1 ? 's' : ''} selected
-                </div>
-                
-                <div className="flex gap-2">
-                  {/* API Command for Selected */}
-                  <div className="flex gap-1">
-                    <Input
-                      placeholder="/api"
-                      value={apiCommand}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setApiCommand(e.target.value)}
-                      className="h-8 w-32"
-                    />
-                    <Button
-                      size="sm"
-                      onClick={runCommandForSelected}
-                      disabled={!apiCommand}
-                    >
-                      <Send className="h-4 w-4 mr-1" />
-                      Run Command for All
-                    </Button>
-                  </div>
-                  
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={upgradeSelected}
-                    disabled={!version}
-                  >
-                    <Download className="h-4 w-4 mr-1" />
-                    Upgrade All
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={rebootSelected}
-                  >
-                    <Power className="h-4 w-4 mr-1" />
-                    Reboot All
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

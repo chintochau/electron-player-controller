@@ -27,6 +27,7 @@ import {
   WifiOff,
   MinusCircle,
   Plus,
+  Minus,
   Power,
   Globe,
   Loader2,
@@ -66,7 +67,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   const [newName, setNewName] = useState(device.name)
   const [api, setApi] = useState('')
   const [newRoomName, setNewRoomName] = useState('')
-  const [volume, setVolume] = useState(0)
+  const [volume, setVolume] = useState<number | null>(null)
   const [status, setStatus] = useState<DeviceStatus | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState(version || '')
   const [checkingUpdate, setCheckingUpdate] = useState(false)
@@ -83,7 +84,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
       const res = await window.api.checkStatus(device.ip)
       setDeviceStatus(device.ip, res)
       setVolume((prev) => {
-        if (prev === null || prev === 0) {
+        if (prev === null) {
           return res?.volume || 0
         }
         return prev
@@ -98,10 +99,6 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
     const deviceStatus = getDeviceStatus(device.ip)
     if (deviceStatus) {
       setStatus(deviceStatus)
-      // Don't override volume if user is actively changing it
-      if (!document.activeElement?.getAttribute('aria-label')?.includes('volume')) {
-        setVolume(deviceStatus.volume || 0)
-      }
     }
   }, [device.ip, devicesStatus])
 
@@ -138,8 +135,9 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   }
 
   const handleVolumeChange = async (value: number[]) => {
-    setVolume(value[0])
-    await window.api.playerControl(device.ip, 'volume', value[0])
+    const newVolume = value[0]
+    setVolume(newVolume)
+    await window.api.playerControl(device.ip, 'volume', newVolume)
   }
 
   const transportControl = async (control: string, param?: any) => {
@@ -429,17 +427,33 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
         </div>
 
         {/* Volume Control */}
-        <div className="flex items-center gap-2 w-32">
+        <div className="flex items-center gap-2 w-48">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={async () => await handleVolumeChange([Math.max(0, (volume || 0) - 5)])}
+          >
+            <Minus className="h-3 w-3" />
+          </Button>
           <Volume2 className="h-4 w-4 text-muted-foreground" />
           <Slider
-            value={[volume]}
+            value={[volume || 0]}
             max={100}
             step={1}
             onValueChange={handleVolumeChange}
             className="flex-1"
             aria-label="volume-slider"
           />
-          <span className="text-xs text-muted-foreground w-8 text-right">{volume}</span>
+          <span className="text-xs text-muted-foreground w-8 text-right">{volume || 0}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={async () => await handleVolumeChange([Math.min(100, (volume || 0) + 5)])}
+          >
+            <Plus className="h-3 w-3" />
+          </Button>
         </div>
 
         {/* API Command Bar */}
