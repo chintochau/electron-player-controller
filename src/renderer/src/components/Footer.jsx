@@ -146,12 +146,12 @@ const Footer = ({ isCollapsed }) => {
   return (
     <div
       className={cn(
-        'flex h-36 w-full items-center justify-center text-sm text-foreground duration-300 ease-in absolute bottom-0 pl-4 lg:px-10  border-t',
+        'flex h-32 w-full items-center justify-center text-sm text-foreground duration-300 ease-in absolute bottom-0 border-t',
         isCollapsed ? ' translate-y-full fixed' : ''
       )}
     >
-      <div className="w-full border-foreground h-full px-2 bg-background">
-        <div className="flex h-full items-center justify-between">
+      <div className="w-full border-foreground h-full px-6 bg-background">
+        <div className="flex h-full items-center justify-between gap-8">
           <div className="flex flex-col">
             <div className="flex items-center space-x-2">
               <p className="text-foreground text-xs sm:text-sm md:text-lg">
@@ -195,11 +195,11 @@ const Footer = ({ isCollapsed }) => {
               </div>
             )}
           </div>
-          <div className="flex justify-end gap-x-4">
-            <div className="flex">
-              <div className="flex flex-col gap-y-1 border-r mx-2 px-2">
+          <div className="flex justify-end">
+            <div className="flex gap-4">
+              <div className="flex flex-col gap-y-2 pr-6 border-r">
                 <Label htmlFor="apiCommand">API Command</Label>
-                <div className="flex items-start space-x-2">
+                <div className="flex items-start gap-3">
                   <div className="flex flex-col">
                     <div className="flex  items-start">
                       <div className="flex flex-col">
@@ -213,7 +213,7 @@ const Footer = ({ isCollapsed }) => {
                           onValueChange={(value) => setRequestType(value)}
                           value={requestType}
                         >
-                          <SelectTrigger className="h-8 my-1">
+                          <SelectTrigger className="h-8 mt-2">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -222,12 +222,12 @@ const Footer = ({ isCollapsed }) => {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="pt-2 px-1">
+                      <div className="pt-2">
                         <ApiListDropDown setApi={setApiCommand} footer={true} />
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-1">
+                  <div className="flex flex-col gap-y-2">
                     <Button
                       variant="outline"
                       onClick={() => runCommandForDevices(selectedDevices, apiCommand, apiCommand)}
@@ -247,7 +247,7 @@ const Footer = ({ isCollapsed }) => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-y-1 mx-2 px-2">
+              <div className="flex flex-col gap-y-2 px-6 border-r">
                 <Label htmlFor="version">Reboot</Label>
                 <Button
                   disabled={selectedDevices.length === 0}
@@ -262,16 +262,16 @@ const Footer = ({ isCollapsed }) => {
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-y-1 mx-2 px-2 border-l">
+              <div className="flex flex-col gap-y-2 pl-6">
                 <Label htmlFor="version">Upgrade</Label>
-                <div className="flex items-start space-x-2">
+                <div className="flex items-start gap-3">
                   <Input
                     onChange={(e) => setVersion(e.target.value)}
                     value={version}
                     className="h-8"
                     placeholder="version"
                   />
-                  <div className="flex flex-col gap-y-1">
+                  <div className="flex flex-col gap-y-2">
                     <Button
                       variant="outline"
                       className="h-8"
