@@ -21,8 +21,9 @@ const Dashboard = () => {
       <div className="flex">
         <div
           className={cn(
-            'duration-300 ease-in overflow-hidden h-screen flex flex-col pb-32',
-            isCollapsed ? 'min-w-fit w-80 pl-2' : 'pl-10 w-full'
+            'duration-300 ease-in overflow-hidden h-screen flex flex-col',
+            isCollapsed ? 'min-w-fit w-80 pl-2' : 'pl-10 w-full',
+            useModernUI && !isCollapsed ? 'pb-32' : ''
           )}
         >
           <Header isCollapsed={isCollapsed} />

@@ -94,12 +94,12 @@ const PlayerListModern: React.FC = () => {
             {/* Search */}
             <div className="flex-1 max-w-lg">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   placeholder="Search devices..."
                   value={searchQuery}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-9 bg-background border-border focus:bg-background transition-colors"
+                  className="pl-11 h-9 bg-background border-border focus:bg-background transition-colors"
                 />
               </div>
             </div>
