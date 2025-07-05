@@ -65,7 +65,7 @@ const PlayerListModern: React.FC = () => {
     filteredDevices.every(device => selectedDevices.includes(device.ip))
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Header Controls - Fixed */}
       <div className="px-6 py-4 flex-shrink-0">
         <div className="flex flex-col gap-4">
@@ -139,8 +139,8 @@ const PlayerListModern: React.FC = () => {
       </div>
 
       {/* Device List - Scrollable */}
-      <div className="flex-1 overflow-auto">
-        <div className="px-6 pb-4 min-w-[1000px]">
+      <div className="flex-1 overflow-x-auto overflow-y-auto px-6 pb-4">
+        <div className="min-w-[1000px]">
           {filteredDevices.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <div className="text-lg font-medium mb-1">

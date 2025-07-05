@@ -33,6 +33,11 @@ export const StorageProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem('enableSearchServices'))
       : ['Qobuz', 'Tidal']
   )
+  const [useModernUI, setUseModernUI] = useState(
+    localStorage.getItem('useModernUI') !== null
+      ? JSON.parse(localStorage.getItem('useModernUI'))
+      : true
+  )
 
   const addServiceToSearchList = (service) => {
     setEnabledSearchServices((enableSearchServices) => [...enableSearchServices, service])
@@ -107,6 +112,11 @@ export const StorageProvider = ({ children }) => {
     localStorage.setItem('isPresetVisible', JSON.stringify(!isPresetVisible))
   }
 
+  const toggleModernUI = () => {
+    setUseModernUI(!useModernUI)
+    localStorage.setItem('useModernUI', JSON.stringify(!useModernUI))
+  }
+
   const checkRoomForMac = (mac) => {
     if (savedPlayers[mac]) {
       return savedPlayers[mac]
@@ -133,7 +143,9 @@ export const StorageProvider = ({ children }) => {
     removeServiceFromSearchList,
     selectAllServicesFromSearchList,
     removeAllServicesFromSearchList,
-    enabledSearchServices
+    enabledSearchServices,
+    useModernUI,
+    toggleModernUI
   }
 
   return <StorageContext.Provider value={value}>{children}</StorageContext.Provider>

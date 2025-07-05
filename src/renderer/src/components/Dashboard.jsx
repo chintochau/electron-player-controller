@@ -1,8 +1,10 @@
 import React from 'react'
 import Header from './Header'
 import PlayerListModern from './PlayerList/PlayerListModern'
+import PlayerList from './PlayerList'
 import Footer from './Footer'
 import { useTable } from '../context/tableContext'
+import { useStorage } from '../context/localStorageContext'
 import { cn } from '../lib/utils'
 import BrowsePanel from './BrowsePanel'
 import SettingBar from './SettingBar'
@@ -10,6 +12,7 @@ import AddPresetPage from './AddPresetPage'
 
 const Dashboard = () => {
   const { isCollapsed } = useTable()
+  const { useModernUI } = useStorage()
 
   if (!useTable) return null
 
@@ -18,13 +21,13 @@ const Dashboard = () => {
       <div className="flex">
         <div
           className={cn(
-            'duration-300 ease-in overflow-hidden h-screen flex flex-col',
+            'duration-300 ease-in overflow-hidden h-screen flex flex-col pb-32',
             isCollapsed ? 'min-w-fit w-80 pl-2' : 'pl-10 w-full'
           )}
         >
           <Header isCollapsed={isCollapsed} />
-          <div className="flex-1 overflow-hidden">
-            <PlayerListModern />
+          <div className="flex-1 overflow-auto">
+            {!useModernUI || isCollapsed ? <PlayerList /> : <PlayerListModern />}
           </div>
         </div>
         <Footer isCollapsed={isCollapsed} />

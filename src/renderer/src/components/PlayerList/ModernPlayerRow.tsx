@@ -258,7 +258,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
         />
 
         {/* Album Art & Play Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-shrink-0">
           <div className="relative">
             <img
               src={getImageUrl(status?.image)}
@@ -418,15 +418,15 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
                 </form>
               </DropdownMenuContent>
             </DropdownMenu>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1 flex-shrink-0">
               {syncStatus?.icon ? (
                 <img
                   src={`http://${device.ip}:11000${syncStatus.icon}`}
                   alt={syncStatus.name || 'Device'}
-                  className="h-6 w-6 bg-zinc-800 p-0.5 rounded-sm"
+                  className="h-6 w-6 min-w-[1.5rem] bg-zinc-800 p-0.5 rounded-sm"
                 />
               ) : (
-                <div className="h-6 w-6 bg-zinc-800/50 rounded-sm" />
+                <div className="h-6 w-6 min-w-[1.5rem] bg-zinc-800/50 rounded-sm" />
               )}
               <span className="text-xs">
                 {syncStatus?.status === 'normal' ? device.status : syncStatus?.status || device.status}
@@ -455,7 +455,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
         </div>
 
         {/* Volume Control */}
-        <div className="flex items-center gap-2 w-48">
+        <div className="flex items-center gap-2 w-48 min-w-[12rem] flex-shrink-0">
           <Button
             variant="ghost"
             size="icon"
