@@ -224,7 +224,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
   const isPlaying = status?.state === 'play' || status?.state === 'stream' || status?.state === 'connecting'
 
   return (
-    <div className="group relative bg-background/50 hover:bg-muted/30 rounded-lg border border-border/50 hover:border-border transition-all duration-200 p-4 mb-2">
+    <div className="group relative bg-background hover:bg-accent/5 transition-all duration-200 py-4">
       {/* Main Row Content */}
       <div className="flex items-center gap-4">
         {/* Selection Checkbox */}
@@ -240,7 +240,7 @@ const ModernPlayerRow: React.FC<ModernPlayerRowProps> = ({ device, isSelected, o
             <img
               src={getImageUrl(status?.image)}
               alt={status?.title1 || 'Album Art'}
-              className="w-16 h-16 rounded-md object-cover ring-1 ring-border/50"
+              className="w-16 h-16 rounded-md object-cover shadow-sm"
               onError={(e) => {
                 e.currentTarget.src = noArtwork
               }}

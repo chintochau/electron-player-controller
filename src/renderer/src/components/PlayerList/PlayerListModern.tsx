@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDevices } from '../../context/devicesContext'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -9,21 +9,23 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { Search, Filter } from 'lucide-react'
+import { Search, Filter, ArrowUpDown, Check } from 'lucide-react'
 import ModernPlayerRow from './ModernPlayerRow'
 
 import type { Device } from '../../types'
 
+type SortOption = 'name' | 'ip' | 'room' | 'status' | 'none'
+
 const PlayerListModern: React.FC = () => {
-  const { devices, selectedDevices, selectDeviceByIp, removeSelectedDeviceByIp } = useDevices() as {
+  const { devices, selectedDevices, setSelectedDevices } = useDevices() as {
     devices: Device[]
     selectedDevices: string[]
-    selectDeviceByIp: (ip: string) => void
-    removeSelectedDeviceByIp: (ip: string) => void
+    setSelectedDevices: (devices: string[]) => void
   }
   
   const [searchQuery, setSearchQuery] = useState('')
   const [filterRoom, setFilterRoom] = useState('all')
+  const [sortBy, setSortBy] = useState<SortOption>('none')
 
   // Get unique rooms
   const deviceRooms = devices
@@ -32,87 +34,160 @@ const PlayerListModern: React.FC = () => {
   const uniqueRooms = Array.from(new Set(deviceRooms))
   const rooms: string[] = ['all', ...uniqueRooms]
 
-  // Filter devices
-  const filteredDevices = devices.filter((device: Device) => {
-    const matchesSearch = device.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         device.ip.includes(searchQuery) ||
-                         device.model?.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    const matchesRoom = filterRoom === 'all' || device.room === filterRoom
-    
-    return matchesSearch && matchesRoom
-  })
+  // Filter and sort devices
+  const filteredDevices = devices
+    .filter((device: Device) => {
+      const matchesSearch = device.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           device.ip.includes(searchQuery) ||
+                           device.model?.toLowerCase().includes(searchQuery.toLowerCase())
+      
+      const matchesRoom = filterRoom === 'all' || device.room === filterRoom
+      
+      return matchesSearch && matchesRoom
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name)
+        case 'ip':
+          return a.ip.localeCompare(b.ip)
+        case 'room':
+          return (a.room || '').localeCompare(b.room || '')
+        case 'status':
+          return (a.status || '').localeCompare(b.status || '')
+        default:
+          return 0
+      }
+    })
+
+  // Check if all filtered devices are selected
+  const allFilteredSelected = filteredDevices.length > 0 && 
+    filteredDevices.every(device => selectedDevices.includes(device.ip))
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header Controls - Fixed */}
-      <div className="bg-muted/20 rounded-lg p-4 border border-border/50 mb-4 flex-shrink-0">
+      <div className="px-6 py-4 flex-shrink-0">
         <div className="flex flex-col gap-4">
           {/* Search and Filter Row */}
-          <div className="flex gap-4 items-end">
-            <div className="flex-1">
-              <Label className="text-sm mb-1">Search Devices</Label>
+          <div className="flex gap-4 items-center">
+            {/* Select All Checkbox */}
+            <Checkbox
+              checked={allFilteredSelected}
+              onCheckedChange={() => {
+                if (!allFilteredSelected) {
+                  // Select all filtered devices
+                  const filteredIps = filteredDevices.map(d => d.ip)
+                  const newSelection = Array.from(new Set([...selectedDevices, ...filteredIps]))
+                  setSelectedDevices(newSelection)
+                } else {
+                  // Deselect all filtered devices
+                  const filteredIps = filteredDevices.map(d => d.ip)
+                  const newSelection = selectedDevices.filter(ip => !filteredIps.includes(ip))
+                  setSelectedDevices(newSelection)
+                }
+              }}
+              className="h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              aria-label="Select all devices"
+            />
+            
+            {/* Search */}
+            <div className="flex-1 max-w-lg">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
-                  placeholder="Search by name, IP, or model..."
+                  placeholder="Search devices..."
                   value={searchQuery}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="pl-10 h-9 bg-background border-border focus:bg-background transition-colors"
                 />
               </div>
             </div>
             
-            <div className="w-48">
-              <Label className="text-sm mb-1">Filter by Room</Label>
-              <Select value={filterRoom} onValueChange={setFilterRoom}>
-                <SelectTrigger>
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {rooms.map((room: string) => (
-                    <SelectItem key={room} value={room}>
-                      {room === 'all' ? 'All Rooms' : room}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Sort By */}
+            <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
+              <SelectTrigger className="w-[140px] h-9 bg-background border-border">
+                <ArrowUpDown className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="ip">IP Address</SelectItem>
+                <SelectItem value="room">Room</SelectItem>
+                <SelectItem value="status">Status</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            {/* Filter by Room */}
+            <Select value={filterRoom} onValueChange={setFilterRoom}>
+              <SelectTrigger className="w-[180px] h-9 bg-background border-border">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {rooms.map((room: string) => (
+                  <SelectItem key={room} value={room}>
+                    {room === 'all' ? 'All Rooms' : room}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          
+          {/* Selection indicator */}
+          {selectedDevices.length > 0 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Check className="h-4 w-4" />
+              <span>{selectedDevices.length} of {filteredDevices.length} device{filteredDevices.length !== 1 ? 's' : ''} selected</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Device List - Scrollable */}
       <div className="flex-1 overflow-y-auto">
-        <div className="space-y-0">
+        <div className="px-6 pb-4">
           {filteredDevices.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {searchQuery || filterRoom !== 'all' 
-                ? 'No devices match your filters' 
-                : 'No devices found'}
+            <div className="text-center py-16 text-muted-foreground">
+              <div className="text-lg font-medium mb-1">
+                {searchQuery || filterRoom !== 'all' 
+                  ? 'No devices match your filters' 
+                  : 'No devices found'}
+              </div>
+              <div className="text-sm">
+                {searchQuery || filterRoom !== 'all' 
+                  ? 'Try adjusting your search or filters' 
+                  : 'Make sure your devices are powered on and connected to the network'}
+              </div>
             </div>
           ) : (
-            filteredDevices.map((device: Device) => (
-              <ModernPlayerRow
-                key={device.ip}
-                device={device}
-                isSelected={selectedDevices.includes(device.ip)}
-                onSelectionChange={(selected) => {
-                  if (selected) {
-                    selectDeviceByIp(device.ip)
-                  } else {
-                    removeSelectedDeviceByIp(device.ip)
-                  }
-                }}
-              />
-            ))
+            <>
+              {filteredDevices.map((device: Device, index: number) => (
+                <React.Fragment key={device.ip}>
+                  <ModernPlayerRow
+                    device={device}
+                    isSelected={selectedDevices.includes(device.ip)}
+                    onSelectionChange={(selected) => {
+                      if (selected) {
+                        setSelectedDevices([...selectedDevices, device.ip])
+                      } else {
+                        setSelectedDevices(selectedDevices.filter(ip => ip !== device.ip))
+                      }
+                    }}
+                  />
+                  {index < filteredDevices.length - 1 && (
+                    <hr className="border-t border-border/50" />
+                  )}
+                </React.Fragment>
+              ))}
+            </>
           )}
         </div>
       </div>
 
       {/* Footer Info - Fixed */}
-      <div className="text-center text-sm text-muted-foreground py-2 border-t border-border/50 mt-2 flex-shrink-0">
+      <div className="text-center text-sm text-muted-foreground py-3 flex-shrink-0">
         {devices.length} device{devices.length !== 1 ? 's' : ''} discovered
       </div>
     </div>
